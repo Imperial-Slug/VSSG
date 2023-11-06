@@ -14,15 +14,21 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.swing.Box;
 
 public class VSSG extends ApplicationAdapter {
 
 	//int screenWidth = Gdx.graphics.getWidth();
 	//int screenHeight = Gdx.graphics.getHeight();
-
+	private List<Ship> ships;
 	private SpriteBatch batch;
-	Texture redShipTexture;
+
+	///////////////////////////////
+	private Texture redShipTexture;
 	Sprite redShip;
 	float speed;
 	float shipX;
@@ -31,62 +37,90 @@ public class VSSG extends ApplicationAdapter {
 	float deltaX;
 	float deltaY;
     float shipRotation;
-	
+	////////////////////////////////
+
+
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+
+		ships = new ArrayList<>();
+
+
 		redShipTexture = new Texture("red_ship.png");
-		redShip = new Sprite(redShipTexture);
-		redShip.setPosition(-200, -200);
-		float redShipScale = 0.25f;
-		redShip.setScale(redShipScale);
-		redShip.setRotation(0);
+		//redShip = new Sprite(redShipTexture);
+		//redShip.setPosition(-200, -200);
+		float redShipScale = 0.01f;
 
+		Ship ship = new Ship(redShipTexture, -200, -200, 100); // Change the speed as needed
 
+		ship.setScale(redShipScale);
+		ship.setRotation(0);
 
-	//	blueShip = new Texture("blue_ship.png");
+		ships.add(ship);
+
 	}
 
 	@Override
 	public void render () {
 handleInput();
 		ScreenUtils.clear(0, 0, 0, 1);
-		//redShip.setRotation(redShip.getRotation());
-		speed = 200;
-		shipRotation = redShip.getRotation();
 
-		deltaX = speed * MathUtils.cosDeg(shipRotation);
-		deltaY = speed * MathUtils.sinDeg(shipRotation);
+		Iterator<Ship> iter = ships.iterator();
 
-		shipX = redShip.getX() + (deltaX * Gdx.graphics.getDeltaTime());
-		shipY = redShip.getY() + (deltaY * Gdx.graphics.getDeltaTime());
+		while (iter.hasNext()) {
 
-		redShip.setPosition(shipX, shipY);
+			Ship ship = iter.next();
+			ship.update(Gdx.graphics.getDeltaTime());
+
+			if (!ship.isActive()) {
+				iter.remove();
+			}
+		}
+
 
 		batch.begin();
-	    redShip.draw(batch);
-  
-		//batch.draw(blueShip, 25, 25);
 
+		for (Ship ship : ships) {
+
+			ship.draw(batch);
+
+		}
 
 		batch.end();
 
-
-
 		}	
 
-		
+		private void fireLaser() {
+System.out.println("Firing a laser.");
+
+		}
 
   private void handleInput() {
 	  // Rotate the sprite with left arrow key
 	  if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-		  redShip.rotate(1f); // Adjust the rotation speed as needed
+
+		  for (Ship ship : ships) {
+			  ship.rotate(+1f);
+		  }
 	  }
 
 	  // Rotate the sprite with right arrow key
 	  if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-		  redShip.rotate(-1f); // Adjust the rotation speed as needed
+		  for (Ship ship : ships) {
+			  ship.rotate(-1f);
+		  }
 	  }
+
+	  // Shoot lasers
+	  if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+
+		  fireLaser();
+
+	  }
+
+
   }
 
 	@Override
@@ -95,4 +129,8 @@ handleInput();
 		redShipTexture.dispose();
 		//blueShip.dispose();
 	}
+
+
+
+
 }
