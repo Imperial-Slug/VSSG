@@ -4,48 +4,36 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 public class Ship extends Sprite {
 
-private float x, y;
-private float speed;
-private boolean active;
+    private Vector2 position;
+    private float speed;
+    private boolean active;
 
-public Ship(Texture texture, float x, float y, float speed) {
-
-    super(texture);
-
-    this.x = x;
-    this.y = y;
-    this.speed = speed;
-    active = true;
-    //System.out.println("INITIAL: x = "+x+"   y = "+y);
-
-}
-
-public void update(float delta) {
-
-    if (active) {
-        // Calculate the movement vector based on rotation
-        float deltaX = speed * MathUtils.cosDeg(getRotation());
-        float deltaY = speed * MathUtils.sinDeg(getRotation());
-
-        // Update the ship's position based on the movement vector
-        x += deltaX * delta;
-        y += deltaY * delta;
-
-        // Check if the ship is out of screen bounds and deactivate it if necessary
-        if (x > Gdx.graphics.getWidth() || y > Gdx.graphics.getHeight()) {
-            active = false;
-            System.out.println("Ship was deleted.");
-        }
-
-        // Update the sprite's position
-        setPosition(x, y);
-        System.out.println("setPosition of Ship: "+x+", "+y);
+    public Ship(Texture texture, float x, float y, float speed) {
+        super(texture);
+        this.position = new Vector2(x, y);
+        this.speed = speed;
+        active = true;
     }
 
-}
+    public void update(float delta) {
+        if (active) {
+            Vector2 velocity = new Vector2(speed, 0).setAngle(getRotation());
+            position.add(velocity.x * delta, velocity.y * delta);
+
+            // Check if the ship is out of screen bounds and deactivate it if necessary
+            if (position.x > Gdx.graphics.getWidth() || position.y > Gdx.graphics.getHeight()) {
+                active = false;
+            }
+
+            // Update the sprite's position
+            setPosition(position.x, position.y);
+        }
+    }
+
 
 
 public boolean isActive(){
