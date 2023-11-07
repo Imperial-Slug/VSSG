@@ -21,7 +21,7 @@ public class Ship extends Sprite {
 
     public void update(float delta) {
         if (active) {
-            Vector2 velocity = new Vector2(speed, 0).setAngle(getRotation());
+            Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
 
             // Check if the ship is out of screen bounds and deactivate it if necessary

@@ -46,7 +46,7 @@ public class VSSG extends ApplicationAdapter {
 		int screenHeight = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, screenWidth, screenHeight);
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		batch = new SpriteBatch();
 
@@ -61,7 +61,7 @@ public class VSSG extends ApplicationAdapter {
 
 		float redShipScale = 0.01f;
 
-		Ship ship = new Ship(redShipTexture, -400, -300, 75);
+		Ship ship = new Ship(redShipTexture, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, 75);
 
 		ship.setScale(redShipScale);
 		ship.setRotation(0);
@@ -109,18 +109,18 @@ public class VSSG extends ApplicationAdapter {
 
 		batch.begin();
 
-		for (Ship ship : ships) {
 
-			ship.draw(batch);
-
-		}
 
 		for (Laser laser : lasers) {
 
 			laser.draw(batch);
 
 		}
+		for (Ship ship : ships) {
 
+			ship.draw(batch);
+
+		}
 		batch.end();
 
 		}	
