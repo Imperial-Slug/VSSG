@@ -2,9 +2,7 @@ package com.game.vssg;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
 public class Ship extends Sprite {
@@ -14,11 +12,14 @@ private float speed;
 private boolean active;
 
 public Ship(Texture texture, float x, float y, float speed) {
+
     super(texture);
+
     this.x = x;
     this.y = y;
     this.speed = speed;
     active = true;
+    //System.out.println("INITIAL: x = "+x+"   y = "+y);
 
 }
 
@@ -41,11 +42,10 @@ public void update(float delta) {
 
         // Update the sprite's position
         setPosition(x, y);
+        System.out.println("setPosition of Ship: "+x+", "+y);
     }
 
 }
-
-
 
 
 public boolean isActive(){
