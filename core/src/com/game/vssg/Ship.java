@@ -11,11 +11,13 @@ public class Ship extends Sprite {
     private Vector2 position;
     private float speed;
     private boolean active;
+    Texture greenLaserTexture = new Texture("laser_green.png");
 
     public Ship(Texture texture, float x, float y, float speed) {
         super(texture);
         this.position = new Vector2(x, y);
         this.speed = speed;
+
         active = true;
     }
 
@@ -34,11 +36,20 @@ public class Ship extends Sprite {
         }
     }
 
+    public Laser fireLaser(Ship ship) {
+        Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX(), ship.getY() + ship.getOriginY());
+        Laser laser = new Laser(greenLaserTexture, laserPosition, ship.getRotation(), 500);
+        laser.setPosition(laserPosition.x, laserPosition.y);
+        return laser;
+    }
+
+
 
 
 public boolean isActive(){
 
     return active;
 }
+
 
 }

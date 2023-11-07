@@ -1,6 +1,7 @@
 package com.game.vssg;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -13,7 +14,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 
 import java.util.ArrayList;
@@ -22,36 +25,32 @@ import java.util.List;
 
 import javax.swing.Box;
 
-public class VSSG extends ApplicationAdapter {
+public class VSSG implements ApplicationListener {
 
 	 //List<Ship> ships;
 	private ObjectSet<Ship> ships;
 	//List<Laser> lasers;
 	private ObjectSet<Laser> lasers;
-	SpriteBatch batch;
+	private SpriteBatch batch;
 
 	///////////////////////////////
 	private Texture redShipTexture;
 	private Texture greenLaserTexture;
 	private OrthographicCamera camera;
-	float cameraSpeed = 100;
-
+	private float cameraSpeed = 100;
+	private Viewport viewport;
 
 	////////////////////////////////
 
 
 	@Override
 	public void create () {
-		int screenWidth = Gdx.graphics.getWidth();
-		int screenHeight = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
+		camera.setToOrtho(false, 800, 480);
+		viewport = new ExtendViewport(800, 480, camera);
 		batch = new SpriteBatch();
 
-		//ships = new ArrayList<>();
-		//lasers = new ArrayList<>();
 		ships = new ObjectSet<>();
 		lasers = new ObjectSet<>();
 
@@ -61,7 +60,8 @@ public class VSSG extends ApplicationAdapter {
 
 		float redShipScale = 0.01f;
 
-		Ship ship = new Ship(redShipTexture, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, 75);
+		Ship ship = new Ship(redShipTexture, -200, -200, 75);
+		//ship.setPosition(500, 500);
 
 		ship.setScale(redShipScale);
 		ship.setRotation(0);
@@ -69,10 +69,12 @@ public class VSSG extends ApplicationAdapter {
 		ships.add(ship);
 		System.out.println("ships list has "+ships.size);
 
+
 	}
 
 	@Override
 	public void render () {
+		//super.render();
 		ScreenUtils.clear(0, 0, 0, 1);
 
 		camera.update();
@@ -123,8 +125,17 @@ public class VSSG extends ApplicationAdapter {
 		}
 		batch.end();
 
-		}	
+		}
 
+	public void resize (int width, int height) {
+		viewport.update(width, height);
+	}
+
+	public void pause () {
+	}
+
+	public void resume () {
+	}
 
 
   private void handleInput() {
@@ -146,9 +157,9 @@ public class VSSG extends ApplicationAdapter {
 	  if (InputManager.isSpacePressed()) {
 
 		  for (Ship ship : ships) {
-			Laser laser = fireLaser(ship);
+			Laser laser = ship.fireLaser(ship);
 			lasers.add(laser);
-			//System.out.println(laser.getX()+" "+laser.getY());
+			System.out.println(laser.getOriginX()+" "+laser.getOriginY());
 
 		  }
 	  }
@@ -174,18 +185,11 @@ public class VSSG extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		redShipTexture.dispose();
-		greenLaserTexture.dispose();
+
+
 	}
 
 
-	Laser fireLaser(Ship ship) {
 
-		//System.out.println("Firing a laser.");
-
-		Vector2 laserPosition = new Vector2(ship.getX(), ship.getY());
-		Laser laser = new Laser(greenLaserTexture, laserPosition, ship.getRotation(), 500);
-		return laser;
-	}
 
 }

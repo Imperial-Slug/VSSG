@@ -15,7 +15,7 @@ public class Laser extends Sprite {
 
     public Laser(Texture texture, Vector2 shipPosition, float shipRotation, float speed) {
         super(texture);
-        this.position = new Vector2(shipPosition);
+        this.position = new Vector2(shipPosition.x, shipPosition.y);
         this.velocity = new Vector2(speed, 0).setAngleDeg(shipRotation);
 
         this.setRotation(shipRotation);
@@ -41,5 +41,7 @@ public class Laser extends Sprite {
 
         return active;
     }
+
+
 
 }
