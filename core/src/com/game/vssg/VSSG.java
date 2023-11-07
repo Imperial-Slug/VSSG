@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -183,8 +182,9 @@ public class VSSG extends ApplicationAdapter {
 
 		//System.out.println("Firing a laser.");
 
-		Vector2 laserPosition = new Vector2(ship.getX(), ship.getY());
-		Laser laser = new Laser(greenLaserTexture, laserPosition, ship.getRotation(), 500);
+		float laserX = ship.getX();
+		float laserY = ship.getY();
+		Laser laser = new Laser(greenLaserTexture, laserX, laserY, ship.getRotation(), 500);
 		return laser;
 	}
 
