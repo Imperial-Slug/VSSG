@@ -10,20 +10,21 @@ import com.badlogic.gdx.math.Vector2;
 public class Laser extends Sprite {
 
     private Vector2 position;
-    private Vector2 velocity;
+    private float speed;
+    private String colour;
     private boolean active;
 
-    public Laser(Texture texture, Vector2 shipPosition, float shipRotation, float speed) {
+    public Laser(Texture texture, float x, float y, float shipRotation, float speed) {
         super(texture);
-        this.position = new Vector2(shipPosition.x, shipPosition.y);
-        this.velocity = new Vector2(speed, 0).setAngleDeg(shipRotation);
-
+        this.position = new Vector2(x, y);
+        this.speed = speed;
         this.setRotation(shipRotation);
         active = true;
     }
 
     public void update(float delta) {
         if (active) {
+            Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
 
             // Check if the laser is out of screen bounds and deactivate it if necessary
@@ -36,7 +37,15 @@ public class Laser extends Sprite {
         }
     }
 
+    public float getSpeed(){
 
+        return this.speed;
+    }
+
+    public void setSpeed(float s) {
+        this.speed = s;
+        System.out.println("Speed is "+speed);
+    }
     public boolean isActive(){
 
         return active;

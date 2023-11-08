@@ -2,6 +2,10 @@ package com.game.vssg;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector3;
+
+import java.awt.Button;
 
 public class InputManager {
 
@@ -27,4 +31,8 @@ public class InputManager {
 
     public static boolean isWPressed() { return Gdx.input.isKeyPressed(Input.Keys.W); }
     public static boolean isSPressed() { return Gdx.input.isKeyPressed(Input.Keys.S); }
+
+    public static boolean isLeftMousePressed() { return Gdx.input.isButtonPressed(Input.Buttons.LEFT); }
+
+
 }
