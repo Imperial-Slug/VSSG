@@ -25,5 +25,6 @@ public class InputManager {
 
     public static boolean isDownPressed() { return Gdx.input.isKeyPressed(Input.Keys.DOWN); }
 
-
+    public static boolean isWPressed() { return Gdx.input.isKeyPressed(Input.Keys.W); }
+    public static boolean isSPressed() { return Gdx.input.isKeyPressed(Input.Keys.S); }
 }

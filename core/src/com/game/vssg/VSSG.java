@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -36,6 +37,9 @@ public class VSSG implements ApplicationListener {
 	///////////////////////////////
 	private Texture redShipTexture;
 	private Texture greenLaserTexture;
+	//Sound sound = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
+
+
 	private OrthographicCamera camera;
 	private float cameraSpeed = 100;
 	private Viewport viewport;
@@ -58,10 +62,9 @@ public class VSSG implements ApplicationListener {
 		redShipTexture = new Texture("red_ship.png");
 		greenLaserTexture = new Texture("laser_green.png");
 
-		float redShipScale = 0.01f;
-
-		Ship ship = new Ship(redShipTexture, -200, -200, 75);
-		//ship.setPosition(500, 500);
+		float redShipScale = 0.08f;
+	    float speed = 75;
+		Ship ship = new Ship(redShipTexture, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, speed);
 
 		ship.setScale(redShipScale);
 		ship.setRotation(0);
@@ -116,6 +119,8 @@ public class VSSG implements ApplicationListener {
 		for (Laser laser : lasers) {
 
 			laser.draw(batch);
+		//	sound.play(1.0f);
+
 
 		}
 		for (Ship ship : ships) {
@@ -124,7 +129,6 @@ public class VSSG implements ApplicationListener {
 
 		}
 		batch.end();
-
 		}
 
 	public void resize (int width, int height) {
@@ -160,10 +164,29 @@ public class VSSG implements ApplicationListener {
 			Laser laser = ship.fireLaser(ship);
 			lasers.add(laser);
 			System.out.println(laser.getOriginX()+" "+laser.getOriginY());
+			 Sound sound = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
+			sound.play(1.0f);
 
+			  if (sound == null) {
+				  Gdx.app.error("Sound", "Sound file not loaded!");
+			  }
+		  }
+
+	  }
+
+	  //Speed up.
+	  if (InputManager.isWPressed()) {
+		  for (Ship ship : ships) {
+			  ship.setSpeed(ship.getSpeed()+2);
 		  }
 	  }
 
+	  // Slow down.
+	  if (InputManager.isSPressed()) {
+		  for (Ship ship : ships) {
+			  ship.setSpeed(ship.getSpeed()-2);
+		  }
+	  }
 
 	  if (InputManager.isLeftPressed()) {
 		  camera.translate(-cameraSpeed * Gdx.graphics.getDeltaTime(), 0);
@@ -185,6 +208,7 @@ public class VSSG implements ApplicationListener {
 	@Override
 	public void dispose () {
 		batch.dispose();
+
 
 
 	}

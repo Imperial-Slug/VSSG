@@ -1,6 +1,7 @@
 package com.game.vssg;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
@@ -36,13 +37,23 @@ public class Ship extends Sprite {
         }
     }
 
+    public float getSpeed(){
+
+        return this.speed;
+    }
+
+    public void setSpeed(float s) {
+        this.speed = s;
+        System.out.println("Speed is "+speed);
+    }
     public Laser fireLaser(Ship ship) {
         float offsetX = -10;
-        float offsetY = -1;
+        float offsetY = -1.5f;
 
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);
         Laser laser = new Laser(greenLaserTexture, laserPosition, ship.getRotation(), 500);
         laser.setPosition(laserPosition.x, laserPosition.y);
+        laser.setScale(0.5f);
         return laser;
     }
 
