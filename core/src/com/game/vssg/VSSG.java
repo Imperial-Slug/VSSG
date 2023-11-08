@@ -122,8 +122,6 @@ public class VSSG implements ApplicationListener {
 
 		batch.begin();
 
-
-
 		for (Laser laser : lasers) {
 
 			laser.draw(batch);
