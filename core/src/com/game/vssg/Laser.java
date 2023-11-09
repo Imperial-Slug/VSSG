@@ -44,7 +44,7 @@ public class Laser extends Sprite {
 
     public void setSpeed(float s) {
         this.speed = s;
-        System.out.println("Speed is "+speed);
+
     }
     public boolean isActive(){
 

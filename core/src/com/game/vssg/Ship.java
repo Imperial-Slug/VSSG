@@ -13,7 +13,6 @@ public class Ship extends Sprite {
     private Vector2 position;
     private float speed;
     private boolean active;
-
     private Texture texture;
     Texture greenLaserTexture = new Texture("laser_green.png");
     Texture redShipTexture = new Texture("red_ship.png");
@@ -48,22 +47,21 @@ public class Ship extends Sprite {
 
     public void setSpeed(float s) {
         this.speed = s;
-        //System.out.println("Speed is "+speed);
+
     }
 
-//////////////////////////
-    public Ship spawnShip(Vector2 position, ObjectSet<Ship> ships) {
 
+    public Ship spawnShip(Vector2 position, ObjectSet<Ship> ships) {
 
         Ship ship = new Ship(redShipTexture, position,  75);
         ship.setPosition(position.x, position.y);
         ship.setScale(0.08f);
         ships.add(ship);
-        System.out.println("Ship spawned!");
+        Gdx.app.debug("spawnShip()","Ship spawned!");
         return ship;
     }
 
-    //////////////////////////
+
     public Laser fireLaser(Ship ship) {
         float offsetX = -10;
         float offsetY = -1.5f;

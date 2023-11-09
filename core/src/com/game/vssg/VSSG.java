@@ -25,6 +25,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.Box;
 
@@ -35,7 +37,9 @@ public class VSSG implements ApplicationListener {
 	//List<Laser> lasers;
 	private ObjectSet<Laser> lasers;
 	private SpriteBatch batch;
+	private int processors;
 
+	//ExecutorService physicsExecutor = Executors.newFixedThreadPool(numThreads);
 	///////////////////////////////
 	private Texture redShipTexture;
 	private Texture greenLaserTexture;
@@ -53,6 +57,8 @@ public class VSSG implements ApplicationListener {
 
 	@Override
 	public void create () {
+		processors = Runtime.getRuntime().availableProcessors();
+		Gdx.app.debug("Get number of processors.","Cores: " + processors);
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
@@ -78,7 +84,7 @@ public class VSSG implements ApplicationListener {
 		ship.setRotation(0);
 
 		ships.add(ship);
-		System.out.println("ships list has "+ships.size);
+		Gdx.app.debug("ships.add(ship)","ships list has "+ships.size);
 
 
 	}
@@ -106,7 +112,6 @@ public class VSSG implements ApplicationListener {
 
 			if (!ship.isActive()) {
 				iter.remove();
-			//	System.out.println("ship iterator removed");
 			}
 		}
 
@@ -171,7 +176,6 @@ public class VSSG implements ApplicationListener {
 		  for (Ship ship : ships) {
 			Laser laser = ship.fireLaser(ship);
 			lasers.add(laser);
-		//	System.out.println(laser.getOriginX()+" "+laser.getOriginY());
 			 Sound sound = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
 			sound.play(1.0f);
 
@@ -187,7 +191,7 @@ public class VSSG implements ApplicationListener {
 		  Vector2 position = new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 		  Ship ship = new Ship(redShipTexture, position, 75);
 		  ship.spawnShip(position, ships);
-		  System.out.println("Left mouse pressed!");
+		  Gdx.app.debug("Left Mouse Press","Left mouse pressed!");
 	  }
 
 	  //Speed up.
