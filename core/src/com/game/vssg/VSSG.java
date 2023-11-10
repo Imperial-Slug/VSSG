@@ -38,6 +38,7 @@ public class VSSG implements ApplicationListener {
 	private ObjectSet<Laser> lasers;
 	private SpriteBatch batch;
 	private int processors;
+	Sound laserSound1;
 
 	//ExecutorService physicsExecutor = Executors.newFixedThreadPool(numThreads);
 	///////////////////////////////
@@ -57,32 +58,39 @@ public class VSSG implements ApplicationListener {
 
 	@Override
 	public void create () {
+		// Get number of processors for multithreading purposes.
 		processors = Runtime.getRuntime().availableProcessors();
 		Gdx.app.debug("Get number of processors.","Cores: " + processors);
 
+		// Load assets.
+		redShipTexture = new Texture("red_ship.png");
+		greenLaserTexture = new Texture("laser_green.png");
+		laserSound1 = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
+
+		// Setup camera, viewport, controls input.
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		camera.position.x = Gdx.graphics.getWidth()/2;
 		camera.position.y = Gdx.graphics.getHeight()/2;
 		viewport = new ExtendViewport(800, 480, camera);
 		Gdx.input.setInputProcessor(inputManager);
-		batch = new SpriteBatch();
 
+		// Prepare SpriteBatch and lists for keeping track of/accessing game objects.
+		batch = new SpriteBatch();
 		ships = new ObjectSet<>();
 		lasers = new ObjectSet<>();
 
-
-		redShipTexture = new Texture("red_ship.png");
-		greenLaserTexture = new Texture("laser_green.png");
-
+		//Set scales for textures.
 		float redShipScale = 0.08f;
 	    float speed = 75;
+
+		// Initial ship's details.
 		Vector2 vector2 = new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 		Ship ship = new Ship(redShipTexture, vector2, speed);
-
 		ship.setScale(redShipScale);
 		ship.setRotation(0);
 
+		// Add the new ship to the Ship list.
 		ships.add(ship);
 		Gdx.app.debug("ships.add(ship)","ships list has "+ships.size);
 
@@ -100,10 +108,8 @@ public class VSSG implements ApplicationListener {
 
 		handleInput();
 
-
 		Iterator<Ship> iter = ships.iterator();
 		Iterator<Laser> laserIter = lasers.iterator();
-
 
 		while (iter.hasNext()) {
 
@@ -122,6 +128,7 @@ public class VSSG implements ApplicationListener {
 
 			if (!laser.isActive()) {
 				laserIter.remove();
+
 			}
 		}
 
@@ -130,7 +137,6 @@ public class VSSG implements ApplicationListener {
 		for (Laser laser : lasers) {
 
 			laser.draw(batch);
-		//	sound.play(1.0f);
 
 
 		}
@@ -176,10 +182,9 @@ public class VSSG implements ApplicationListener {
 		  for (Ship ship : ships) {
 			Laser laser = ship.fireLaser(ship);
 			lasers.add(laser);
-			 Sound sound = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
-			sound.play(1.0f);
+			laserSound1.play(1.0f);
 
-			  if (sound == null) {
+			  if (laserSound1 == null) {
 				  Gdx.app.error("Sound", "Sound file not loaded!");
 			  }
 		  }
@@ -190,7 +195,7 @@ public class VSSG implements ApplicationListener {
 	  if (InputManager.isLeftMousePressed()) {
 		  Vector2 position = new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 		  Ship ship = new Ship(redShipTexture, position, 75);
-		  ship.spawnShip(position, ships);
+		  ship.spawnShip(redShipTexture, position, ships);
 		  Gdx.app.debug("Left Mouse Press","Left mouse pressed!");
 	  }
 
@@ -231,6 +236,8 @@ public class VSSG implements ApplicationListener {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		redShipTexture.dispose();
+		greenLaserTexture.dispose();
 
 
 

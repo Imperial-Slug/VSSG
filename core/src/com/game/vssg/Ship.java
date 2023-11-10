@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectSet;
 
 public class Ship extends Sprite {
@@ -15,13 +16,12 @@ public class Ship extends Sprite {
     private boolean active;
     private Texture texture;
     Texture greenLaserTexture = new Texture("laser_green.png");
-    Texture redShipTexture = new Texture("red_ship.png");
 
     public Ship(Texture texture, Vector2 position, float speed) {
         super(texture);
+        this.texture = texture;
         this.position = position;
         this.speed = speed;
-        this.texture = texture;
         active = true;
     }
 
@@ -51,9 +51,9 @@ public class Ship extends Sprite {
     }
 
 
-    public Ship spawnShip(Vector2 position, ObjectSet<Ship> ships) {
+    public Ship spawnShip(Texture texture, Vector2 position, ObjectSet<Ship> ships) {
 
-        Ship ship = new Ship(redShipTexture, position,  75);
+        Ship ship = new Ship(texture, position,  75);
         ship.setPosition(position.x, position.y);
         ship.setScale(0.08f);
         ships.add(ship);
@@ -80,6 +80,7 @@ public boolean isActive(){
 
     return active;
 }
+
 
 
 }

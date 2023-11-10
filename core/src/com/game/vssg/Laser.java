@@ -10,12 +10,14 @@ import com.badlogic.gdx.math.Vector2;
 public class Laser extends Sprite {
 
     private Vector2 position;
+    private Texture texture;
     private float speed;
     private String colour;
     private boolean active;
 
     public Laser(Texture texture, float x, float y, float shipRotation, float speed) {
         super(texture);
+        this.texture = texture;
         this.position = new Vector2(x, y);
         this.speed = speed;
         this.setRotation(shipRotation);
