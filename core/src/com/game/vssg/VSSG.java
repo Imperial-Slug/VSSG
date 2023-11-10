@@ -135,18 +135,16 @@ public class VSSG implements ApplicationListener {
 		batch.begin();
 
 		for (Laser laser : lasers) {
-
 			laser.draw(batch);
-
-
 		}
+
 		for (Ship ship : ships) {
-
 			ship.draw(batch);
+		}
 
-		}
 		batch.end();
-		}
+
+	}
 
 
 	public void resize (int width, int height) {
@@ -180,9 +178,9 @@ public class VSSG implements ApplicationListener {
 	  if (InputManager.isSpacePressed()) {
 
 		  for (Ship ship : ships) {
-			Laser laser = ship.fireLaser(ship);
+			Laser laser = ship.fireLaser(greenLaserTexture, ship);
 			lasers.add(laser);
-			laserSound1.play(1.0f);
+			laserSound1.play(0.5f);
 
 			  if (laserSound1 == null) {
 				  Gdx.app.error("Sound", "Sound file not loaded!");

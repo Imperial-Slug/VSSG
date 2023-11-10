@@ -2,12 +2,13 @@ package com.game.vssg;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector3;
 
-import java.awt.Button;
+public final class InputManager {
 
-public class InputManager {
+
+    private InputManager() {
+
+    }
 
     public static boolean isAPressed() {
         return Gdx.input.isKeyPressed(Input.Keys.A);

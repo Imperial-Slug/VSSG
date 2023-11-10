@@ -15,7 +15,6 @@ public class Ship extends Sprite {
     private float speed;
     private boolean active;
     private Texture texture;
-    Texture greenLaserTexture = new Texture("laser_green.png");
 
     public Ship(Texture texture, Vector2 position, float speed) {
         super(texture);
@@ -62,12 +61,12 @@ public class Ship extends Sprite {
     }
 
 
-    public Laser fireLaser(Ship ship) {
+    public Laser fireLaser(Texture texture, Ship ship) {
         float offsetX = -10;
         float offsetY = -1.5f;
 
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);
-        Laser laser = new Laser(greenLaserTexture, laserPosition.x, laserPosition.y, ship.getRotation(), 500);
+        Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 500);
         laser.setPosition(laserPosition.x, laserPosition.y);
         laser.setScale(0.5f);
         return laser;
