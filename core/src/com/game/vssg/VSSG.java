@@ -14,20 +14,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import javax.swing.Box;
 
 public class VSSG implements ApplicationListener {
@@ -37,20 +32,15 @@ public class VSSG implements ApplicationListener {
 	//List<Laser> lasers;
 	private ObjectSet<Laser> lasers;
 	private SpriteBatch batch;
-	private int processors;
 	Sound laserSound1;
 
-	//ExecutorService physicsExecutor = Executors.newFixedThreadPool(numThreads);
 	///////////////////////////////
 	private Texture redShipTexture;
 	private Texture greenLaserTexture;
-	//Sound sound = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
-
 
 	private OrthographicCamera camera;
-	private float cameraSpeed = 100;
 	private Viewport viewport;
-	Vector3 tp = new Vector3();
+	//Vector3 tp = new Vector3();
 	boolean dragging;
 
 	////////////////////////////////
@@ -59,7 +49,7 @@ public class VSSG implements ApplicationListener {
 	@Override
 	public void create () {
 		// Get number of processors for multithreading purposes.
-		processors = Runtime.getRuntime().availableProcessors();
+		int processors = Runtime.getRuntime().availableProcessors();
 		Gdx.app.debug("Get number of processors.","Cores: " + processors);
 
 		// Load assets.
@@ -70,8 +60,8 @@ public class VSSG implements ApplicationListener {
 		// Setup camera, viewport, controls input.
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
-		camera.position.x = Gdx.graphics.getWidth()/2;
-		camera.position.y = Gdx.graphics.getHeight()/2;
+		camera.position.x = (float) Gdx.graphics.getWidth() /2;
+		camera.position.y = (float) Gdx.graphics.getHeight() /2;
 		viewport = new ExtendViewport(800, 480, camera);
 		Gdx.input.setInputProcessor(inputManager);
 
@@ -85,7 +75,7 @@ public class VSSG implements ApplicationListener {
 	    float speed = 75;
 
 		// Initial ship's details.
-		Vector2 vector2 = new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+		Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
 		Ship ship = new Ship(redShipTexture, vector2, speed);
 		ship.setScale(redShipScale);
 		ship.setRotation(0);
@@ -191,7 +181,7 @@ public class VSSG implements ApplicationListener {
 
 
 	  if (InputManager.isLeftMousePressed()) {
-		  Vector2 position = new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+		  Vector2 position = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
 		  Ship ship = new Ship(redShipTexture, position, 75);
 		  ship.spawnShip(redShipTexture, position, ships);
 		  Gdx.app.debug("Left Mouse Press","Left mouse pressed!");
@@ -211,6 +201,7 @@ public class VSSG implements ApplicationListener {
 		  }
 	  }
 
+	  float cameraSpeed = 100;
 	  if (InputManager.isLeftPressed()) {
 		  camera.translate(-cameraSpeed * Gdx.graphics.getDeltaTime(), 0);
 	  }

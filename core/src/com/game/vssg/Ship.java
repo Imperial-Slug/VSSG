@@ -1,12 +1,9 @@
 package com.game.vssg;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectSet;
 
 public class Ship extends Sprite {
@@ -50,19 +47,18 @@ public class Ship extends Sprite {
     }
 
 
-    public Ship spawnShip(Texture texture, Vector2 position, ObjectSet<Ship> ships) {
+    public void spawnShip(Texture texture, Vector2 position, ObjectSet<Ship> ships) {
 
         Ship ship = new Ship(texture, position,  75);
         ship.setPosition(position.x, position.y);
         ship.setScale(0.08f);
         ships.add(ship);
         Gdx.app.debug("spawnShip()","Ship spawned!");
-        return ship;
     }
 
 
     public Laser fireLaser(Texture texture, Ship ship) {
-        float offsetX = -10;
+        float offsetX = -10f;
         float offsetY = -1.5f;
 
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);

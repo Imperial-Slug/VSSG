@@ -3,3 +3,11 @@
 - modularity in each ship's design
 - randomization of design will be possible as well as uniformity for factions
 - human can shoose ship to control 
+
+------------------------------------------
+
+We will keep the autospawn ship as the human controlled ship for now.
+
+FIrst, we need to make the AI class, and seperate it from the human one. 
+
+Make the mouseclick spawnShip() method spawn not a human controlled ship but rather a computer controlled ship. This will be sufficient for testing while basic AI behavior is figured out. This may nee extensive planning before programming is started.
