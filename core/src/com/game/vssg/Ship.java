@@ -47,15 +47,23 @@ public class Ship extends Sprite {
     }
 
 
-    public void spawnShip(Texture texture, Vector2 position, ObjectSet<Ship> ships) {
+    public void spawnCpuShip(Texture texture, Vector2 position, ObjectSet<CpuShip> ships) {
 
-        Ship ship = new Ship(texture, position,  75);
+        CpuShip ship = new CpuShip(texture, position,  75);
         ship.setPosition(position.x, position.y);
         ship.setScale(0.08f);
         ships.add(ship);
         Gdx.app.debug("spawnShip()","Ship spawned!");
     }
 
+    public void spawnPlayerShip(Texture texture, Vector2 position, ObjectSet<PlayerShip> ships) {
+
+        PlayerShip ship = new PlayerShip(texture, position,  75);
+        ship.setPosition(position.x, position.y);
+        ship.setScale(0.08f);
+        ships.add(ship);
+        Gdx.app.debug("spawnShip()","Ship spawned!");
+    }
 
     public Laser fireLaser(Texture texture, Ship ship) {
         float offsetX = -10f;

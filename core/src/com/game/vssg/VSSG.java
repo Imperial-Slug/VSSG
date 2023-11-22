@@ -27,9 +27,10 @@ import javax.swing.Box;
 
 public class VSSG implements ApplicationListener {
 
-	 //List<Ship> ships;
-	private ObjectSet<Ship> ships;
-	//List<Laser> lasers;
+//	private ObjectSet<Ship> ships;
+	private ObjectSet<PlayerShip> playerShips;
+	private ObjectSet<CpuShip> cpuShips;
+
 	private ObjectSet<Laser> lasers;
 	private SpriteBatch batch;
 	Sound laserSound1;
@@ -67,7 +68,8 @@ public class VSSG implements ApplicationListener {
 
 		// Prepare SpriteBatch and lists for keeping track of/accessing game objects.
 		batch = new SpriteBatch();
-		ships = new ObjectSet<>();
+		cpuShips = new ObjectSet<>();
+		playerShips = new ObjectSet<>();
 		lasers = new ObjectSet<>();
 
 		//Set scales for textures.
@@ -76,13 +78,13 @@ public class VSSG implements ApplicationListener {
 
 		// Initial ship's details.
 		Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
-		Ship ship = new Ship(redShipTexture, vector2, speed);
-		ship.setScale(redShipScale);
-		ship.setRotation(0);
+		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed);
+		playerShip.setScale(redShipScale);
+		playerShip.setRotation(0);
 
 		// Add the new ship to the Ship list.
-		ships.add(ship);
-		Gdx.app.debug("ships.add(ship)","ships list has "+ships.size);
+		playerShips.add(playerShip);
+		Gdx.app.debug("ships.add(ship)","ships list has "+playerShips.size);
 
 
 	}
@@ -98,16 +100,29 @@ public class VSSG implements ApplicationListener {
 
 		handleInput();
 
-		Iterator<Ship> iter = ships.iterator();
+		Iterator<PlayerShip> playerIter = playerShips.iterator();
+		Iterator<CpuShip> cpuIter = cpuShips.iterator();
+
 		Iterator<Laser> laserIter = lasers.iterator();
 
-		while (iter.hasNext()) {
 
-			Ship ship = iter.next();
+		while (playerIter.hasNext()) {
+
+			Ship ship = playerIter.next();
 			ship.update(Gdx.graphics.getDeltaTime());
 
 			if (!ship.isActive()) {
-				iter.remove();
+				playerIter.remove();
+			}
+		}
+
+		while (cpuIter.hasNext()) {
+
+			Ship ship = cpuIter.next();
+			ship.update(Gdx.graphics.getDeltaTime());
+
+			if (!ship.isActive()) {
+				cpuIter.remove();
 			}
 		}
 
@@ -128,8 +143,12 @@ public class VSSG implements ApplicationListener {
 			laser.draw(batch);
 		}
 
-		for (Ship ship : ships) {
-			ship.draw(batch);
+		for (Ship playerShip : playerShips) {
+			playerShip.draw(batch);
+		}
+
+		for (Ship cpuShip : cpuShips) {
+			cpuShip.draw(batch);
 		}
 
 		batch.end();
@@ -151,7 +170,7 @@ public class VSSG implements ApplicationListener {
   private void handleInput() {
 	  // Rotate the sprite with left arrow key
 	  if (InputManager.isAPressed()) {
-		  for (Ship ship : ships) {
+		  for (Ship ship : playerShips) {
 			  ship.rotate(+1f);
 		  }
 	  }
@@ -159,7 +178,7 @@ public class VSSG implements ApplicationListener {
 
 	  // Rotate the sprite with right arrow key
 	  if (InputManager.isDPressed()) {
-		  for (Ship ship : ships) {
+		  for (Ship ship : playerShips) {
 			  ship.rotate(-1f);
 		  }
 	  }
@@ -167,7 +186,7 @@ public class VSSG implements ApplicationListener {
 	  // Shoot lasers
 	  if (InputManager.isSpacePressed()) {
 
-		  for (Ship ship : ships) {
+		  for (Ship ship : playerShips) {
 			Laser laser = ship.fireLaser(greenLaserTexture, ship);
 			lasers.add(laser);
 			laserSound1.play(0.5f);
@@ -183,20 +202,20 @@ public class VSSG implements ApplicationListener {
 	  if (InputManager.isLeftMousePressed()) {
 		  Vector2 position = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
 		  Ship ship = new Ship(redShipTexture, position, 75);
-		  ship.spawnShip(redShipTexture, position, ships);
+		  ship.spawnCpuShip(redShipTexture, position, cpuShips);
 		  Gdx.app.debug("Left Mouse Press","Left mouse pressed!");
 	  }
 
 	  //Speed up.
 	  if (InputManager.isWPressed()) {
-		  for (Ship ship : ships) {
+		  for (Ship ship : playerShips) {
 			  ship.setSpeed(ship.getSpeed()+2);
 		  }
 	  }
 
 	  // Slow down.
 	  if (InputManager.isSPressed()) {
-		  for (Ship ship : ships) {
+		  for (Ship ship : playerShips) {
 			  ship.setSpeed(ship.getSpeed()-2);
 		  }
 	  }

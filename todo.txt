@@ -11,3 +11,6 @@ We will keep the autospawn ship as the human controlled ship for now.
 FIrst, we need to make the AI class, and seperate it from the human one. 
 
 Make the mouseclick spawnShip() method spawn not a human controlled ship but rather a computer controlled ship. This will be sufficient for testing while basic AI behavior is figured out. This may nee extensive planning before programming is started.
+
+1) MAke the Ship object into a CpuShip or PlayerShip in the appropriate methods
+2) Make separate ObjectSet lists with the appropriate type.  Make ure Ships of the right types are added to these at the appropriate times
