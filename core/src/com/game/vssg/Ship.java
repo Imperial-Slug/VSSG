@@ -21,6 +21,7 @@ public class Ship extends Sprite {
         active = true;
     }
 
+    // Determining the next position of the ship every frame.
     public void update(float delta) {
         if (active) {
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());

@@ -41,7 +41,8 @@ public class VSSG implements ApplicationListener {
 
 	private OrthographicCamera camera;
 	private Viewport viewport;
-	//Vector3 tp = new Vector3();
+	boolean shipSpawnTimeout = false;
+	int shipSpawnCounter = 0;
 	boolean dragging;
 
 	////////////////////////////////
@@ -168,6 +169,8 @@ public class VSSG implements ApplicationListener {
 
 
   private void handleInput() {
+
+
 	  // Rotate the sprite with left arrow key
 	  if (InputManager.isAPressed()) {
 		  for (Ship ship : playerShips) {
@@ -198,15 +201,32 @@ public class VSSG implements ApplicationListener {
 
 	  }
 
+	  if (shipSpawnTimeout) {
+		  if (shipSpawnCounter >= 10) {
 
-	  if (InputManager.isLeftMousePressed()) {
-		  Vector2 position = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
-		  Ship ship = new Ship(redShipTexture, position, 75);
-		  ship.spawnCpuShip(redShipTexture, position, cpuShips);
-		  Gdx.app.debug("Left Mouse Press","Left mouse pressed!");
+			  shipSpawnTimeout = false;
+		  }
+else { shipSpawnCounter++; }
 	  }
 
-	  //Speed up.
+
+	  if (InputManager.isLeftMousePressed()) {
+		  if (!shipSpawnTimeout) {
+			  Vector2 position = new Vector2((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
+			  Ship ship = new Ship(redShipTexture, position, 75);
+			  ship.spawnCpuShip(redShipTexture, position, cpuShips);
+			  Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");
+			  shipSpawnTimeout = true;
+			  shipSpawnCounter = 0;
+		  }
+		  else {
+
+			  System.out.println("spawnTimeout: "+shipSpawnCounter);
+		  }
+	  }
+
+
+	  // Speed up.
 	  if (InputManager.isWPressed()) {
 		  for (Ship ship : playerShips) {
 			  ship.setSpeed(ship.getSpeed()+2);
@@ -233,10 +253,6 @@ public class VSSG implements ApplicationListener {
 	  if (InputManager.isDownPressed()) {
 		  camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
 	  }
-
-
-
-
 
 
   }
