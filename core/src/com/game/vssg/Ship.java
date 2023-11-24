@@ -12,12 +12,14 @@ public class Ship extends Sprite {
     private float speed;
     private boolean active;
     private Texture texture;
+    private ObjectSet<ShipAction> actionQueue;
 
-    public Ship(Texture texture, Vector2 position, float speed) {
+    public Ship(Texture texture, Vector2 position, float speed, ObjectSet<ShipAction> actionQueue) {
         super(texture);
         this.texture = texture;
         this.position = position;
         this.speed = speed;
+        this.actionQueue = actionQueue;
         active = true;
     }
 
@@ -47,24 +49,6 @@ public class Ship extends Sprite {
 
     }
 
-
-    public void spawnCpuShip(Texture texture, Vector2 position, ObjectSet<CpuShip> ships) {
-
-        CpuShip ship = new CpuShip(texture, position,  75);
-        ship.setPosition(position.x, position.y);
-        ship.setScale(0.08f);
-        ships.add(ship);
-        Gdx.app.debug("spawnShip()","Ship spawned!");
-    }
-
-    public void spawnPlayerShip(Texture texture, Vector2 position, ObjectSet<PlayerShip> ships) {
-
-        PlayerShip ship = new PlayerShip(texture, position,  75);
-        ship.setPosition(position.x, position.y);
-        ship.setScale(0.08f);
-        ships.add(ship);
-        Gdx.app.debug("spawnShip()","Ship spawned!");
-    }
 
     public Laser fireLaser(Texture texture, Ship ship) {
         float offsetX = -10f;

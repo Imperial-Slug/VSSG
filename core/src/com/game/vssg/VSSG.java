@@ -71,15 +71,17 @@ public class VSSG implements ApplicationListener {
 		batch = new SpriteBatch();
 		cpuShips = new ObjectSet<>();
 		playerShips = new ObjectSet<>();
+
 		lasers = new ObjectSet<>();
 
 		//Set scales for textures.
 		float redShipScale = 0.08f;
-	    float speed = 75;
+	    float speed = 50;
 
 		// Initial ship's details.
 		Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
-		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed);
+		ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
+		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed, actionQueue);
 		playerShip.setScale(redShipScale);
 		playerShip.setRotation(0);
 
@@ -100,7 +102,7 @@ public class VSSG implements ApplicationListener {
 		batch.setProjectionMatrix(camera.combined);
 
 		handleInput();
-
+		float deltaTime = Gdx.graphics.getDeltaTime();
 		Iterator<PlayerShip> playerIter = playerShips.iterator();
 		Iterator<CpuShip> cpuIter = cpuShips.iterator();
 
@@ -109,20 +111,20 @@ public class VSSG implements ApplicationListener {
 
 		while (playerIter.hasNext()) {
 
-			Ship ship = playerIter.next();
-			ship.update(Gdx.graphics.getDeltaTime());
+			PlayerShip playerShip = playerIter.next();
+			playerShip.update(deltaTime);
 
-			if (!ship.isActive()) {
+			if (!playerShip.isActive()) {
 				playerIter.remove();
 			}
 		}
 
 		while (cpuIter.hasNext()) {
 
-			Ship ship = cpuIter.next();
-			ship.update(Gdx.graphics.getDeltaTime());
+			CpuShip cpuShip = cpuIter.next();
+			cpuShip.update(deltaTime);
 
-			if (!ship.isActive()) {
+			if (!cpuShip.isActive()) {
 				cpuIter.remove();
 			}
 		}
@@ -134,8 +136,19 @@ public class VSSG implements ApplicationListener {
 
 			if (!laser.isActive()) {
 				laserIter.remove();
-
 			}
+		}
+
+		for (PlayerShip playerShip : playerShips) {
+			playerShip.update(deltaTime);
+		}
+
+		for (CpuShip cpuShip : cpuShips) {
+			cpuShip.update(deltaTime);
+		}
+
+		for (Laser laser : lasers) {
+			laser.update(deltaTime);
 		}
 
 		batch.begin();
@@ -195,7 +208,7 @@ public class VSSG implements ApplicationListener {
 			laserSound1.play(0.5f);
 
 			  if (laserSound1 == null) {
-				  Gdx.app.error("Sound", "Sound file not loaded!");
+				  System.out.println("Sound file not loaded!");
 			  }
 		  }
 
@@ -213,14 +226,14 @@ else { shipSpawnCounter++; }
 	  if (InputManager.isLeftMousePressed()) {
 		  if (!shipSpawnTimeout) {
 			  Vector2 position = new Vector2((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
-			  Ship ship = new Ship(redShipTexture, position, 75);
-			  ship.spawnCpuShip(redShipTexture, position, cpuShips);
+			  ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
+			  CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionQueue);
+			  cpuShip.spawnCpuShip(redShipTexture, position, cpuShips, actionQueue);
 			  Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");
 			  shipSpawnTimeout = true;
 			  shipSpawnCounter = 0;
 		  }
 		  else {
-
 			  System.out.println("spawnTimeout: "+shipSpawnCounter);
 		  }
 	  }
@@ -240,7 +253,7 @@ else { shipSpawnCounter++; }
 		  }
 	  }
 
-	  float cameraSpeed = 100;
+	  float cameraSpeed = 125;
 	  if (InputManager.isLeftPressed()) {
 		  camera.translate(-cameraSpeed * Gdx.graphics.getDeltaTime(), 0);
 	  }
@@ -262,7 +275,6 @@ else { shipSpawnCounter++; }
 		batch.dispose();
 		redShipTexture.dispose();
 		greenLaserTexture.dispose();
-
 
 
 	}
