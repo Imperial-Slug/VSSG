@@ -64,10 +64,10 @@ public class Ship extends Sprite {
 
 
 
-public boolean isActive(){
+    public boolean isActive(){
 
-    return active;
-}
+        return active;
+    }
 
 
 

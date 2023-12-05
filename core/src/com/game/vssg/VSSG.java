@@ -27,7 +27,7 @@ import javax.swing.Box;
 
 public class VSSG implements ApplicationListener {
 
-//	private ObjectSet<Ship> ships;
+	//	private ObjectSet<Ship> ships;
 	private ObjectSet<PlayerShip> playerShips;
 	private ObjectSet<CpuShip> cpuShips;
 
@@ -43,10 +43,12 @@ public class VSSG implements ApplicationListener {
 	private Viewport viewport;
 	boolean shipSpawnTimeout = false;
 	int shipSpawnCounter = 0;
+	boolean laserSpawnTimeout = false;
+	int laserSpawnCounter = 0;
 	boolean dragging;
 
 	////////////////////////////////
-  InputProcessor inputManager;
+	InputProcessor inputManager;
 
 	@Override
 	public void create () {
@@ -71,12 +73,11 @@ public class VSSG implements ApplicationListener {
 		batch = new SpriteBatch();
 		cpuShips = new ObjectSet<>();
 		playerShips = new ObjectSet<>();
-
 		lasers = new ObjectSet<>();
 
 		//Set scales for textures.
 		float redShipScale = 0.08f;
-	    float speed = 50;
+		float speed = 50;
 
 		// Initial ship's details.
 		Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
@@ -181,94 +182,104 @@ public class VSSG implements ApplicationListener {
 	}
 
 
-  private void handleInput() {
+	private void handleInput() {
 
 
-	  // Rotate the sprite with left arrow key
-	  if (InputManager.isAPressed()) {
-		  for (Ship ship : playerShips) {
-			  ship.rotate(+1f);
-		  }
-	  }
+		// Rotate the sprite with left arrow key
+		if (InputManager.isAPressed()) {
+			for (Ship ship : playerShips) {
+				ship.rotate(+2f);
+			}
+		}
 
 
-	  // Rotate the sprite with right arrow key
-	  if (InputManager.isDPressed()) {
-		  for (Ship ship : playerShips) {
-			  ship.rotate(-1f);
-		  }
-	  }
+		// Rotate the sprite with right arrow key
+		if (InputManager.isDPressed()) {
+			for (Ship ship : playerShips) {
+				ship.rotate(-2f);
+			}
+		}
 
-	  // Shoot lasers
-	  if (InputManager.isSpacePressed()) {
+		// Shoot lasers
+		if (InputManager.isSpacePressed()) {
+			if (!laserSpawnTimeout) {
+				for (Ship ship : playerShips) {
+					Laser laser = ship.fireLaser(greenLaserTexture, ship);
+					lasers.add(laser);
+					laserSound1.play(0.5f);
+					laserSpawnTimeout = true;
+					laserSpawnCounter = 0;
 
-		  for (Ship ship : playerShips) {
-			Laser laser = ship.fireLaser(greenLaserTexture, ship);
-			lasers.add(laser);
-			laserSound1.play(0.5f);
+					if (laserSound1 == null) {
+						System.out.println("Sound file not loaded!");
+					}
+				}
+			}
+		}
 
-			  if (laserSound1 == null) {
-				  System.out.println("Sound file not loaded!");
-			  }
-		  }
+		if (shipSpawnTimeout) {
+			if (shipSpawnCounter >= 10) {
 
-	  }
+				shipSpawnTimeout = false;
+			}
+			else { shipSpawnCounter++; }
+		}
 
-	  if (shipSpawnTimeout) {
-		  if (shipSpawnCounter >= 10) {
+		if (laserSpawnTimeout) {
+			if (laserSpawnCounter >= 10) {
 
-			  shipSpawnTimeout = false;
-		  }
-else { shipSpawnCounter++; }
-	  }
-
-
-	  if (InputManager.isLeftMousePressed()) {
-		  if (!shipSpawnTimeout) {
-			  Vector2 position = new Vector2((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
-			  ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
-			  CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionQueue);
-			  cpuShip.spawnCpuShip(redShipTexture, position, cpuShips, actionQueue);
-			  Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");
-			  shipSpawnTimeout = true;
-			  shipSpawnCounter = 0;
-		  }
-		  else {
-			  System.out.println("spawnTimeout: "+shipSpawnCounter);
-		  }
-	  }
+				laserSpawnTimeout = false;
+			}
+			else { laserSpawnCounter++; }
+		}
 
 
-	  // Speed up.
-	  if (InputManager.isWPressed()) {
-		  for (Ship ship : playerShips) {
-			  ship.setSpeed(ship.getSpeed()+2);
-		  }
-	  }
-
-	  // Slow down.
-	  if (InputManager.isSPressed()) {
-		  for (Ship ship : playerShips) {
-			  ship.setSpeed(ship.getSpeed()-2);
-		  }
-	  }
-
-	  float cameraSpeed = 125;
-	  if (InputManager.isLeftPressed()) {
-		  camera.translate(-cameraSpeed * Gdx.graphics.getDeltaTime(), 0);
-	  }
-	  if (InputManager.isRightPressed()) {
-		  camera.translate(cameraSpeed * Gdx.graphics.getDeltaTime(), 0);
-	  }
-	  if (InputManager.isUpPressed()) {
-		  camera.translate(0, cameraSpeed * Gdx.graphics.getDeltaTime());
-	  }
-	  if (InputManager.isDownPressed()) {
-		  camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
-	  }
+		if (InputManager.isLeftMousePressed()) {
+			if (!shipSpawnTimeout) {
+				Vector2 position = new Vector2((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
+				ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
+				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionQueue);
+				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips, actionQueue);
+				Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");
+				shipSpawnTimeout = true;
+				shipSpawnCounter = 0;
+			}
+			else {
+				System.out.println("spawnTimeout: "+shipSpawnCounter);
+			}
+		}
 
 
-  }
+		// Speed up.
+		if (InputManager.isWPressed()) {
+			for (Ship ship : playerShips) {
+				ship.setSpeed(ship.getSpeed()+2);
+			}
+		}
+
+		// Slow down.
+		if (InputManager.isSPressed()) {
+			for (Ship ship : playerShips) {
+				ship.setSpeed(ship.getSpeed()-2);
+			}
+		}
+
+		float cameraSpeed = 125;
+		if (InputManager.isLeftPressed()) {
+			camera.translate(-cameraSpeed * Gdx.graphics.getDeltaTime(), 0);
+		}
+		if (InputManager.isRightPressed()) {
+			camera.translate(cameraSpeed * Gdx.graphics.getDeltaTime(), 0);
+		}
+		if (InputManager.isUpPressed()) {
+			camera.translate(0, cameraSpeed * Gdx.graphics.getDeltaTime());
+		}
+		if (InputManager.isDownPressed()) {
+			camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
+		}
+
+
+	}
 
 	@Override
 	public void dispose () {
