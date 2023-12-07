@@ -1,5 +1,7 @@
 package com.game.vssg;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.game.vssg.VSSG;
@@ -12,6 +14,7 @@ public class DesktopLauncher {
 		config.setTitle("VSSG");
 		config.setWindowedMode(800, 480);
 		config.useVsync(false);
+		config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
 		new Lwjgl3Application(new VSSG(), config);
 	}
 }
