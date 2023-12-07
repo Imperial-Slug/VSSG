@@ -8,18 +8,29 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 public class Ship extends Sprite {
 
-    private Vector2 position;
+    private final Vector2 position;
     private float speed;
     private boolean active;
-    private Texture texture;
-    private ObjectSet<ShipAction> actionQueue;
+    private ActionState actionState;
 
-    public Ship(Texture texture, Vector2 position, float speed, ObjectSet<ShipAction> actionQueue) {
+    enum ActionState {
+        U_TURN,
+        CIRCLE,
+        DOWN,
+        UP,
+        RIGHT,
+        LEFT,
+        IDLE,
+        STOP
+
+    }
+
+    public Ship(Texture texture, Vector2 position, float speed, ObjectSet<ShipAction> actionQueue, ActionState actionState) {
         super(texture);
-        this.texture = texture;
         this.position = position;
         this.speed = speed;
-        this.actionQueue = actionQueue;
+        this.actionState = actionState;
+
         active = true;
     }
 

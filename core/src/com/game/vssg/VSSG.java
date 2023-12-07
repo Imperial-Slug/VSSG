@@ -63,10 +63,11 @@ public class VSSG implements ApplicationListener {
 
 		// Setup camera, viewport, controls input.
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 480);
+		camera.setToOrtho(false, 1280, 720);
 		camera.position.x = (float) Gdx.graphics.getWidth() /2;
 		camera.position.y = (float) Gdx.graphics.getHeight() /2;
-		viewport = new ExtendViewport(800, 480, camera);
+		viewport = new ExtendViewport(1280, 720, camera);
+		viewport.apply();
 		Gdx.input.setInputProcessor(inputManager);
 
 		// Prepare SpriteBatch and lists for keeping track of/accessing game objects.
@@ -82,7 +83,8 @@ public class VSSG implements ApplicationListener {
 		// Initial ship's details.
 		Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
 		ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
-		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed, actionQueue);
+
+		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed, actionQueue, null);
 		playerShip.setScale(redShipScale);
 		playerShip.setRotation(0);
 
@@ -96,7 +98,7 @@ public class VSSG implements ApplicationListener {
 	@Override
 	public void render () {
 		//super.render();
-		ScreenUtils.clear(0, 0, 0, 1);
+		ScreenUtils.clear(0, 0, 0.5f, 1);
 
 		camera.update();
 		// Set the batch's projection matrix to the camera's combined matrix
@@ -184,6 +186,7 @@ public class VSSG implements ApplicationListener {
 
 	private void handleInput() {
 
+		float cameraSpeed = 125;
 
 		// Rotate the sprite with left arrow key
 		if (InputManager.isAPressed()) {
@@ -236,10 +239,11 @@ public class VSSG implements ApplicationListener {
 
 		if (InputManager.isLeftMousePressed()) {
 			if (!shipSpawnTimeout) {
-				Vector2 position = new Vector2((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
+				Vector2 position = new Vector2((float) camera.position.x, (float) camera.position.y);
 				ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
-				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionQueue);
-				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips, actionQueue);
+				Ship.ActionState actionState = null;
+				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionQueue, null);
+				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips, actionQueue, null);
 				Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");
 				shipSpawnTimeout = true;
 				shipSpawnCounter = 0;
@@ -264,7 +268,6 @@ public class VSSG implements ApplicationListener {
 			}
 		}
 
-		float cameraSpeed = 125;
 		if (InputManager.isLeftPressed()) {
 			camera.translate(-cameraSpeed * Gdx.graphics.getDeltaTime(), 0);
 		}

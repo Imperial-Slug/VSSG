@@ -19,3 +19,13 @@ Make the mouseclick spawnShip() method spawn not a human controlled ship but rat
 3)  The CpuShips will have an ActionQeue list of Action objects that can hold and define an action to be performed and actions to perform after one another.
 
 4) 
+
+
+=====================
+NOTES ON VIEWPORTS
+=====================
+
+- lookup: optimal starting res
+
+- spawn ship where mouser clicks
+- make ship spawn on leftmouse up
