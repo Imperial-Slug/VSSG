@@ -34,6 +34,7 @@ public final class InputManager {
     public static boolean isSPressed() { return Gdx.input.isKeyPressed(Input.Keys.S); }
 
     public static boolean isLeftMousePressed() { return Gdx.input.isButtonPressed(Input.Buttons.LEFT); }
+    public static boolean isEscPressed() { return Gdx.input.isKeyPressed(Input.Keys.ESCAPE); }
 
 
 }

@@ -158,6 +158,8 @@ public class VSSG implements ApplicationListener {
 
 		for (Laser laser : lasers) {
 			laser.draw(batch);
+
+
 		}
 
 		for (Ship playerShip : playerShips) {
@@ -186,12 +188,12 @@ public class VSSG implements ApplicationListener {
 
 	private void handleInput() {
 
-		float cameraSpeed = 125;
+		float cameraSpeed = 150;
 
 		// Rotate the sprite with left arrow key
 		if (InputManager.isAPressed()) {
 			for (Ship ship : playerShips) {
-				ship.rotate(+2f);
+				ship.rotate(+0.5f);
 			}
 		}
 
@@ -199,7 +201,7 @@ public class VSSG implements ApplicationListener {
 		// Rotate the sprite with right arrow key
 		if (InputManager.isDPressed()) {
 			for (Ship ship : playerShips) {
-				ship.rotate(-2f);
+				ship.rotate(-0.5f);
 			}
 		}
 
@@ -221,7 +223,7 @@ public class VSSG implements ApplicationListener {
 		}
 
 		if (shipSpawnTimeout) {
-			if (shipSpawnCounter >= 10) {
+			if (shipSpawnCounter >= 30) {
 
 				shipSpawnTimeout = false;
 			}
@@ -229,7 +231,7 @@ public class VSSG implements ApplicationListener {
 		}
 
 		if (laserSpawnTimeout) {
-			if (laserSpawnCounter >= 10) {
+			if (laserSpawnCounter >= 30) {
 
 				laserSpawnTimeout = false;
 			}
@@ -257,15 +259,19 @@ public class VSSG implements ApplicationListener {
 		// Speed up.
 		if (InputManager.isWPressed()) {
 			for (Ship ship : playerShips) {
-				ship.setSpeed(ship.getSpeed()+2);
+				ship.setSpeed(ship.getSpeed()+0.5f);
 			}
 		}
 
 		// Slow down.
 		if (InputManager.isSPressed()) {
 			for (Ship ship : playerShips) {
-				ship.setSpeed(ship.getSpeed()-2);
+				ship.setSpeed(ship.getSpeed()-0.5f);
 			}
+		}
+
+		if (InputManager.isEscPressed()) {
+			Gdx.app.exit();
 		}
 
 		if (InputManager.isLeftPressed()) {
@@ -280,7 +286,6 @@ public class VSSG implements ApplicationListener {
 		if (InputManager.isDownPressed()) {
 			camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
 		}
-
 
 	}
 
