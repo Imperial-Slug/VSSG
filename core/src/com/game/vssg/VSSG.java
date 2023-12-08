@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -27,7 +28,11 @@ import javax.swing.Box;
 
 public class VSSG implements ApplicationListener {
 
-	//	private ObjectSet<Ship> ships;
+	// DEBUGGING //
+	public static boolean showHitBoxes = false;
+
+	///////////////
+
 	private ObjectSet<PlayerShip> playerShips;
 	private ObjectSet<CpuShip> cpuShips;
 
@@ -83,8 +88,8 @@ public class VSSG implements ApplicationListener {
 		// Initial ship's details.
 		Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
 		ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
-
-		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed, actionQueue, null);
+		Rectangle hitbox = new Rectangle();
+		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed, actionQueue, null, hitbox);
 		playerShip.setScale(redShipScale);
 		playerShip.setRotation(0);
 
@@ -115,7 +120,7 @@ public class VSSG implements ApplicationListener {
 		while (playerIter.hasNext()) {
 
 			PlayerShip playerShip = playerIter.next();
-			playerShip.update(deltaTime);
+			playerShip.update(deltaTime, playerShip);
 
 			if (!playerShip.isActive()) {
 				playerIter.remove();
@@ -125,7 +130,7 @@ public class VSSG implements ApplicationListener {
 		while (cpuIter.hasNext()) {
 
 			CpuShip cpuShip = cpuIter.next();
-			cpuShip.update(deltaTime);
+			cpuShip.update(deltaTime, cpuShip);
 
 			if (!cpuShip.isActive()) {
 				cpuIter.remove();
@@ -142,32 +147,45 @@ public class VSSG implements ApplicationListener {
 			}
 		}
 
-		for (PlayerShip playerShip : playerShips) {
-			playerShip.update(deltaTime);
-		}
-
-		for (CpuShip cpuShip : cpuShips) {
-			cpuShip.update(deltaTime);
-		}
-
-		for (Laser laser : lasers) {
-			laser.update(deltaTime);
-		}
 
 		batch.begin();
 
+
 		for (Laser laser : lasers) {
 			laser.draw(batch);
+			Rectangle laserHitBox = laser.getHitbox();
+			laser.update(deltaTime);
+			laser.updateHitBox(laser);
+
+			for (CpuShip ship : cpuShips) {
+				Rectangle shipHitBox = ship.getHitbox();
+
+				if (showHitBoxes) {
+					ship.shapeRenderer.setProjectionMatrix(camera.combined);
+					ship.drawBoundingBox();
+				}
+
+				if (laserHitBox.overlaps(shipHitBox)) {
+					System.out.println("Ship hit.");
+					ship.setInactive(ship);
+
+				}
+
+			}
+
 
 
 		}
 
-		for (Ship playerShip : playerShips) {
+		for (PlayerShip playerShip : playerShips) {
 			playerShip.draw(batch);
+			playerShip.update(deltaTime, playerShip);
 		}
 
-		for (Ship cpuShip : cpuShips) {
+		for (CpuShip cpuShip : cpuShips) {
 			cpuShip.draw(batch);
+			cpuShip.update(deltaTime, cpuShip);
+
 		}
 
 		batch.end();
@@ -193,7 +211,7 @@ public class VSSG implements ApplicationListener {
 		// Rotate the sprite with left arrow key
 		if (InputManager.isAPressed()) {
 			for (Ship ship : playerShips) {
-				ship.rotate(+0.5f);
+				ship.rotate(+0.3f);
 			}
 		}
 
@@ -201,7 +219,7 @@ public class VSSG implements ApplicationListener {
 		// Rotate the sprite with right arrow key
 		if (InputManager.isDPressed()) {
 			for (Ship ship : playerShips) {
-				ship.rotate(-0.5f);
+				ship.rotate(-0.3f);
 			}
 		}
 
@@ -223,7 +241,7 @@ public class VSSG implements ApplicationListener {
 		}
 
 		if (shipSpawnTimeout) {
-			if (shipSpawnCounter >= 30) {
+			if (shipSpawnCounter >= 50) {
 
 				shipSpawnTimeout = false;
 			}
@@ -231,7 +249,7 @@ public class VSSG implements ApplicationListener {
 		}
 
 		if (laserSpawnTimeout) {
-			if (laserSpawnCounter >= 30) {
+			if (laserSpawnCounter >= 50) {
 
 				laserSpawnTimeout = false;
 			}
@@ -244,8 +262,9 @@ public class VSSG implements ApplicationListener {
 				Vector2 position = new Vector2((float) camera.position.x, (float) camera.position.y);
 				ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
 				Ship.ActionState actionState = null;
-				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionQueue, null);
-				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips, actionQueue, null);
+				Rectangle hitbox = new Rectangle();
+				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionQueue, null, hitbox);
+				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips, actionQueue, null, hitbox);
 				Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");
 				shipSpawnTimeout = true;
 				shipSpawnCounter = 0;
@@ -288,6 +307,10 @@ public class VSSG implements ApplicationListener {
 		}
 
 	}
+
+
+
+
 
 	@Override
 	public void dispose () {

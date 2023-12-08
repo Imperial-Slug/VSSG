@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Laser extends Sprite {
@@ -13,12 +14,15 @@ public class Laser extends Sprite {
     private float speed;
     private String colour;
     private boolean active;
+    private Rectangle hitbox;
 
-    public Laser(Texture texture, float x, float y, float shipRotation, float speed) {
+
+    public Laser(Texture texture, float x, float y, float shipRotation, float speed, Rectangle hitbox) {
         super(texture);
         this.position = new Vector2(x, y);
         this.speed = speed;
         this.setRotation(shipRotation);
+        this.hitbox = getBoundingRectangle();
         active = true;
     }
 
@@ -37,6 +41,16 @@ public class Laser extends Sprite {
         }
     }
 
+
+    void updateHitBox(Laser laser) {
+        float laserScale = 1f;
+        float scaledWidth = laser.getWidth() * laserScale;
+        float scaledHeight = laser.getHeight() * laserScale;
+
+        // Update the bounding box's position and size to match the scaled sprite
+        hitbox.set(laser.getX(), laser.getY(), scaledWidth, scaledHeight);
+    }
+
     public float getSpeed(){
 
         return this.speed;
@@ -51,6 +65,9 @@ public class Laser extends Sprite {
         return active;
     }
 
+public Rectangle getHitbox() {
 
+        return this.hitbox;
+}
 
 }
