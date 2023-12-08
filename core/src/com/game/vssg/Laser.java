@@ -65,6 +65,11 @@ public class Laser extends Sprite {
         return active;
     }
 
+    public void setInactive(Laser laser){
+        laser.active = false;
+
+    }
+
 public Rectangle getHitbox() {
 
         return this.hitbox;

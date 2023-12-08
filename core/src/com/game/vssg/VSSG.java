@@ -7,6 +7,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -35,14 +37,17 @@ public class VSSG implements ApplicationListener {
 
 	private ObjectSet<PlayerShip> playerShips;
 	private ObjectSet<CpuShip> cpuShips;
-
+	private ObjectSet<Explosion> explosions;
 	private ObjectSet<Laser> lasers;
+	private ObjectSet<ShipAction> actionQueue;
 	private SpriteBatch batch;
 	Sound laserSound1;
+
 
 	///////////////////////////////
 	private Texture redShipTexture;
 	private Texture greenLaserTexture;
+	private Texture explosionTexture1;
 
 	private OrthographicCamera camera;
 	private Viewport viewport;
@@ -57,7 +62,7 @@ public class VSSG implements ApplicationListener {
 
 	@Override
 	public void create () {
-		// Get number of processors for multithreading purposes.
+		// Get number of processors for future multithreading purposes.
 		int processors = Runtime.getRuntime().availableProcessors();
 		Gdx.app.debug("Get number of processors.","Cores: " + processors);
 
@@ -65,6 +70,8 @@ public class VSSG implements ApplicationListener {
 		redShipTexture = new Texture("red_ship.png");
 		greenLaserTexture = new Texture("laser_green.png");
 		laserSound1 = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
+		explosionTexture1 = new Texture("explosion_orange.png");
+
 
 		// Setup camera, viewport, controls input.
 		camera = new OrthographicCamera();
@@ -79,7 +86,10 @@ public class VSSG implements ApplicationListener {
 		batch = new SpriteBatch();
 		cpuShips = new ObjectSet<>();
 		playerShips = new ObjectSet<>();
+		explosions = new ObjectSet<>();
 		lasers = new ObjectSet<>();
+		actionQueue = new ObjectSet<>();
+
 
 		//Set scales for textures.
 		float redShipScale = 0.08f;
@@ -102,8 +112,9 @@ public class VSSG implements ApplicationListener {
 
 	@Override
 	public void render () {
-		//super.render();
-		ScreenUtils.clear(0, 0, 0.5f, 1);
+		ScreenUtils.clear(0, 0, 0, 1);
+		Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+
 
 		camera.update();
 		// Set the batch's projection matrix to the camera's combined matrix
@@ -113,7 +124,7 @@ public class VSSG implements ApplicationListener {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		Iterator<PlayerShip> playerIter = playerShips.iterator();
 		Iterator<CpuShip> cpuIter = cpuShips.iterator();
-
+		Iterator<Explosion> explosionIter = explosions.iterator();
 		Iterator<Laser> laserIter = lasers.iterator();
 
 
@@ -134,6 +145,16 @@ public class VSSG implements ApplicationListener {
 
 			if (!cpuShip.isActive()) {
 				cpuIter.remove();
+			}
+		}
+
+		while (explosionIter.hasNext()) {
+
+			Explosion explosion = explosionIter.next();
+			explosion.update(deltaTime, explosion);
+
+			if (!explosion.isActive()) {
+				explosionIter.remove();
 			}
 		}
 
@@ -168,6 +189,7 @@ public class VSSG implements ApplicationListener {
 				if (laserHitBox.overlaps(shipHitBox)) {
 					System.out.println("Ship hit.");
 					ship.setInactive(ship);
+					laser.setInactive(laser);
 
 				}
 
@@ -188,6 +210,11 @@ public class VSSG implements ApplicationListener {
 
 		}
 
+		for (Explosion explosion : explosions) {
+			explosion.draw(batch);
+			explosion.update(deltaTime, explosion);
+		}
+
 		batch.end();
 
 	}
@@ -206,7 +233,7 @@ public class VSSG implements ApplicationListener {
 
 	private void handleInput() {
 
-		float cameraSpeed = 150;
+		float cameraSpeed = 200;
 
 		// Rotate the sprite with left arrow key
 		if (InputManager.isAPressed()) {
@@ -240,6 +267,17 @@ public class VSSG implements ApplicationListener {
 			}
 		}
 
+
+		if (InputManager.isRightMousePressed()) {
+
+				Vector2 position = new Vector2(camera.position.x, camera.position.y);
+				Explosion explosion = new Explosion(explosionTexture1, 10, position, 0.8f);
+				explosion.spawnExplosion(explosionTexture1, position, 10, 0.8f, explosions);
+				Gdx.app.debug("RIGHT Mouse Press", "RIGHT mouse pressed!");
+
+		}
+
+
 		if (shipSpawnTimeout) {
 			if (shipSpawnCounter >= 50) {
 
@@ -259,8 +297,7 @@ public class VSSG implements ApplicationListener {
 
 		if (InputManager.isLeftMousePressed()) {
 			if (!shipSpawnTimeout) {
-				Vector2 position = new Vector2((float) camera.position.x, (float) camera.position.y);
-				ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
+				Vector2 position = new Vector2( camera.position.x, camera.position.y);
 				Ship.ActionState actionState = null;
 				Rectangle hitbox = new Rectangle();
 				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionQueue, null, hitbox);
@@ -317,6 +354,7 @@ public class VSSG implements ApplicationListener {
 		batch.dispose();
 		redShipTexture.dispose();
 		greenLaserTexture.dispose();
+		explosionTexture1.dispose();
 
 
 	}

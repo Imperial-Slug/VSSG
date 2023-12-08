@@ -2,6 +2,7 @@ package com.game.vssg;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 
 public final class InputManager {
 
@@ -23,18 +24,41 @@ public final class InputManager {
     }
 
     // Camera controls.
-    public static boolean isLeftPressed() { return Gdx.input.isKeyPressed(Input.Keys.LEFT); }
-    public static boolean isRightPressed() { return Gdx.input.isKeyPressed(Input.Keys.RIGHT); }
+    public static boolean isLeftPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.LEFT);
+    }
 
-    public static boolean isUpPressed() { return Gdx.input.isKeyPressed(Input.Keys.UP); }
+    public static boolean isRightPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.RIGHT);
+    }
 
-    public static boolean isDownPressed() { return Gdx.input.isKeyPressed(Input.Keys.DOWN); }
+    public static boolean isUpPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.UP);
+    }
 
-    public static boolean isWPressed() { return Gdx.input.isKeyPressed(Input.Keys.W); }
-    public static boolean isSPressed() { return Gdx.input.isKeyPressed(Input.Keys.S); }
+    public static boolean isDownPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.DOWN);
+    }
 
-    public static boolean isLeftMousePressed() { return Gdx.input.isButtonPressed(Input.Buttons.LEFT); }
-    public static boolean isEscPressed() { return Gdx.input.isKeyPressed(Input.Keys.ESCAPE); }
+    public static boolean isWPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.W);
+    }
+
+    public static boolean isSPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.S);
+    }
+
+    public static boolean isLeftMousePressed() {
+        return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+    }
+
+    public static boolean isEscPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
+    }
+
+    public static boolean isRightMousePressed() {
+        return Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
+    }
 
 
 }
