@@ -85,7 +85,7 @@ public class VSSG implements ApplicationListener {
 
 
 		//Set scales for textures.
-		float redShipScale = 0.08f;
+		float redShipScale = 0.08f*2;
 		float speed = 50;
 
 		// Initial ship's details.

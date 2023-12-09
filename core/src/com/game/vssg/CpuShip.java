@@ -22,7 +22,7 @@ public class CpuShip extends Ship {
 
         CpuShip ship = new CpuShip(texture, position,  50, actionQueue, actionState, hitbox);
         ship.setPosition(position.x, position.y);
-        ship.setScale(0.08f);
+        ship.setScale(0.08f*2);
         ships.add(ship);
         Gdx.app.debug("spawnShip()","Ship spawned!");
     }
