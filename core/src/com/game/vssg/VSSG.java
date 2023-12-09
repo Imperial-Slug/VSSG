@@ -59,7 +59,7 @@ public class VSSG implements ApplicationListener {
 		Gdx.app.debug("Get number of processors.","Cores: " + processors);
 
 		// Load assets.
-		redShipTexture = new Texture("red_ship.png");
+		redShipTexture = new Texture("naboo.png");
 		greenLaserTexture = new Texture("laser_green.png");
 		laserSound1 = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
 		explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
