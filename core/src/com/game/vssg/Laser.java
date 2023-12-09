@@ -43,7 +43,7 @@ public class Laser extends Sprite {
 
 
     void updateHitBox(Laser laser) {
-        float laserScale = 1f;
+        float laserScale = 4f;
         float scaledWidth = laser.getWidth() * laserScale;
         float scaledHeight = laser.getHeight() * laserScale;
 
