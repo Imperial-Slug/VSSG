@@ -25,3 +25,4 @@ Make the mouseclick spawnShip() method spawn not a human controlled ship but rat
 - hitboxes
 - make ship dissapear on laser hit
 - make explosion animations
+- each Ship needs its own action counter to keep track of how long it has been doing an action for control purposes

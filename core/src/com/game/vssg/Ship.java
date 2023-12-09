@@ -15,7 +15,7 @@ public class Ship extends Sprite {
     private final Vector2 position;
     private float speed;
     private boolean active;
-    private ActionState actionState;
+    ActionState actionState;
     private Rectangle hitbox;
     ShapeRenderer shapeRenderer;
 
@@ -132,5 +132,12 @@ public Rectangle getHitbox() {
     public void dispose() {
         shapeRenderer.dispose();
     }
+
+
+    public void doUTurn(Ship ship) {
+        ship.actionState = ActionState.U_TURN;
+
+    }
+
 
 }

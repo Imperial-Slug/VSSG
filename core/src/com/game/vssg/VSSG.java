@@ -32,6 +32,8 @@ public class VSSG implements ApplicationListener {
 	private SpriteBatch batch;
 	Sound laserSound1;
 	Sound explosionSound1;
+	int cpuActionCounter = 0;
+
 
 
 	///////////////////////////////
@@ -195,12 +197,29 @@ public class VSSG implements ApplicationListener {
 		for (PlayerShip playerShip : playerShips) {
 			playerShip.draw(batch);
 			playerShip.update(deltaTime, playerShip);
+
+
 		}
+
 
 		for (CpuShip cpuShip : cpuShips) {
 			cpuShip.draw(batch);
 			cpuShip.update(deltaTime, cpuShip);
 
+			if (cpuShip.actionState == CpuShip.ActionState.U_TURN) {
+				if (cpuActionCounter <= 90) {
+					cpuActionCounter++;
+					cpuShip.rotate(1f);
+				}
+				else if (cpuActionCounter > 90) {
+					cpuShip.actionState = null;
+					cpuActionCounter = 0;
+				}
+
+
+
+
+			}
 		}
 
 		for (Explosion explosion : explosions) {
@@ -288,7 +307,7 @@ public class VSSG implements ApplicationListener {
 		if (InputManager.isLeftMousePressed()) {
 			if (!shipSpawnTimeout) {
 				Vector2 position = new Vector2( camera.position.x, camera.position.y);
-				Ship.ActionState actionState = null;
+				CpuShip.ActionState actionState = Ship.ActionState.U_TURN;
 				Rectangle hitbox = new Rectangle();
 				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionQueue, null, hitbox);
 				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips, actionQueue, null, hitbox);
@@ -304,15 +323,15 @@ public class VSSG implements ApplicationListener {
 
 		// Speed up.
 		if (InputManager.isWPressed()) {
-			for (Ship ship : playerShips) {
-				ship.setSpeed(ship.getSpeed()+0.5f);
+			for (PlayerShip playerShip : playerShips) {
+				playerShip.setSpeed(playerShip.getSpeed()+0.5f);
 			}
 		}
 
 		// Slow down.
 		if (InputManager.isSPressed()) {
-			for (Ship ship : playerShips) {
-				ship.setSpeed(ship.getSpeed()-0.5f);
+			for (PlayerShip playerShip : playerShips) {
+				playerShip.setSpeed(playerShip.getSpeed()-0.5f);
 			}
 		}
 

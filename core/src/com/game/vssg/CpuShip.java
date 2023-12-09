@@ -14,6 +14,7 @@ public class CpuShip extends Ship {
 
     public CpuShip(Texture texture, Vector2 position, float speed, ObjectSet<ShipAction> actionQueue, ActionState actionState, Rectangle hitbox) {
         super(texture, position, speed, actionQueue, actionState, hitbox);
+        this.actionState = actionState;
     }
 
 
@@ -26,10 +27,7 @@ public class CpuShip extends Ship {
         Gdx.app.debug("spawnShip()","Ship spawned!");
     }
 
-    public void doUTurn(CpuShip cpuShip) {
 
-
-    }
 
 
     public void dispose() {

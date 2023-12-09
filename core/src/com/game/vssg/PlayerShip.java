@@ -10,6 +10,8 @@ public class PlayerShip extends Ship {
 
     public PlayerShip(Texture texture, Vector2 position, float speed, ObjectSet<ShipAction> actionQueue, ActionState actionState, Rectangle hitbox) {
         super(texture, position, speed, actionQueue, actionState, hitbox);
+        this.actionState = actionState;
+
     }
 
     public void spawnPlayerShip(Texture texture, Vector2 position, ObjectSet<PlayerShip> ships, ObjectSet<ShipAction> actionQueue, ActionState actionState, Rectangle hitbox) {
