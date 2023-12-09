@@ -1,32 +1,21 @@
 package com.game.vssg;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
 import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import javax.swing.Box;
 
 public class VSSG implements ApplicationListener {
 
@@ -42,6 +31,7 @@ public class VSSG implements ApplicationListener {
 	private ObjectSet<ShipAction> actionQueue;
 	private SpriteBatch batch;
 	Sound laserSound1;
+	Sound explosionSound1;
 
 
 	///////////////////////////////
@@ -70,6 +60,7 @@ public class VSSG implements ApplicationListener {
 		redShipTexture = new Texture("red_ship.png");
 		greenLaserTexture = new Texture("laser_green.png");
 		laserSound1 = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
+		explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
 		explosionTexture1 = new Texture("explosion_orange.png");
 
 
@@ -187,6 +178,8 @@ public class VSSG implements ApplicationListener {
 				}
 
 				if (laserHitBox.overlaps(shipHitBox)) {
+					Vector2 position = new Vector2(laser.getX()-40, laser.getY()-65);
+					Explosion.explode(camera, explosionTexture1, 10, position , 30, explosions, explosionSound1);
 					System.out.println("Ship hit.");
 					ship.setInactive(ship);
 					laser.setInactive(laser);
@@ -269,11 +262,8 @@ public class VSSG implements ApplicationListener {
 
 
 		if (InputManager.isRightMousePressed()) {
-
 				Vector2 position = new Vector2(camera.position.x, camera.position.y);
-				Explosion explosion = new Explosion(explosionTexture1, 10, position, 0.8f);
-				explosion.spawnExplosion(explosionTexture1, position, 10, 0.8f, explosions);
-				Gdx.app.debug("RIGHT Mouse Press", "RIGHT mouse pressed!");
+				Explosion.explode(camera, explosionTexture1, 10, position , 30, explosions, explosionSound1);
 
 		}
 
