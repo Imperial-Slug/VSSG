@@ -120,7 +120,7 @@ public float getSpeed() {
 
         Explosion explosion = new Explosion(explosionTexture1, magnitude, position, speed);
         explosion.spawnExplosion(explosionTexture1, position, magnitude, speed, explosions);
-        explosionSound.play();
+        explosionSound.play(0.2f);
     }
 
 
