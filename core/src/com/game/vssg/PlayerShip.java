@@ -8,15 +8,15 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 public class PlayerShip extends Ship {
 
-    public PlayerShip(Texture texture, Vector2 position, float speed, ObjectSet<ShipAction> actionQueue, ActionState actionState, Rectangle hitbox) {
-        super(texture, position, speed, actionQueue, actionState, hitbox);
-        this.actionState = actionState;
+    public PlayerShip(Texture texture, Vector2 position, float speed, ActionState actionState, Rectangle hitbox, int actionCounter) {
+        super(texture, position, speed, actionState, hitbox, actionCounter);
+        this.setActionState(actionState);
 
     }
 
-    public void spawnPlayerShip(Texture texture, Vector2 position, ObjectSet<PlayerShip> ships, ObjectSet<ShipAction> actionQueue, ActionState actionState, Rectangle hitbox) {
+    public void spawnPlayerShip(Texture texture, Vector2 position, ObjectSet<PlayerShip> ships, ActionState actionState, Rectangle hitbox, int actionCounter) {
 
-        PlayerShip playerShip = new PlayerShip(texture, position,  75, actionQueue, actionState, hitbox);
+        PlayerShip playerShip = new PlayerShip(texture, position,  75, actionState, hitbox, actionCounter);
         playerShip.setPosition(position.x, position.y);
         playerShip.setScale(1f);
         ships.add(playerShip);

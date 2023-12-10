@@ -15,9 +15,11 @@ public class Ship extends Sprite {
     private final Vector2 position;
     private float speed;
     private boolean active;
-    ActionState actionState;
-    private Rectangle hitbox;
-    ShapeRenderer shapeRenderer;
+    private ActionState actionState;
+    private final Rectangle hitbox;
+    private final ShapeRenderer shapeRenderer;
+    private int actionCounter;
+
 
 
     enum ActionState {
@@ -32,14 +34,15 @@ public class Ship extends Sprite {
 
     }
 
-    public Ship(Texture texture, Vector2 position, float speed, ObjectSet<ShipAction> actionQueue, ActionState actionState, Rectangle hitbox) {
+    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, Rectangle hitbox, int actionCounter) {
         super(texture);
         this.position = position;
         this.speed = speed;
         this.actionState = actionState;
         this.hitbox = new Rectangle();
         this.shapeRenderer = new ShapeRenderer();
-        active = true;
+        this.actionCounter = 0;
+        this.active = true;
 
     }
 
@@ -136,6 +139,32 @@ public Rectangle getHitbox() {
 
     public void doUTurn(Ship ship) {
         ship.actionState = ActionState.U_TURN;
+
+    }
+
+public ShapeRenderer getShapeRenderer(){
+
+        return this.shapeRenderer;
+}
+
+public ActionState getActionState() {
+        return this.actionState;
+
+}
+
+    public void setActionState(ActionState actionState){
+        this.actionState = actionState;
+
+    }
+
+
+    public int getActionCounter() {
+        return this.actionCounter;
+
+    }
+
+    public void setActionCounter(int actionCounter){
+        this.actionCounter = actionCounter;
 
     }
 

@@ -21,6 +21,7 @@ public class VSSG implements ApplicationListener {
 
 	// DEBUGGING //
 	public static boolean showHitBoxes = false;
+	public static boolean mute = false;
 
 	///////////////
 
@@ -28,11 +29,9 @@ public class VSSG implements ApplicationListener {
 	private ObjectSet<CpuShip> cpuShips;
 	private ObjectSet<Explosion> explosions;
 	private ObjectSet<Laser> lasers;
-	private ObjectSet<ShipAction> actionQueue;
 	private SpriteBatch batch;
-	Sound laserSound1;
-	Sound explosionSound1;
-	int cpuActionCounter = 0;
+	private Sound laserSound1;
+	private Sound explosionSound1;
 
 
 
@@ -81,8 +80,6 @@ public class VSSG implements ApplicationListener {
 		playerShips = new ObjectSet<>();
 		explosions = new ObjectSet<>();
 		lasers = new ObjectSet<>();
-		actionQueue = new ObjectSet<>();
-
 
 		//Set scales for textures.
 		float redShipScale = 0.08f*2;
@@ -91,8 +88,9 @@ public class VSSG implements ApplicationListener {
 		// Initial ship's details.
 		Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
 		ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
-		Rectangle hitbox = new Rectangle();
-		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed, actionQueue, null, hitbox);
+		Rectangle hitBox = new Rectangle();
+		int cpuActionCounter = 0;
+		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed, null, hitBox, cpuActionCounter);
 		playerShip.setScale(redShipScale);
 		playerShip.setRotation(0);
 
@@ -175,7 +173,7 @@ public class VSSG implements ApplicationListener {
 				Rectangle shipHitBox = ship.getHitbox();
 
 				if (showHitBoxes) {
-					ship.shapeRenderer.setProjectionMatrix(camera.combined);
+					ship.getShapeRenderer().setProjectionMatrix(camera.combined);
 					ship.drawBoundingBox();
 				}
 
@@ -206,14 +204,14 @@ public class VSSG implements ApplicationListener {
 			cpuShip.draw(batch);
 			cpuShip.update(deltaTime, cpuShip);
 
-			if (cpuShip.actionState == CpuShip.ActionState.U_TURN) {
-				if (cpuActionCounter <= 90) {
-					cpuActionCounter++;
+			if (cpuShip.getActionState() == CpuShip.ActionState.U_TURN) {
+				if (cpuShip.getActionCounter() <= 90) {
+					cpuShip.setActionCounter(cpuShip.getActionCounter()+1);
 					cpuShip.rotate(1f);
 				}
-				else if (cpuActionCounter > 90) {
-					cpuShip.actionState = null;
-					cpuActionCounter = 0;
+				else if (cpuShip.getActionCounter() > 90) {
+					cpuShip.setActionState(Ship.ActionState.IDLE);
+					cpuShip.setActionCounter(0);
 				}
 
 
@@ -308,9 +306,10 @@ public class VSSG implements ApplicationListener {
 			if (!shipSpawnTimeout) {
 				Vector2 position = new Vector2( camera.position.x, camera.position.y);
 				CpuShip.ActionState actionState = Ship.ActionState.U_TURN;
-				Rectangle hitbox = new Rectangle();
-				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionQueue, null, hitbox);
-				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips, actionQueue, null, hitbox);
+				Rectangle hitBox = new Rectangle();
+				int actionCounter = 0;
+				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionState, hitBox, actionCounter);
+				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips,actionState, hitBox, actionCounter);
 				Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");
 				shipSpawnTimeout = true;
 				shipSpawnCounter = 0;
@@ -364,7 +363,6 @@ public class VSSG implements ApplicationListener {
 		redShipTexture.dispose();
 		greenLaserTexture.dispose();
 		explosionTexture1.dispose();
-
 
 	}
 

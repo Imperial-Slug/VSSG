@@ -1,10 +1,8 @@
 package com.game.vssg;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -14,7 +12,7 @@ public class Laser extends Sprite {
     private float speed;
     private String colour;
     private boolean active;
-    private Rectangle hitbox;
+    private final Rectangle hitbox;
 
 
     public Laser(Texture texture, float x, float y, float shipRotation, float speed, Rectangle hitbox) {
@@ -36,18 +34,16 @@ public class Laser extends Sprite {
                 active = false;
             }
 
-            // Update the sprite's position
             setPosition(position.x, position.y);
         }
     }
 
 
     void updateHitBox(Laser laser) {
-        float laserScale = 5f;
+        float laserScale = 1f;
         float scaledWidth = laser.getWidth() * laserScale;
         float scaledHeight = laser.getHeight() * laserScale;
 
-        // Update the bounding box's position and size to match the scaled sprite
         hitbox.set(laser.getX(), laser.getY(), scaledWidth, scaledHeight);
     }
 
