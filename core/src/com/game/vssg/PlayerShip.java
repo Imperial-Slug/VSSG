@@ -18,7 +18,7 @@ public class PlayerShip extends Ship {
 
         PlayerShip playerShip = new PlayerShip(texture, position,  75, actionQueue, actionState, hitbox);
         playerShip.setPosition(position.x, position.y);
-        playerShip.setScale(0.08f);
+        playerShip.setScale(1f);
         ships.add(playerShip);
         Gdx.app.debug("spawnShip()","Ship spawned!");
     }

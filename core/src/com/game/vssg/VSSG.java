@@ -59,7 +59,7 @@ public class VSSG implements ApplicationListener {
 		Gdx.app.debug("Get number of processors.","Cores: " + processors);
 
 		// Load assets.
-		redShipTexture = new Texture("naboo.png");
+		redShipTexture = new Texture("red_ship.png");
 		greenLaserTexture = new Texture("laser_green.png");
 		laserSound1 = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
 		explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
@@ -85,7 +85,7 @@ public class VSSG implements ApplicationListener {
 
 
 		//Set scales for textures.
-		float redShipScale = 0.08f*4;
+		float redShipScale = 0.08f*2;
 		float speed = 50;
 
 		// Initial ship's details.
