@@ -25,6 +25,7 @@ public class Ship extends Sprite {
 
 
 
+
     enum ActionState {
         CRUISE,
         LEFT_U_TURN,
@@ -105,16 +106,16 @@ public class Ship extends Sprite {
 
 void handleActionState(Ship ship) {
     ship.handleIdle(ship);
-
     ship.handleLeftUTurn(ship);
-  ship.handleRightUTurn(ship);
-  ship.handleCircle(ship);
-  ship.handleQuarterLeftTurn(ship);
-  ship.handleQuarterRightTurn(ship);
-  ship.handleStop(ship);
-  ship.handleReady(ship);
-  System.out.println("Ship.isIdle = "+ship.isIdle);
-  System.out.println("Ship.actionState = "+ship.getActionState());
+    ship.handleRightUTurn(ship);
+    ship.handleCircle(ship);
+    ship.handleQuarterLeftTurn(ship);
+    ship.handleQuarterRightTurn(ship);
+    ship.handleStop(ship);
+    ship.handleReady(ship);
+    ship.handleCruise(ship);
+    //System.out.println("Ship.isIdle = "+ship.isIdle);
+    //System.out.println("Ship.actionState = "+ship.getActionState());
 
 
 }

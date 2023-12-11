@@ -22,7 +22,7 @@ public class VSSG implements ApplicationListener {
 	// DEBUGGING //
 	public static boolean showHitBoxes = false;
 	public static boolean mute = false;
-
+	public static int zoom = 1;
 	///////////////
 
 	private ObjectSet<PlayerShip> playerShips;
