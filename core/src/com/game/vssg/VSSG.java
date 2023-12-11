@@ -2,6 +2,7 @@ package com.game.vssg;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL30;
@@ -204,7 +205,6 @@ public class VSSG implements ApplicationListener {
 		for (CpuShip cpuShip : cpuShips) {
 			cpuShip.draw(batch);
 			cpuShip.update(deltaTime, cpuShip);
-//////
 			cpuShip.handleActionState(cpuShip);
 		}
 
@@ -306,7 +306,6 @@ public class VSSG implements ApplicationListener {
 				System.out.println("spawnTimeout: "+shipSpawnCounter);
 			}
 		}
-
 
 		// Speed up.
 		if (InputManager.isWPressed()) {
