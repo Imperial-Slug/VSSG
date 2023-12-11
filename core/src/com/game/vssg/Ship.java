@@ -26,6 +26,7 @@ public class Ship extends Sprite {
 
 
     enum ActionState {
+        CRUISE,
         LEFT_U_TURN,
         RIGHT_U_TURN,
         CIRCLE,
@@ -117,6 +118,23 @@ void handleActionState(Ship ship) {
 
 
 }
+
+    public void handleCruise(Ship ship) {
+        if (ship.getActionState() == Ship.ActionState.CRUISE) {
+            if (ship.getActionCounter() <= 360) {
+                ship.setActionCounter(ship.getActionCounter() + 1);
+            } else if (ship.getActionCounter() > 180*2) {
+                if (ship.isIdle) {
+                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionCounter(0);
+                }
+                else {
+                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionCounter(0);
+                }
+            }
+        }
+    }
 
     public void handleLeftUTurn(Ship ship) {
         if (ship.getActionState() == Ship.ActionState.LEFT_U_TURN) {
@@ -253,7 +271,7 @@ void handleActionState(Ship ship) {
                     ship.setActionState(ActionState.QUARTER_RIGHT_TURN);
                 }
             }
-                else { ship.setActionState(ActionState.RIGHT_U_TURN);}
+                else { ship.setActionState(ActionState.CRUISE);}
         }
     }
 

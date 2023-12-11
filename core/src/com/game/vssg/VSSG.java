@@ -39,6 +39,7 @@ public class VSSG implements ApplicationListener {
 	private Texture redShipTexture;
 	private Texture greenLaserTexture;
 	private Texture explosionTexture1;
+	private Texture otherShipTexture;
 
 	private OrthographicCamera camera;
 	private Viewport viewport;
@@ -59,6 +60,7 @@ public class VSSG implements ApplicationListener {
 
 		// Load assets.
 		redShipTexture = new Texture("red_ship.png");
+		otherShipTexture = new Texture("N1.png");
 		greenLaserTexture = new Texture("laser_green.png");
 		laserSound1 = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
 		explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
@@ -89,7 +91,7 @@ public class VSSG implements ApplicationListener {
 		Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
 		Rectangle hitBox = new Rectangle();
 		int cpuActionCounter = 0;
-		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed, null, hitBox, cpuActionCounter);
+		PlayerShip playerShip = new PlayerShip(otherShipTexture, vector2, speed, null, hitBox, cpuActionCounter);
 		playerShip.setScale(redShipScale);
 		playerShip.setRotation(0);
 
@@ -349,6 +351,7 @@ public class VSSG implements ApplicationListener {
 		redShipTexture.dispose();
 		greenLaserTexture.dispose();
 		explosionTexture1.dispose();
+		otherShipTexture.dispose();
 
 	}
 
