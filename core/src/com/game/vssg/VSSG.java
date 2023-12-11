@@ -101,7 +101,7 @@ public class VSSG implements ApplicationListener {
 		Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
 		Rectangle hitBox = new Rectangle();
 		int cpuActionCounter = 0;
-		PlayerShip playerShip = new PlayerShip(otherShipTexture, vector2, speed, null, hitBox, cpuActionCounter);
+		PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, null, hitBox, cpuActionCounter);
 		playerShip.setScale(purpleShipScale);
 		playerShip.setRotation(0);
 
