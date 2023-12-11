@@ -18,12 +18,16 @@ public class Ship extends Sprite {
     private float speed;
     private boolean active;
     private ActionState actionState;
+    private Faction faction;
     private final Rectangle hitbox;
     private final ShapeRenderer shapeRenderer;
     private int actionCounter;
     private boolean isIdle;
 
-
+    enum Faction {
+        PURPLE,
+        TEAL
+    }
 
 
     enum ActionState {
@@ -39,7 +43,7 @@ public class Ship extends Sprite {
 
     }
 
-    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, Rectangle hitbox, int actionCounter) {
+    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, Rectangle hitbox, int actionCounter, Faction faction) {
         super(texture);
         this.position = position;
         this.speed = speed;
@@ -47,6 +51,7 @@ public class Ship extends Sprite {
         this.hitbox = new Rectangle();
         this.shapeRenderer = new ShapeRenderer();
         this.actionCounter = 0;
+        this.faction = faction;
         this.active = true;
 
     }
@@ -67,6 +72,16 @@ public class Ship extends Sprite {
             setPosition(position.x, position.y);
             updateHitBox(ship);
         }
+    }
+
+    public void setFaction(Faction faction) {
+
+        this.faction = faction;
+    }
+
+    public Faction getFaction(){
+
+        return this.faction;
     }
 
     public float getSpeed(){
@@ -114,9 +129,7 @@ void handleActionState(Ship ship) {
     ship.handleStop(ship);
     ship.handleReady(ship);
     ship.handleCruise(ship);
-    //System.out.println("Ship.isIdle = "+ship.isIdle);
-    //System.out.println("Ship.actionState = "+ship.getActionState());
-
+    ship.lookForEnemy(ship);
 
 }
 
@@ -277,7 +290,7 @@ void handleActionState(Ship ship) {
     }
 
     void lookForEnemy(Ship ship) {
-
+        System.out.println("Looking for enemy...");
     }
 
     void checkWalls(Ship ship) {
