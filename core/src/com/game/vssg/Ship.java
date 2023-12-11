@@ -26,11 +26,13 @@ public class Ship extends Sprite {
 
 
     enum ActionState {
-        U_TURN,
+        LEFT_U_TURN,
+        RIGHT_U_TURN,
         CIRCLE,
         QUARTER_LEFT_TURN,
         QUARTER_RIGHT_TURN,
         IDLE,
+        READY,
         STOP
 
     }
@@ -101,58 +103,117 @@ public class Ship extends Sprite {
     }
 
 void handleActionState(Ship ship) {
-  ship.handleUTurn(ship);
+    ship.handleIdle(ship);
+
+    ship.handleLeftUTurn(ship);
+  ship.handleRightUTurn(ship);
   ship.handleCircle(ship);
-  ship.handleIdle(ship);
   ship.handleQuarterLeftTurn(ship);
   ship.handleQuarterRightTurn(ship);
   ship.handleStop(ship);
+  ship.handleReady(ship);
+  System.out.println("Ship.isIdle = "+ship.isIdle);
+  System.out.println("Ship.actionState = "+ship.getActionState());
+
+
 }
 
-    public void handleUTurn(Ship ship) {
-        if (ship.getActionState() == Ship.ActionState.U_TURN) {
-            if (ship.getActionCounter() <= 180) {
+    public void handleLeftUTurn(Ship ship) {
+        if (ship.getActionState() == Ship.ActionState.LEFT_U_TURN) {
+            if (ship.getActionCounter() <= 180*2) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(1f);
-            } else if (ship.getActionCounter() > 180) {
-                ship.setActionState(Ship.ActionState.IDLE);
-                ship.setActionCounter(0);
+                ship.rotate(0.5f);
+            } else if (ship.getActionCounter() > 180*2) {
+                if (ship.isIdle) {
+                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionCounter(0);
+                }
+                else {
+                        ship.setActionState(Ship.ActionState.READY);
+                        ship.setActionCounter(0);
+                    }
+                }
+
+        }
+    }
+
+    public void handleRightUTurn(Ship ship) {
+        if (ship.getActionState() == Ship.ActionState.RIGHT_U_TURN) {
+            if (ship.getActionCounter() <= 180*2) {
+                ship.setActionCounter(ship.getActionCounter() + 1);
+                ship.rotate(-0.5f);
+            } else if (ship.getActionCounter() > 180*2) {
+                if (ship.isIdle) {
+                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionCounter(0);
+                }
+                else {
+                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionCounter(0);
+                }
             }
         }
     }
 
     public void handleCircle(Ship ship) {
         if (ship.getActionState() == ActionState.CIRCLE) {
-            if (ship.getActionCounter() <= 360*2) {
+            if (ship.getActionCounter() <= 360*4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(0.5f);
-            } else if (ship.getActionCounter() > 360*2) {
-                ship.setActionState(Ship.ActionState.IDLE);
-                ship.setActionCounter(0);
+                ship.rotate(0.25f);
+            } else if (ship.getActionCounter() > 180*4) {
+                if (ship.isIdle) {
+                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionCounter(0);
+                }
+                else {
+                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionCounter(0);
+                }
             }
         }
     }
 
     public void handleQuarterLeftTurn(Ship ship) {
         if (ship.getActionState() == ActionState.QUARTER_LEFT_TURN) {
-            if (ship.getActionCounter() <= 180) {
+            if (ship.getActionCounter() <= 180*4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(0.5f);
-            } else if (ship.getActionCounter() > 180) {
-                ship.setActionState(Ship.ActionState.IDLE);
-                ship.setActionCounter(0);
+                ship.rotate(0.25f);
+            } else if (ship.getActionCounter() > 180*4) {
+                if (ship.isIdle) {
+                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionCounter(0);
+                }
+                else {
+                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionCounter(0);
+                }
             }
         }
     }
 
     public void handleQuarterRightTurn(Ship ship) {
         if (ship.getActionState() == ActionState.QUARTER_RIGHT_TURN) {
-            if (ship.getActionCounter() <= 180) {
+            if (ship.getActionCounter() <= 180*4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(-0.5f);
-            } else if (ship.getActionCounter() > 180) {
-                ship.setActionState(Ship.ActionState.IDLE);
-                ship.setActionCounter(0);
+                ship.rotate(-0.25f);
+            } else if (ship.getActionCounter() > 180*4) {
+                if (ship.isIdle) {
+                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionCounter(0);
+                }
+                else {
+                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionCounter(0);
+                }
+            }
+        }
+    }
+
+    public void handleReady(Ship ship) {
+        if (ship.getActionState() == ActionState.READY) {
+            if (ship.getActionCounter() == 0) {
+                ship.lookForEnemy(ship);
+                ship.checkWalls(ship);
             }
         }
     }
@@ -163,7 +224,7 @@ void handleActionState(Ship ship) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.setSpeed(0);
             } else if (ship.getActionCounter() >= 1) {
-                ship.setActionState(Ship.ActionState.IDLE);
+                ship.setActionState(Ship.ActionState.READY);
                 ship.setActionCounter(0);
             }
         }
@@ -171,32 +232,46 @@ void handleActionState(Ship ship) {
 
     public void handleIdle(Ship ship) {
 
-        if (ship.getActionState()== ActionState.IDLE) {
+        if (ship.getActionState() == ActionState.IDLE) {
             ship.isIdle = true;
-            if (ship.isIdle) {
-                ship.setSpeed(20);
-                if (ship.actionCounter == 0) {
-                    Random rand = new Random();
-                    int rand_int = rand.nextInt(10);
-                    if (rand_int == 1) {
-                        ship.setActionState(ActionState.U_TURN);
-                    } else if (rand_int == 2) {
-                        ship.setActionState(ActionState.CIRCLE);
-                    } else if (rand_int == 3 || rand_int == 4) {
-                        ship.setActionState(ActionState.QUARTER_LEFT_TURN);
-                    } else if (rand_int == 5 || rand_int == 6) {
-                        ship.setActionState(ActionState.QUARTER_RIGHT_TURN);
-                    }
+            ship.setSpeed(20);
+            if (ship.actionCounter == 0) {
+                Random rand = new Random();
+                int rand_int = rand.nextInt(10);
+                if (rand_int == 1) {
+                    ship.setActionState(ActionState.LEFT_U_TURN);
+                } else if (rand_int == 2) {
+                    ship.setActionState(ActionState.CIRCLE);
+                } else if (rand_int == 3) {
+                    ship.setActionState(ActionState.QUARTER_LEFT_TURN);
                 }
-                    else { ship.setActionState(ActionState.QUARTER_LEFT_TURN);}
+                else if (rand_int == 4){
+                    ship.setActionState(ActionState.RIGHT_U_TURN);
 
+                }
+                else if (rand_int == 5 || rand_int == 6) {
+                    ship.setActionState(ActionState.QUARTER_RIGHT_TURN);
+                }
             }
-        }
-        if (ship.isIdle) {
-
+                else { ship.setActionState(ActionState.RIGHT_U_TURN);}
         }
     }
 
+    void lookForEnemy(Ship ship) {
+
+    }
+
+    void checkWalls(Ship ship) {
+        if (ship.position.x >= Gdx.graphics.getWidth()-50 || ship.position.y >= Gdx.graphics.getHeight()-50)  {
+        System.out.println("Boundary x alert");
+
+        }
+        if (ship.position.x <= 50 || ship.position.y <= 50){
+
+            System.out.println("Boundary y alert");
+
+        }
+    }
 
 public Rectangle getHitbox() {
 

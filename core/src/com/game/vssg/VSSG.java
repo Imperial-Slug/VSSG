@@ -87,7 +87,6 @@ public class VSSG implements ApplicationListener {
 
 		// Initial ship's details.
 		Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() /2, (float) Gdx.graphics.getHeight() /2);
-		ObjectSet<ShipAction> actionQueue = new ObjectSet<>();
 		Rectangle hitBox = new Rectangle();
 		int cpuActionCounter = 0;
 		PlayerShip playerShip = new PlayerShip(redShipTexture, vector2, speed, null, hitBox, cpuActionCounter);
@@ -293,7 +292,7 @@ public class VSSG implements ApplicationListener {
 		if (InputManager.isLeftMousePressed()) {
 			if (!shipSpawnTimeout) {
 				Vector2 position = new Vector2( camera.position.x, camera.position.y);
-				CpuShip.ActionState actionState = Ship.ActionState.QUARTER_RIGHT_TURN;
+				CpuShip.ActionState actionState = Ship.ActionState.IDLE;
 				Rectangle hitBox = new Rectangle();
 				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionState, hitBox, actionCounter);
 				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips,actionState, hitBox, actionCounter);

@@ -17,3 +17,5 @@
 BEHAVIOR:
 
 While ship is is IDLE action state, it is trying to decide what to do next, mostly random behavior and avoiding the edges of the map, or maybe staying in a  certain locality.  From IDLE it can move to a number of random sub movements determined by a random number everytime the counter reaches 0 again. An enemy or other prompt will wakeup the ship to do something else.
+
+CHANGE:  IDLE will mean more like stopped, barely moving, and there will be another status called READY that will act as a neutral in between state while determining next behavior.  Ready will search for next targets or movements needed.
