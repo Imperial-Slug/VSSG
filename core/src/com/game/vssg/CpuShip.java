@@ -15,17 +15,10 @@ public class CpuShip extends Ship {
         this.setActionState(actionState);
 
     }
-    void handleActionState(CpuShip ship) {
-        if (ship.getActionState() == CpuShip.ActionState.U_TURN) {
-            if (ship.getActionCounter() <= 90) {
-                ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(1f);
-            } else if (ship.getActionCounter() > 90) {
-                ship.setActionState(CpuShip.ActionState.IDLE);
-                ship.setActionCounter(0);
-            }
-        }
-    }
+
+
+
+
 
     public void spawnCpuShip(Texture texture, Vector2 position, ObjectSet<CpuShip> cpuShips, ActionState actionState, Rectangle hitbox, int actionCounter) {
 

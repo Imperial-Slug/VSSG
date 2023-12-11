@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
 
+import java.util.Random;
+
 public class Ship extends Sprite {
 
     private final Vector2 position;
@@ -19,6 +21,7 @@ public class Ship extends Sprite {
     private final Rectangle hitbox;
     private final ShapeRenderer shapeRenderer;
     private int actionCounter;
+    private boolean isIdle;
 
 
 
@@ -100,16 +103,59 @@ public class Ship extends Sprite {
     }
 
 void handleActionState(Ship ship) {
-    if (ship.getActionState() == Ship.ActionState.U_TURN) {
-        if (ship.getActionCounter() <= 90) {
-            ship.setActionCounter(ship.getActionCounter() + 1);
-            ship.rotate(1f);
-        } else if (ship.getActionCounter() > 90) {
-            ship.setActionState(Ship.ActionState.IDLE);
-            ship.setActionCounter(0);
+  ship.handleUTurn(ship);
+  ship.handleCircle(ship);
+  ship.handleIdle(ship);
+}
+
+    public void handleUTurn(Ship ship) {
+        if (ship.getActionState() == Ship.ActionState.U_TURN) {
+            if (ship.getActionCounter() <= 180) {
+                ship.setActionCounter(ship.getActionCounter() + 1);
+                ship.rotate(1f);
+            } else if (ship.getActionCounter() > 180) {
+                ship.setActionState(Ship.ActionState.IDLE);
+                ship.setActionCounter(0);
+            }
         }
     }
-}
+
+    public void handleCircle(Ship ship) {
+        if (ship.getActionState() == ActionState.CIRCLE) {
+            if (ship.getActionCounter() <= 360*2) {
+                ship.setActionCounter(ship.getActionCounter() + 1);
+                ship.rotate(0.5f);
+            } else if (ship.getActionCounter() > 360*2) {
+                ship.setActionState(Ship.ActionState.IDLE);
+                ship.setActionCounter(0);
+            }
+        }
+    }
+
+    public void handleIdle(Ship ship) {
+
+        if (ship.getActionState()== ActionState.IDLE) {
+            ship.isIdle = true;
+            if (ship.isIdle) {
+                ship.setSpeed(20);
+                if (ship.actionCounter == 0) {
+                    Random rand = new Random();
+                    int rand_int = rand.nextInt(10);
+                    if (rand_int >= 5) {
+                        ship.setActionState(ActionState.U_TURN);
+                    } else if (rand_int < 5) {
+                        ship.setActionState(ActionState.CIRCLE);
+                    }
+
+
+                }
+            }
+        }
+        if (ship.isIdle) {
+
+        }
+    }
+
 
 public Rectangle getHitbox() {
 
@@ -147,11 +193,6 @@ public Rectangle getHitbox() {
         shapeRenderer.dispose();
     }
 
-
-    public void doUTurn(Ship ship) {
-        ship.actionState = ActionState.U_TURN;
-
-    }
 
 public ShapeRenderer getShapeRenderer(){
 

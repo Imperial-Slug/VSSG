@@ -12,3 +12,8 @@
 - differentiate between explosions of ships and lasers' hits on ships (small, big)
 - add limit to speed so it doesn't loop back the other way
 - function to make the circle types will take the Ship and 2 aarguments to pass to the inner function that actually makes the movement happen for the enum.
+
+
+BEHAVIOR:
+
+While ship is is IDLE action state, it is trying to decide what to do next, mostly random behavior and avoiding the edges of the map, or maybe staying in a  certain locality.  From IDLE it can move to a number of random sub movements determined by a random number everytime the counter reaches 0 again. An enemy or other prompt will wakeup the ship to do something else.
