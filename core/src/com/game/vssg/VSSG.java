@@ -203,21 +203,8 @@ public class VSSG implements ApplicationListener {
 		for (CpuShip cpuShip : cpuShips) {
 			cpuShip.draw(batch);
 			cpuShip.update(deltaTime, cpuShip);
-
-			if (cpuShip.getActionState() == CpuShip.ActionState.U_TURN) {
-				if (cpuShip.getActionCounter() <= 90) {
-					cpuShip.setActionCounter(cpuShip.getActionCounter()+1);
-					cpuShip.rotate(1f);
-				}
-				else if (cpuShip.getActionCounter() > 90) {
-					cpuShip.setActionState(Ship.ActionState.IDLE);
-					cpuShip.setActionCounter(0);
-				}
-
-
-
-
-			}
+//////
+			cpuShip.handleActionState(cpuShip);
 		}
 
 		for (Explosion explosion : explosions) {
@@ -301,13 +288,13 @@ public class VSSG implements ApplicationListener {
 			else { laserSpawnCounter++; }
 		}
 
+		int actionCounter = 0;
 
 		if (InputManager.isLeftMousePressed()) {
 			if (!shipSpawnTimeout) {
 				Vector2 position = new Vector2( camera.position.x, camera.position.y);
 				CpuShip.ActionState actionState = Ship.ActionState.U_TURN;
 				Rectangle hitBox = new Rectangle();
-				int actionCounter = 0;
 				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionState, hitBox, actionCounter);
 				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips,actionState, hitBox, actionCounter);
 				Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");

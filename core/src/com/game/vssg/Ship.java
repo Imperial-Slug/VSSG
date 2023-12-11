@@ -99,6 +99,17 @@ public class Ship extends Sprite {
        hitbox.set(ship.getX()+59f, ship.getY()+59f, scaledWidth, scaledHeight);
     }
 
+void handleActionState(Ship ship) {
+    if (ship.getActionState() == Ship.ActionState.U_TURN) {
+        if (ship.getActionCounter() <= 90) {
+            ship.setActionCounter(ship.getActionCounter() + 1);
+            ship.rotate(1f);
+        } else if (ship.getActionCounter() > 90) {
+            ship.setActionState(Ship.ActionState.IDLE);
+            ship.setActionCounter(0);
+        }
+    }
+}
 
 public Rectangle getHitbox() {
 

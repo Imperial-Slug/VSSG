@@ -14,6 +14,18 @@ public class PlayerShip extends Ship {
 
     }
 
+    void handleActionState(PlayerShip ship) {
+        if (ship.getActionState() == Ship.ActionState.U_TURN) {
+            if (ship.getActionCounter() <= 90) {
+                ship.setActionCounter(ship.getActionCounter() + 1);
+                ship.rotate(1f);
+            } else if (ship.getActionCounter() > 90) {
+                ship.setActionState(Ship.ActionState.IDLE);
+                ship.setActionCounter(0);
+            }
+        }
+    }
+
     public void spawnPlayerShip(Texture texture, Vector2 position, ObjectSet<PlayerShip> ships, ActionState actionState, Rectangle hitbox, int actionCounter) {
 
         PlayerShip playerShip = new PlayerShip(texture, position,  75, actionState, hitbox, actionCounter);

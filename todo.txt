@@ -6,25 +6,9 @@
 
 ------------------------------------------
 
-We will keep the autospawn ship as the human controlled ship for now.
 
-FIrst, we need to make the AI class, and seperate it from the human one. 
-
-Make the mouseclick spawnShip() method spawn not a human controlled ship but rather a computer controlled ship. This will be sufficient for testing while basic AI behavior is figured out. This may nee extensive planning before programming is started.
-
-1) MAke the Ship object into a CpuShip or PlayerShip in the appropriate methods DONE
-
-2) Make separate ObjectSet lists with the appropriate type.  Make sure Ships of the right types are added to these at the appropriate times. DONE
-
-3)  The CpuShips will have an ActionQeue list of Action objects that can hold and define an action to be performed and actions to perform after one another
-
-- lookup: optimal starting res
-
-- - escape quits
 - grey bar
-- hitboxes
-- make ship dissapear on laser hit
-- make explosion animations
-- each Ship needs its own action counter to keep track of how long it has been doing an action for control purposes
+
 - differentiate between explosions of ships and lasers' hits on ships (small, big)
 - add limit to speed so it doesn't loop back the other way
+- function to make the circle types will take the Ship and 2 aarguments to pass to the inner function that actually makes the movement happen for the enum.
