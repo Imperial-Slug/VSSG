@@ -2,10 +2,9 @@ package com.game.vssg;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,10 +36,14 @@ public class VSSG implements ApplicationListener {
 
 
 	///////////////////////////////
-	private Texture redShipTexture;
+	private Texture purpleShipTexture;
 	private Texture greenLaserTexture;
 	private Texture explosionTexture1;
 	private Texture otherShipTexture;
+
+	private Texture blueLaserTexture;
+	private Texture redLaserTexture;
+	private Texture greenShipTexture;
 
 	private OrthographicCamera camera;
 	private Viewport viewport;
@@ -60,9 +63,15 @@ public class VSSG implements ApplicationListener {
 		Gdx.app.debug("Get number of processors.","Cores: " + processors);
 
 		// Load assets.
-		redShipTexture = new Texture("red_ship.png");
+		purpleShipTexture = new Texture("purple_ship.png");
 		otherShipTexture = new Texture("N1.png");
 		greenLaserTexture = new Texture("laser_green.png");
+
+		greenShipTexture = new Texture("green_ship.png");
+		redLaserTexture = new Texture("laser_red.png");
+		blueLaserTexture = new Texture("laser_blue.png");
+
+
 		laserSound1 = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
 		explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
 		explosionTexture1 = new Texture("explosion_orange.png");
@@ -85,7 +94,7 @@ public class VSSG implements ApplicationListener {
 		lasers = new ObjectSet<>();
 
 		//Set scales for textures.
-		float redShipScale = 0.08f*2;
+		float purpleShipScale = 0.08f*2;
 		float speed = 50;
 
 		// Initial ship's details.
@@ -93,7 +102,7 @@ public class VSSG implements ApplicationListener {
 		Rectangle hitBox = new Rectangle();
 		int cpuActionCounter = 0;
 		PlayerShip playerShip = new PlayerShip(otherShipTexture, vector2, speed, null, hitBox, cpuActionCounter);
-		playerShip.setScale(redShipScale);
+		playerShip.setScale(purpleShipScale);
 		playerShip.setRotation(0);
 
 		// Add the new ship to the Ship list.
@@ -106,7 +115,7 @@ public class VSSG implements ApplicationListener {
 	@Override
 	public void render () {
 		ScreenUtils.clear(0, 0, 0, 1);
-		Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
 		camera.update();
@@ -296,8 +305,8 @@ public class VSSG implements ApplicationListener {
 				Vector2 position = new Vector2( camera.position.x, camera.position.y);
 				CpuShip.ActionState actionState = Ship.ActionState.IDLE;
 				Rectangle hitBox = new Rectangle();
-				CpuShip cpuShip = new CpuShip(redShipTexture, position, 50, actionState, hitBox, actionCounter);
-				cpuShip.spawnCpuShip(redShipTexture, position, cpuShips,actionState, hitBox, actionCounter);
+				CpuShip cpuShip = new CpuShip(greenShipTexture, position, 50, actionState, hitBox, actionCounter);
+				cpuShip.spawnCpuShip(greenShipTexture, position, cpuShips,actionState, hitBox, actionCounter);
 				Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");
 				shipSpawnTimeout = true;
 				shipSpawnCounter = 0;
@@ -347,7 +356,7 @@ public class VSSG implements ApplicationListener {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		redShipTexture.dispose();
+		purpleShipTexture.dispose();
 		greenLaserTexture.dispose();
 		explosionTexture1.dispose();
 		otherShipTexture.dispose();
