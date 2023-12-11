@@ -28,10 +28,8 @@ public class Ship extends Sprite {
     enum ActionState {
         U_TURN,
         CIRCLE,
-        DOWN,
-        UP,
-        RIGHT,
-        LEFT,
+        QUARTER_LEFT_TURN,
+        QUARTER_RIGHT_TURN,
         IDLE,
         STOP
 
@@ -106,6 +104,9 @@ void handleActionState(Ship ship) {
   ship.handleUTurn(ship);
   ship.handleCircle(ship);
   ship.handleIdle(ship);
+  ship.handleQuarterLeftTurn(ship);
+  ship.handleQuarterRightTurn(ship);
+  ship.handleStop(ship);
 }
 
     public void handleUTurn(Ship ship) {
@@ -132,6 +133,42 @@ void handleActionState(Ship ship) {
         }
     }
 
+    public void handleQuarterLeftTurn(Ship ship) {
+        if (ship.getActionState() == ActionState.QUARTER_LEFT_TURN) {
+            if (ship.getActionCounter() <= 180) {
+                ship.setActionCounter(ship.getActionCounter() + 1);
+                ship.rotate(0.5f);
+            } else if (ship.getActionCounter() > 180) {
+                ship.setActionState(Ship.ActionState.IDLE);
+                ship.setActionCounter(0);
+            }
+        }
+    }
+
+    public void handleQuarterRightTurn(Ship ship) {
+        if (ship.getActionState() == ActionState.QUARTER_RIGHT_TURN) {
+            if (ship.getActionCounter() <= 180) {
+                ship.setActionCounter(ship.getActionCounter() + 1);
+                ship.rotate(-0.5f);
+            } else if (ship.getActionCounter() > 180) {
+                ship.setActionState(Ship.ActionState.IDLE);
+                ship.setActionCounter(0);
+            }
+        }
+    }
+
+    public void handleStop(Ship ship) {
+        if (ship.getActionState() == ActionState.STOP) {
+            if (ship.getActionCounter() <= 0) {
+                ship.setActionCounter(ship.getActionCounter() + 1);
+                ship.setSpeed(0);
+            } else if (ship.getActionCounter() >= 1) {
+                ship.setActionState(Ship.ActionState.IDLE);
+                ship.setActionCounter(0);
+            }
+        }
+    }
+
     public void handleIdle(Ship ship) {
 
         if (ship.getActionState()== ActionState.IDLE) {
@@ -141,14 +178,18 @@ void handleActionState(Ship ship) {
                 if (ship.actionCounter == 0) {
                     Random rand = new Random();
                     int rand_int = rand.nextInt(10);
-                    if (rand_int >= 5) {
+                    if (rand_int == 1) {
                         ship.setActionState(ActionState.U_TURN);
-                    } else if (rand_int < 5) {
+                    } else if (rand_int == 2) {
                         ship.setActionState(ActionState.CIRCLE);
+                    } else if (rand_int == 3 || rand_int == 4) {
+                        ship.setActionState(ActionState.QUARTER_LEFT_TURN);
+                    } else if (rand_int == 5 || rand_int == 6) {
+                        ship.setActionState(ActionState.QUARTER_RIGHT_TURN);
                     }
-
-
                 }
+                    else { ship.setActionState(ActionState.QUARTER_LEFT_TURN);}
+
             }
         }
         if (ship.isIdle) {
