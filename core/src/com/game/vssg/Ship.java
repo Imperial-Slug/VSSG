@@ -31,6 +31,7 @@ public class Ship extends Sprite {
 
 
     enum ActionState {
+        PLAYER_CONTROL,
         CRUISE,
         LEFT_U_TURN,
         RIGHT_U_TURN,
@@ -89,8 +90,8 @@ public class Ship extends Sprite {
         return this.speed;
     }
 
-    public void setSpeed(float s) {
-        this.speed = s;
+    public void setSpeed(float speed) {
+        this.speed = speed;
 
     }
 

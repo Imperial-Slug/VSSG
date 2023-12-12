@@ -331,15 +331,24 @@ public class VSSG implements ApplicationListener {
 
         // Speed up.
         if (InputManager.isWPressed()) {
+
             for (PlayerShip playerShip : playerShips) {
-                playerShip.setSpeed(playerShip.getSpeed() + 0.5f);
+
+                if (playerShip.getSpeed() < 200f && playerShip.getSpeed() >= 0) {
+                    playerShip.setSpeed(playerShip.getSpeed() + 0.5f);
+                }
+                else { System.out.println("ERROR: invalid Ship speed.");}
+
             }
         }
 
         // Slow down.
         if (InputManager.isSPressed()) {
             for (PlayerShip playerShip : playerShips) {
-                playerShip.setSpeed(playerShip.getSpeed() - 0.5f);
+                if (playerShip.getSpeed() <= 100f && playerShip.getSpeed() > 0) {
+                    playerShip.setSpeed(playerShip.getSpeed() - 0.5f);
+                }
+                else { System.out.println("ERROR: invalid Ship speed.");}
             }
         }
 
