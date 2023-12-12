@@ -2,6 +2,7 @@ package com.game.vssg;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -18,7 +19,7 @@ import java.util.Iterator;
 
 public class VSSG implements ApplicationListener {
 
-    // DEBUGGING & MISC. SETTINGS //
+    // DEBUGGING //
     public static boolean showHitBoxes = false;
     public static boolean mute = false;
     ///////////////
@@ -37,7 +38,8 @@ public class VSSG implements ApplicationListener {
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
     private final float wrapDivisor = (float) WORLD_WIDTH / 4096;
-    private final float zoomSpeed = 0.003f;
+    private final float zoomSpeed = 0.002f;
+
 
     private Texture purpleShipTexture;
     private Texture greenLaserTexture;
@@ -50,16 +52,19 @@ public class VSSG implements ApplicationListener {
 
     private OrthographicCamera camera;
     private Viewport viewport;
-    private int shipSpawnCounter = 0;
-    private int laserSpawnCounter = 0;
-    private boolean laserSpawnTimeout = false;
-    public static boolean playerActive = false;
     private boolean shipSpawnTimeout = false;
+    private int shipSpawnCounter = 0;
+    private boolean laserSpawnTimeout = false;
+    private int laserSpawnCounter = 0;
+
+    ////////////////////////////////
+    InputProcessor inputManager;
 
     @Override
     public void create() {
         // Get number of processors for future multithreading purposes.
         int processors = Runtime.getRuntime().availableProcessors();
+        Gdx.app.debug("Get number of processors.", "Cores: " + processors);
 
         // Load assets.
         purpleShipTexture = new Texture("purple_ship.png");
@@ -69,22 +74,24 @@ public class VSSG implements ApplicationListener {
         redLaserTexture = new Texture("laser_red.png");
         blueLaserTexture = new Texture("laser_blue.png");
         backgroundTexture = new Texture("background.png");
+
         laserSound1 = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
         explosionTexture1 = new Texture("explosion_orange.png");
-
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+
 
         // Setup camera, viewport, controls input.
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.x = worldWidthCentre;
         camera.position.y = worldHeightCentre;
-
         float viewportWidth = Gdx.graphics.getWidth();
         float viewportHeight = Gdx.graphics.getHeight();
         viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
         viewport.apply();
+        Gdx.input.setInputProcessor(inputManager);
 
         // Prepare SpriteBatch and lists for keeping track of/accessing game objects.
         batch = new SpriteBatch();
@@ -97,19 +104,19 @@ public class VSSG implements ApplicationListener {
         float purpleShipScale = 0.08f * 2;
         float speed = 40;
 
-if (!playerActive) {
-    // Initial ship's details.
-    Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
-    Rectangle hitBox = new Rectangle();
-    int playerActionCounter = 0;
-    PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE);
-    playerShip.setScale(purpleShipScale);
-    playerShip.setRotation(0);
-    playerShips.add(playerShip);
-    setPlayerActive(true);
-}
 
-else { System.out.println("Player already created!"); }
+        // Initial ship's details.
+        Vector2 vector2 = new Vector2((float) worldWidthCentre, (float) worldHeightCentre);
+        Rectangle hitBox = new Rectangle();
+        int playerActionCounter = 0;
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
+        playerShip.setScale(purpleShipScale);
+        playerShip.setRotation(0);
+
+        // Add the new ship to the Ship list.
+        playerShips.add(playerShip);
+        Gdx.app.debug("ships.add(ship)", "ships list has " + playerShips.size);
+
 
     }
 
@@ -372,15 +379,6 @@ else { System.out.println("Player already created!"); }
         camera.update();
     }
 
-    public boolean getPlayerActive() {
-
-        return playerActive;
-    }
-
-    public void setPlayerActive(boolean playerActive) {
-
-        this.playerActive = playerActive;
-    }
 
     @Override
     public void dispose() {
