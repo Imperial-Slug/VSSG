@@ -202,20 +202,14 @@ public class VSSG implements ApplicationListener {
                     laser.setInactive(laser);
 
                 }
-
             }
-
-
         }
-
 
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
 
-
         }
-
 
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.draw(batch);
@@ -246,7 +240,9 @@ public class VSSG implements ApplicationListener {
 
     private void handleInput() {
 
-        float cameraSpeed = 2000;
+        float cameraSpeed = camera.zoom*2500;
+System.out.println("Zoom: "+camera.zoom);
+
 
         // Rotate the sprite with left arrow key
         if (InputManager.isAPressed()) {
