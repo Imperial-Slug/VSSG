@@ -1,5 +1,7 @@
 package com.game.vssg;
 
+import static com.game.vssg.VSSG.playerActive;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
@@ -17,10 +19,13 @@ public class PlayerShip extends Ship {
 
 
     public void spawnPlayerShip(Texture texture, Vector2 position, ObjectSet<PlayerShip> ships, ActionState actionState, Rectangle hitbox, int actionCounter, Faction faction) {
+        if (!playerActive) {
+            PlayerShip playerShip = new PlayerShip(texture, position, 0, actionState, hitbox, actionCounter, faction);
+            playerShip.setPosition(position.x, position.y);
+            ships.add(playerShip);
+        }
+        else { System.out.println("Player already created!"); }
+        }
 
-        PlayerShip playerShip = new PlayerShip(texture, position,  75, actionState, hitbox, actionCounter, faction);
-        playerShip.setPosition(position.x, position.y);
-        ships.add(playerShip);
-    }
 
 }
