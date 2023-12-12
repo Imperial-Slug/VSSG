@@ -14,15 +14,20 @@ import java.util.Random;
 
 public class Ship extends Sprite {
 
-    private final Vector2 position;
     private float speed;
     private boolean active;
     private ActionState actionState;
     private Faction faction;
-    private final Rectangle hitbox;
-    private final ShapeRenderer shapeRenderer;
     private int actionCounter;
     private boolean isIdle;
+
+    private final Vector2 position;
+    private final Rectangle hitbox;
+    private final ShapeRenderer shapeRenderer;
+    private final float half = 0.5f;
+    private final float angleCalc = 360;
+
+
 
     enum Faction {
         PURPLE,
@@ -104,7 +109,7 @@ public class Ship extends Sprite {
         Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 500, hitbox, 0);
         laser.setPosition(laserPosition.x, laserPosition.y);
         Rectangle hitbox = laser.getBoundingRectangle();
-        laser.setScale(0.5f);
+        laser.setScale(half);
         return laser;
     }
 
@@ -117,7 +122,8 @@ public class Ship extends Sprite {
         float scaledHeight = ship.getHeight() * shipScale;
 
         // Update the bounding box's position and size to match the scaled sprite
-       hitbox.set(ship.getX()+59f, ship.getY()+59f, scaledWidth, scaledHeight);
+        float hitboxOffset = 59f;
+        hitbox.set(ship.getX()+ hitboxOffset, ship.getY()+ hitboxOffset, scaledWidth, scaledHeight);
     }
 
 void handleActionState(Ship ship) {
@@ -136,9 +142,9 @@ void handleActionState(Ship ship) {
 
     public void handleCruise(Ship ship) {
         if (ship.getActionState() == Ship.ActionState.CRUISE) {
-            if (ship.getActionCounter() <= 360) {
+            if (ship.getActionCounter() <= angleCalc) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-            } else if (ship.getActionCounter() > 180*2) {
+            } else if (ship.getActionCounter() > angleCalc) {
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE);
                     ship.setActionCounter(0);
@@ -153,10 +159,10 @@ void handleActionState(Ship ship) {
 
     public void handleLeftUTurn(Ship ship) {
         if (ship.getActionState() == Ship.ActionState.LEFT_U_TURN) {
-            if (ship.getActionCounter() <= 180*2) {
+            if (ship.getActionCounter() <= angleCalc) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(0.5f);
-            } else if (ship.getActionCounter() > 180*2) {
+                ship.rotate(half);
+            } else if (ship.getActionCounter() > angleCalc) {
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE);
                     ship.setActionCounter(0);
@@ -172,10 +178,10 @@ void handleActionState(Ship ship) {
 
     public void handleRightUTurn(Ship ship) {
         if (ship.getActionState() == Ship.ActionState.RIGHT_U_TURN) {
-            if (ship.getActionCounter() <= 180*2) {
+            if (ship.getActionCounter() <= angleCalc) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(-0.5f);
-            } else if (ship.getActionCounter() > 180*2) {
+                ship.rotate(-half);
+            } else if (ship.getActionCounter() > angleCalc) {
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE);
                     ship.setActionCounter(0);
@@ -190,7 +196,7 @@ void handleActionState(Ship ship) {
 
     public void handleCircle(Ship ship) {
         if (ship.getActionState() == ActionState.CIRCLE) {
-            if (ship.getActionCounter() <= 360*4) {
+            if (ship.getActionCounter() <= angleCalc*4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(0.25f);
             } else if (ship.getActionCounter() > 180*4) {
