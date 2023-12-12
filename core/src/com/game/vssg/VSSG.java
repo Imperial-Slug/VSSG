@@ -32,8 +32,8 @@ public class VSSG implements ApplicationListener {
     private SpriteBatch batch;
     private Sound laserSound1;
     private Sound explosionSound1;
-    private final long WORLD_WIDTH = 13000;
-    private final long WORLD_HEIGHT = 13000;
+    public static long WORLD_WIDTH = 13000;
+    public static long WORLD_HEIGHT = 13000;
     private float zoomSpeed = 0.002f;
     private float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private float worldHeightCentre = (float) WORLD_HEIGHT / 2;
@@ -105,7 +105,7 @@ public class VSSG implements ApplicationListener {
 
         //Set scales for textures.
         float purpleShipScale = 0.08f * 2;
-        float speed = 50;
+        float speed = 40;
 
 
         // Initial ship's details.
@@ -385,12 +385,20 @@ public class VSSG implements ApplicationListener {
     }
 
 
+public long getWorldWidth() {
 
+        return this.WORLD_WIDTH;
+}
+
+    public long getWorldHeight() {
+
+        return this.WORLD_HEIGHT;
+    }
 
     @Override
     public void dispose() {
         batch.dispose();
-        backgroundTexture.dispose();
+      //  backgroundTexture.dispose();
         purpleShipTexture.dispose();
         greenLaserTexture.dispose();
         blueLaserTexture.dispose();

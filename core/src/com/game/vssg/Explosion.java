@@ -1,5 +1,8 @@
 package com.game.vssg;
 
+import static com.game.vssg.VSSG.WORLD_HEIGHT;
+import static com.game.vssg.VSSG.WORLD_WIDTH;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,7 +23,7 @@ public class Explosion extends Sprite {
     private boolean active;
     private float speed;
 
-    private Texture texture1;
+    private final Texture texture1;
 
     ///// Constructors ////////
 
@@ -85,7 +88,7 @@ public class Explosion extends Sprite {
 
 
 
-            if (position.x > Gdx.graphics.getWidth() || position.y > Gdx.graphics.getHeight()) {
+            if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
                 active = false;
             }
 
@@ -93,7 +96,7 @@ public class Explosion extends Sprite {
         }
     }
 
-    public void spawnExplosion(Texture texture, Vector2 position, int magnitude, float speed, ObjectSet<Explosion> explosions) {
+    public void spawnExplosion(Texture texture1, Vector2 position, int magnitude, float speed, ObjectSet<Explosion> explosions) {
         this.magnitude = magnitude;
         this.position = position;
         Explosion explosion = new Explosion(texture1, magnitude, position, speed);
