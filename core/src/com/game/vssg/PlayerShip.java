@@ -20,7 +20,6 @@ public class PlayerShip extends Ship {
 
         PlayerShip playerShip = new PlayerShip(texture, position,  75, actionState, hitbox, actionCounter, faction);
         playerShip.setPosition(position.x, position.y);
-        //playerShip.setScale(1f);
         ships.add(playerShip);
     }
 

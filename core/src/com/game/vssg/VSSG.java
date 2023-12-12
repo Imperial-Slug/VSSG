@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,7 +23,6 @@ public class VSSG implements ApplicationListener {
     // DEBUGGING //
     public static boolean showHitBoxes = false;
     public static boolean mute = false;
-    public static int zoom = 1;
     ///////////////
 
     private ObjectSet<PlayerShip> playerShips;
@@ -32,8 +32,9 @@ public class VSSG implements ApplicationListener {
     private SpriteBatch batch;
     private Sound laserSound1;
     private Sound explosionSound1;
-    private long WORLD_WIDTH = 12800;
-    private long WORLD_HEIGHT = 12800;
+    private final long WORLD_WIDTH = 13000;
+    private final long WORLD_HEIGHT = 13000;
+    private float zoomSpeed = 0.002f;
 
 
     ///////////////////////////////
@@ -41,7 +42,8 @@ public class VSSG implements ApplicationListener {
     private Texture greenLaserTexture;
     private Texture explosionTexture1;
     private Texture otherShipTexture;
-
+    private float viewportWidth;
+    private float viewportHeight;
     private Texture blueLaserTexture;
     private Texture redLaserTexture;
     private Texture greenShipTexture;
@@ -82,7 +84,9 @@ public class VSSG implements ApplicationListener {
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.x = (float) Gdx.graphics.getWidth() / 2;
         camera.position.y = (float) Gdx.graphics.getHeight() / 2;
-        viewport = new ExtendViewport(1280, 720, camera);
+        viewportWidth = Gdx.graphics.getWidth();
+        viewportHeight = Gdx.graphics.getHeight();
+        viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
         viewport.apply();
         Gdx.input.setInputProcessor(inputManager);
 
@@ -346,6 +350,47 @@ public class VSSG implements ApplicationListener {
             camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
         }
 
+        if (InputManager.isScrollUp()) {
+
+           zoomIn();
+        }
+
+        if (InputManager.isScrollDown()) {
+            zoomOut();
+
+        }
+
+    }
+
+    private void zoomIn() {
+        camera.zoom -= zoomSpeed;
+        camera.update();
+    }
+
+    // Method to zoom out
+    private void zoomOut() {
+        camera.zoom += zoomSpeed;
+        camera.update();
+    }
+
+    public float getViewportWidth(){
+
+        return viewportWidth;
+    }
+
+    public void setViewportWidth(float viewportWidth) {
+
+        this.viewportWidth = viewportWidth;
+    }
+
+    public float getViewportHeight(){
+
+        return this.viewportHeight;
+    }
+
+    public void setViewportHeight(float viewportHeight) {
+
+        this.viewportHeight = viewportHeight;
     }
 
 

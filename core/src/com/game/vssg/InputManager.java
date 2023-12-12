@@ -3,6 +3,9 @@ package com.game.vssg;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.viewport.Viewport;
+
+import javax.swing.text.View;
 
 public final class InputManager {
 
@@ -49,5 +52,9 @@ public final class InputManager {
     }
 
     public static boolean isRightMousePressed() { return Gdx.input.isButtonPressed(Input.Buttons.RIGHT);}
+
+    public static boolean isScrollUp() {return Gdx.input.isKeyPressed(Input.Keys.Q); }
+
+    public static boolean isScrollDown() {return Gdx.input.isKeyPressed(Input.Keys.E); }
 
 }
