@@ -13,19 +13,21 @@ public class Laser extends Sprite {
     private boolean active;
     private final Rectangle hitbox;
     private int despawnCounter;
+    private Ship ship;
 
 
-    public Laser(Texture texture, float x, float y, float shipRotation, float speed, Rectangle hitbox, int despawnCounter) {
+    public Laser(Texture texture, float x, float y, float shipRotation, float speed, Rectangle hitbox, int despawnCounter, Ship ship) {
         super(texture);
         this.position = new Vector2(x, y);
         this.speed = speed;
         this.setRotation(shipRotation);
         this.hitbox = getBoundingRectangle();
         this.despawnCounter = despawnCounter;
+        this.ship = ship;
         active = true;
     }
 
-    public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT, int despawnCounter) {
+    public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT, int despawnCounter, Ship ship) {
         if (active) {
             despawnCounter = this.getDespawnCounter();
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
@@ -83,4 +85,11 @@ public int getDespawnCounter() {
         return this.despawnCounter;
 }
 
+    public Ship getShip() {
+        return this.ship;
+    }
+
+    public void setShip(Ship ship) {
+        this.ship = ship;
+    }
 }

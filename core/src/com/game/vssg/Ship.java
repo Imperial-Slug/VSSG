@@ -106,7 +106,7 @@ public class Ship extends Sprite {
         float offsetY = -1.5f;
 
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);
-        Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 500, hitbox, 0);
+        Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 500, hitbox, 0, ship);
         laser.setPosition(laserPosition.x, laserPosition.y);
         Rectangle hitbox = laser.getBoundingRectangle();
         laser.setScale(half);

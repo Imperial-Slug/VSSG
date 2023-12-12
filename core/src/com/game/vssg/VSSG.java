@@ -107,7 +107,7 @@ public class VSSG implements ApplicationListener {
 
 
         // Initial ship's details.
-        Vector2 vector2 = new Vector2((float) worldWidthCentre, (float) worldHeightCentre);
+        Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
         Rectangle hitBox = new Rectangle();
         int playerActionCounter = 0;
         PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
@@ -126,11 +126,8 @@ public class VSSG implements ApplicationListener {
 
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         camera.update();
-        // Set the batch's projection matrix to the camera's combined matrix
         batch.setProjectionMatrix(camera.combined);
-
         handleInput();
         float deltaTime = Gdx.graphics.getDeltaTime();
         Iterator<PlayerShip> playerIter = playerShips.iterator();
@@ -171,7 +168,7 @@ public class VSSG implements ApplicationListener {
         while (laserIter.hasNext()) {
 
             Laser laser = laserIter.next();
-            laser.update(Gdx.graphics.getDeltaTime(), WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter());
+            laser.update(Gdx.graphics.getDeltaTime(), WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
 
             if (!laser.isActive()) {
                 laserIter.remove();
@@ -185,7 +182,7 @@ public class VSSG implements ApplicationListener {
             laser.setScale(1);
             laser.draw(batch);
             Rectangle laserHitBox = laser.getHitbox();
-            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter());
+            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
             laser.updateHitBox(laser);
 
             for (CpuShip ship : cpuShips) {
@@ -196,7 +193,7 @@ public class VSSG implements ApplicationListener {
                     ship.drawBoundingBox();
                 }
 
-                if (laserHitBox.overlaps(shipHitBox)) {
+                if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
                     Vector2 position = new Vector2(laser.getX() - 40, laser.getY() - 65);
                     Explosion.explode(camera, explosionTexture1, 10, position, 30, explosions, explosionSound1);
                     System.out.println("Ship hit.");
@@ -210,7 +207,8 @@ public class VSSG implements ApplicationListener {
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
-
+            camera.position.x = playerShip.getX();
+            camera.position.y = playerShip.getY();
         }
 
         for (CpuShip cpuShip : cpuShips) {
@@ -267,6 +265,7 @@ public class VSSG implements ApplicationListener {
             if (!laserSpawnTimeout) {
                 for (Ship ship : playerShips) {
                     Laser laser = ship.fireLaser(greenLaserTexture, ship);
+                    laser.setShip(ship);
                     lasers.add(laser);
                     laserSound1.play(half);
                     laserSpawnTimeout = true;
@@ -297,7 +296,7 @@ public class VSSG implements ApplicationListener {
         }
 
         if (laserSpawnTimeout) {
-            if (laserSpawnCounter >= 99) {
+            if (laserSpawnCounter >= 200) {
 
                 laserSpawnTimeout = false;
             } else {
@@ -319,12 +318,13 @@ public class VSSG implements ApplicationListener {
             }
         }
 
+        float speedLimit = 200f;
         // Speed up.
         if (InputManager.isWPressed()) {
 
             for (PlayerShip playerShip : playerShips) {
 
-                if (playerShip.getSpeed() < 200f && playerShip.getSpeed() >= 0) {
+                if (playerShip.getSpeed() < speedLimit && playerShip.getSpeed() >= 0) {
                     playerShip.setSpeed(playerShip.getSpeed() + half);
                 }
 
@@ -334,7 +334,7 @@ public class VSSG implements ApplicationListener {
         // Slow down.
         if (InputManager.isSPressed()) {
             for (PlayerShip playerShip : playerShips) {
-                if (playerShip.getSpeed() <= 200f && playerShip.getSpeed() > 0) {
+                if (playerShip.getSpeed() <= speedLimit && playerShip.getSpeed() > 0) {
                     playerShip.setSpeed(playerShip.getSpeed() - half);
                 }
             }
