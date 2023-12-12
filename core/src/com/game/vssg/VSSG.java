@@ -47,6 +47,7 @@ public class VSSG implements ApplicationListener {
     private Texture blueLaserTexture;
     private Texture redLaserTexture;
     private Texture greenShipTexture;
+    private Texture backgroundTexture;
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -72,11 +73,12 @@ public class VSSG implements ApplicationListener {
         greenLaserTexture = new Texture("laser_red.png");
         redLaserTexture = new Texture("laser_red.png");
         blueLaserTexture = new Texture("laser_blue.png");
-
+        backgroundTexture = new Texture("background.png");
 
         laserSound1 = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
         explosionTexture1 = new Texture("explosion_orange.png");
+        backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 
         // Setup camera, viewport, controls input.
@@ -121,7 +123,8 @@ public class VSSG implements ApplicationListener {
     public void render() {
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        float repeatX = (float) WORLD_WIDTH / 4096;
+        float repeatY = (float) WORLD_HEIGHT / 4096;
 
         camera.update();
         // Set the batch's projection matrix to the camera's combined matrix
@@ -175,9 +178,10 @@ public class VSSG implements ApplicationListener {
         }
 
         batch.begin();
-        float laserScale = 1f;
+        batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, (int) repeatX, (int) repeatY);
+
         for (Laser laser : lasers) {
-            laser.setScale(laserScale);
+            laser.setScale(1);
             laser.draw(batch);
             Rectangle laserHitBox = laser.getHitbox();
             laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT);
@@ -204,6 +208,7 @@ public class VSSG implements ApplicationListener {
 
 
         }
+
 
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
@@ -242,7 +247,7 @@ public class VSSG implements ApplicationListener {
 
     private void handleInput() {
 
-        float cameraSpeed = 200;
+        float cameraSpeed = 2000;
 
         // Rotate the sprite with left arrow key
         if (InputManager.isAPressed()) {
@@ -406,6 +411,7 @@ public class VSSG implements ApplicationListener {
         laserSound1.dispose();
         explosionTexture1.dispose();
         otherShipTexture.dispose();
+        backgroundTexture.dispose();
 
     }
 
