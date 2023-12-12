@@ -57,14 +57,14 @@ public class Ship extends Sprite {
     }
 
     // Determining the next position of the ship every frame.
-    public void update(float delta, Ship ship) {
+    public void update(float delta, Ship ship, long WORLD_WIDTH, long WORLD_HEIGHT) {
 
         if (active) {
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
 
             // Check if the ship is out of screen bounds and deactivate it if necessary
-            if (position.x > Gdx.graphics.getWidth() || position.y > Gdx.graphics.getHeight()) {
+            if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
                 active = false;
             }
 

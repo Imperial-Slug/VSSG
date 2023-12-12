@@ -24,13 +24,13 @@ public class Laser extends Sprite {
         active = true;
     }
 
-    public void update(float delta) {
+    public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT) {
         if (active) {
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
 
             // Check if the laser is out of screen bounds and deactivate it if necessary
-            if (position.x > Gdx.graphics.getWidth() || position.y > Gdx.graphics.getHeight()) {
+            if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
                 active = false;
             }
 

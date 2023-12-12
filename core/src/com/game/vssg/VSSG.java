@@ -32,6 +32,8 @@ public class VSSG implements ApplicationListener {
     private SpriteBatch batch;
     private Sound laserSound1;
     private Sound explosionSound1;
+    private long WORLD_WIDTH = 12800;
+    private long WORLD_HEIGHT = 12800;
 
 
     ///////////////////////////////
@@ -65,7 +67,7 @@ public class VSSG implements ApplicationListener {
         purpleShipTexture = new Texture("purple_ship.png");
         otherShipTexture = new Texture("N1.png");
         greenShipTexture = new Texture("green_ship.png");
-        greenLaserTexture = new Texture("laser_green.png");
+        greenLaserTexture = new Texture("laser_red.png");
         redLaserTexture = new Texture("laser_red.png");
         blueLaserTexture = new Texture("laser_blue.png");
 
@@ -77,7 +79,7 @@ public class VSSG implements ApplicationListener {
 
         // Setup camera, viewport, controls input.
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1280, 720);
+        camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.x = (float) Gdx.graphics.getWidth() / 2;
         camera.position.y = (float) Gdx.graphics.getHeight() / 2;
         viewport = new ExtendViewport(1280, 720, camera);
@@ -94,6 +96,7 @@ public class VSSG implements ApplicationListener {
         //Set scales for textures.
         float purpleShipScale = 0.08f * 2;
         float speed = 50;
+
 
         // Initial ship's details.
         Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
@@ -130,7 +133,7 @@ public class VSSG implements ApplicationListener {
         while (playerIter.hasNext()) {
 
             PlayerShip playerShip = playerIter.next();
-            playerShip.update(deltaTime, playerShip);
+            playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
 
             if (!playerShip.isActive()) {
                 playerIter.remove();
@@ -140,7 +143,7 @@ public class VSSG implements ApplicationListener {
         while (cpuIter.hasNext()) {
 
             CpuShip cpuShip = cpuIter.next();
-            cpuShip.update(deltaTime, cpuShip);
+            cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
 
             if (!cpuShip.isActive()) {
                 cpuIter.remove();
@@ -160,7 +163,7 @@ public class VSSG implements ApplicationListener {
         while (laserIter.hasNext()) {
 
             Laser laser = laserIter.next();
-            laser.update(Gdx.graphics.getDeltaTime());
+            laser.update(Gdx.graphics.getDeltaTime(), WORLD_WIDTH, WORLD_HEIGHT);
 
             if (!laser.isActive()) {
                 laserIter.remove();
@@ -168,11 +171,12 @@ public class VSSG implements ApplicationListener {
         }
 
         batch.begin();
-
+        float laserScale = 1f;
         for (Laser laser : lasers) {
+            laser.setScale(laserScale);
             laser.draw(batch);
             Rectangle laserHitBox = laser.getHitbox();
-            laser.update(deltaTime);
+            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT);
             laser.updateHitBox(laser);
 
             for (CpuShip ship : cpuShips) {
@@ -199,7 +203,7 @@ public class VSSG implements ApplicationListener {
 
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
-            playerShip.update(deltaTime, playerShip);
+            playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
 
 
         }
@@ -207,7 +211,7 @@ public class VSSG implements ApplicationListener {
 
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.draw(batch);
-            cpuShip.update(deltaTime, cpuShip);
+            cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.handleActionState(cpuShip);
         }
 
