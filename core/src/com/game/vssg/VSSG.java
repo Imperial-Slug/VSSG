@@ -35,6 +35,9 @@ public class VSSG implements ApplicationListener {
     private final long WORLD_WIDTH = 13000;
     private final long WORLD_HEIGHT = 13000;
     private float zoomSpeed = 0.002f;
+    private float worldWidthCentre = (float) WORLD_WIDTH / 2;
+    private float worldHeightCentre = (float) WORLD_HEIGHT / 2;
+    private float wrapDivisor = WORLD_WIDTH / 4096;
 
 
     ///////////////////////////////
@@ -81,11 +84,12 @@ public class VSSG implements ApplicationListener {
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 
+
         // Setup camera, viewport, controls input.
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
-        camera.position.x = (float) Gdx.graphics.getWidth() / 2;
-        camera.position.y = (float) Gdx.graphics.getHeight() / 2;
+        camera.position.x = (float) worldWidthCentre;
+        camera.position.y = (float) worldHeightCentre;
         viewportWidth = Gdx.graphics.getWidth();
         viewportHeight = Gdx.graphics.getHeight();
         viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
@@ -105,7 +109,7 @@ public class VSSG implements ApplicationListener {
 
 
         // Initial ship's details.
-        Vector2 vector2 = new Vector2((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
+        Vector2 vector2 = new Vector2((float) worldWidthCentre, (float) worldHeightCentre);
         Rectangle hitBox = new Rectangle();
         int playerActionCounter = 0;
         PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
@@ -121,10 +125,11 @@ public class VSSG implements ApplicationListener {
 
     @Override
     public void render() {
+
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        float repeatX = (float) WORLD_WIDTH / 4096;
-        float repeatY = (float) WORLD_HEIGHT / 4096;
+        float repeatX = (float) wrapDivisor;
+        float repeatY = (float) wrapDivisor;
 
         camera.update();
         // Set the batch's projection matrix to the camera's combined matrix
@@ -290,7 +295,7 @@ public class VSSG implements ApplicationListener {
 
 
         if (shipSpawnTimeout) {
-            if (shipSpawnCounter >= 50) {
+            if (shipSpawnCounter >= 111) {
 
                 shipSpawnTimeout = false;
             } else {
@@ -299,7 +304,7 @@ public class VSSG implements ApplicationListener {
         }
 
         if (laserSpawnTimeout) {
-            if (laserSpawnCounter >= 50) {
+            if (laserSpawnCounter >= 111) {
 
                 laserSpawnTimeout = false;
             } else {
@@ -311,10 +316,10 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isLeftMousePressed()) {
             if (!shipSpawnTimeout) {
-                Vector2 position = new Vector2(camera.position.x, camera.position.y);
+                Vector2 position = new Vector2((float) WORLD_WIDTH /2, (float) WORLD_HEIGHT /2);
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
-                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 50, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
+                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 40, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
                 cpuShip.spawnCpuShip(greenShipTexture, position, cpuShips, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
                 Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");
                 shipSpawnTimeout = true;
@@ -355,14 +360,15 @@ public class VSSG implements ApplicationListener {
             camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
         }
 
-        if (InputManager.isScrollUp()) {
+
+
+        if (InputManager.isQPressed()) {
 
            zoomIn();
         }
 
-        if (InputManager.isScrollDown()) {
+        if (InputManager.isEPressed()) {
             zoomOut();
-
         }
 
     }
@@ -378,30 +384,13 @@ public class VSSG implements ApplicationListener {
         camera.update();
     }
 
-    public float getViewportWidth(){
 
-        return viewportWidth;
-    }
-
-    public void setViewportWidth(float viewportWidth) {
-
-        this.viewportWidth = viewportWidth;
-    }
-
-    public float getViewportHeight(){
-
-        return this.viewportHeight;
-    }
-
-    public void setViewportHeight(float viewportHeight) {
-
-        this.viewportHeight = viewportHeight;
-    }
 
 
     @Override
     public void dispose() {
         batch.dispose();
+        backgroundTexture.dispose();
         purpleShipTexture.dispose();
         greenLaserTexture.dispose();
         blueLaserTexture.dispose();
@@ -411,7 +400,6 @@ public class VSSG implements ApplicationListener {
         laserSound1.dispose();
         explosionTexture1.dispose();
         otherShipTexture.dispose();
-        backgroundTexture.dispose();
 
     }
 

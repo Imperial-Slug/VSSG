@@ -53,8 +53,8 @@ public final class InputManager {
 
     public static boolean isRightMousePressed() { return Gdx.input.isButtonPressed(Input.Buttons.RIGHT);}
 
-    public static boolean isScrollUp() {return Gdx.input.isKeyPressed(Input.Keys.Q); }
+    public static boolean isQPressed() {return Gdx.input.isKeyPressed(Input.Keys.Q); }
 
-    public static boolean isScrollDown() {return Gdx.input.isKeyPressed(Input.Keys.E); }
+    public static boolean isEPressed() {return Gdx.input.isKeyPressed(Input.Keys.E); }
 
 }
