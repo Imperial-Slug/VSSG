@@ -60,7 +60,6 @@ public class VSSG implements ApplicationListener {
     public void create() {
         // Get number of processors for future multithreading purposes.
         int processors = Runtime.getRuntime().availableProcessors();
-        Gdx.app.debug("Get number of processors.", "Cores: " + processors);
 
         // Load assets.
         purpleShipTexture = new Texture("purple_ship.png");
