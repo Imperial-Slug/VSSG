@@ -12,24 +12,27 @@ public class Laser extends Sprite {
     private float speed;
     private boolean active;
     private final Rectangle hitbox;
+    private int despawnCounter;
 
 
-    public Laser(Texture texture, float x, float y, float shipRotation, float speed, Rectangle hitbox) {
+    public Laser(Texture texture, float x, float y, float shipRotation, float speed, Rectangle hitbox, int despawnCounter) {
         super(texture);
         this.position = new Vector2(x, y);
         this.speed = speed;
         this.setRotation(shipRotation);
         this.hitbox = getBoundingRectangle();
+        this.despawnCounter = despawnCounter;
         active = true;
     }
 
-    public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT) {
+    public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT, int despawnCounter) {
         if (active) {
+            despawnCounter = this.getDespawnCounter();
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
-
+            this.setDespawnCounter(this.getDespawnCounter()+1);
             // Check if the laser is out of screen bounds and deactivate it if necessary
-            if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
+            if (position.x >= WORLD_WIDTH || position.y >= WORLD_HEIGHT || this.despawnCounter > 600) {
                 active = false;
             }
 
@@ -68,6 +71,16 @@ public class Laser extends Sprite {
 public Rectangle getHitbox() {
 
         return this.hitbox;
+}
+
+public void setDespawnCounter(int despawnCounter) {
+
+        this.despawnCounter = despawnCounter;
+}
+
+public int getDespawnCounter() {
+
+        return this.despawnCounter;
 }
 
 }

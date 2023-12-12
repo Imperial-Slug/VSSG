@@ -55,7 +55,6 @@ public class VSSG implements ApplicationListener {
     int shipSpawnCounter = 0;
     boolean laserSpawnTimeout = false;
     int laserSpawnCounter = 0;
-    boolean dragging;
 
     ////////////////////////////////
     InputProcessor inputManager;
@@ -170,7 +169,7 @@ public class VSSG implements ApplicationListener {
         while (laserIter.hasNext()) {
 
             Laser laser = laserIter.next();
-            laser.update(Gdx.graphics.getDeltaTime(), WORLD_WIDTH, WORLD_HEIGHT);
+            laser.update(Gdx.graphics.getDeltaTime(), WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter());
 
             if (!laser.isActive()) {
                 laserIter.remove();
@@ -184,7 +183,7 @@ public class VSSG implements ApplicationListener {
             laser.setScale(1);
             laser.draw(batch);
             Rectangle laserHitBox = laser.getHitbox();
-            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT);
+            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter());
             laser.updateHitBox(laser);
 
             for (CpuShip ship : cpuShips) {
