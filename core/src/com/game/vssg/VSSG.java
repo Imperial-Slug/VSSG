@@ -304,7 +304,7 @@ public class VSSG implements ApplicationListener {
         }
 
         if (laserSpawnTimeout) {
-            if (laserSpawnCounter >= 111) {
+            if (laserSpawnCounter >= 99) {
 
                 laserSpawnTimeout = false;
             } else {
@@ -321,11 +321,8 @@ public class VSSG implements ApplicationListener {
                 Rectangle hitBox = new Rectangle();
                 CpuShip cpuShip = new CpuShip(greenShipTexture, position, 40, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
                 cpuShip.spawnCpuShip(greenShipTexture, position, cpuShips, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
-                Gdx.app.debug("Left Mouse Press", "Left mouse pressed!");
                 shipSpawnTimeout = true;
                 shipSpawnCounter = 0;
-            } else {
-                System.out.println("spawnTimeout: " + shipSpawnCounter);
             }
         }
 
@@ -337,7 +334,6 @@ public class VSSG implements ApplicationListener {
                 if (playerShip.getSpeed() < 200f && playerShip.getSpeed() >= 0) {
                     playerShip.setSpeed(playerShip.getSpeed() + 0.5f);
                 }
-                else { System.out.println("ERROR: invalid Ship speed.");}
 
             }
         }
@@ -345,10 +341,9 @@ public class VSSG implements ApplicationListener {
         // Slow down.
         if (InputManager.isSPressed()) {
             for (PlayerShip playerShip : playerShips) {
-                if (playerShip.getSpeed() <= 100f && playerShip.getSpeed() > 0) {
+                if (playerShip.getSpeed() <= 200f && playerShip.getSpeed() > 0) {
                     playerShip.setSpeed(playerShip.getSpeed() - 0.5f);
                 }
-                else { System.out.println("ERROR: invalid Ship speed.");}
             }
         }
 
