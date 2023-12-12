@@ -55,6 +55,7 @@ public class VSSG implements ApplicationListener {
     private boolean shipSpawnTimeout = false;
     private int shipSpawnCounter = 0;
     private boolean laserSpawnTimeout = false;
+    public static boolean playerActive = false;
     private int laserSpawnCounter = 0;
 
     ////////////////////////////////
