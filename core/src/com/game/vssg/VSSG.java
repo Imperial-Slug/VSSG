@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,12 +31,12 @@ public class VSSG implements ApplicationListener {
     private SpriteBatch batch;
     private Sound laserSound1;
     private Sound explosionSound1;
-    public static long WORLD_WIDTH = 13000;
-    public static long WORLD_HEIGHT = 13000;
-    private float zoomSpeed = 0.002f;
-    private float worldWidthCentre = (float) WORLD_WIDTH / 2;
-    private float worldHeightCentre = (float) WORLD_HEIGHT / 2;
-    private float wrapDivisor = WORLD_WIDTH / 4096;
+    public static long WORLD_WIDTH = 16384;
+    public static long WORLD_HEIGHT = 16384;
+    private final float zoomSpeed = 0.002f;
+    private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
+    private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
+    private final float wrapDivisor = (float) WORLD_WIDTH / 4096;
 
 
     ///////////////////////////////
@@ -45,8 +44,6 @@ public class VSSG implements ApplicationListener {
     private Texture greenLaserTexture;
     private Texture explosionTexture1;
     private Texture otherShipTexture;
-    private float viewportWidth;
-    private float viewportHeight;
     private Texture blueLaserTexture;
     private Texture redLaserTexture;
     private Texture greenShipTexture;
@@ -73,7 +70,7 @@ public class VSSG implements ApplicationListener {
         purpleShipTexture = new Texture("purple_ship.png");
         otherShipTexture = new Texture("N1.png");
         greenShipTexture = new Texture("green_ship.png");
-        greenLaserTexture = new Texture("laser_red.png");
+        greenLaserTexture = new Texture("laser_green.png");
         redLaserTexture = new Texture("laser_red.png");
         blueLaserTexture = new Texture("laser_blue.png");
         backgroundTexture = new Texture("background.png");
@@ -88,10 +85,10 @@ public class VSSG implements ApplicationListener {
         // Setup camera, viewport, controls input.
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
-        camera.position.x = (float) worldWidthCentre;
-        camera.position.y = (float) worldHeightCentre;
-        viewportWidth = Gdx.graphics.getWidth();
-        viewportHeight = Gdx.graphics.getHeight();
+        camera.position.x = worldWidthCentre;
+        camera.position.y = worldHeightCentre;
+        float viewportWidth = Gdx.graphics.getWidth();
+        float viewportHeight = Gdx.graphics.getHeight();
         viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
         viewport.apply();
         Gdx.input.setInputProcessor(inputManager);
@@ -128,8 +125,6 @@ public class VSSG implements ApplicationListener {
 
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        float repeatX = (float) wrapDivisor;
-        float repeatY = (float) wrapDivisor;
 
         camera.update();
         // Set the batch's projection matrix to the camera's combined matrix
@@ -183,7 +178,7 @@ public class VSSG implements ApplicationListener {
         }
 
         batch.begin();
-        batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, (int) repeatX, (int) repeatY);
+        batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, (int) wrapDivisor, (int) wrapDivisor);
 
         for (Laser laser : lasers) {
             laser.setScale(1);
@@ -391,12 +386,12 @@ public class VSSG implements ApplicationListener {
 
 public long getWorldWidth() {
 
-        return this.WORLD_WIDTH;
+        return WORLD_WIDTH;
 }
 
     public long getWorldHeight() {
 
-        return this.WORLD_HEIGHT;
+        return WORLD_HEIGHT;
     }
 
     @Override

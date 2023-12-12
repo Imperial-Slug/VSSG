@@ -10,7 +10,6 @@ public class Laser extends Sprite {
 
     private final Vector2 position;
     private float speed;
-    private String colour;
     private boolean active;
     private final Rectangle hitbox;
 
