@@ -24,6 +24,10 @@ public class VSSG implements ApplicationListener {
     public static boolean mute = false;
     ///////////////
 
+    public static long WORLD_CONSTANT = 16384;
+    public static long WORLD_WIDTH = WORLD_CONSTANT;
+    public static long WORLD_HEIGHT = WORLD_CONSTANT;
+
     private ObjectSet<PlayerShip> playerShips;
     private ObjectSet<CpuShip> cpuShips;
     private ObjectSet<Explosion> explosions;
@@ -31,15 +35,12 @@ public class VSSG implements ApplicationListener {
     private SpriteBatch batch;
     private Sound laserSound1;
     private Sound explosionSound1;
-    public static long WORLD_WIDTH = 16384;
-    public static long WORLD_HEIGHT = 16384;
-    private final float zoomSpeed = 0.002f;
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
     private final float wrapDivisor = (float) WORLD_WIDTH / 4096;
+    private final float zoomSpeed = 0.002f;
 
 
-    ///////////////////////////////
     private Texture purpleShipTexture;
     private Texture greenLaserTexture;
     private Texture explosionTexture1;
@@ -51,10 +52,10 @@ public class VSSG implements ApplicationListener {
 
     private OrthographicCamera camera;
     private Viewport viewport;
-    boolean shipSpawnTimeout = false;
-    int shipSpawnCounter = 0;
-    boolean laserSpawnTimeout = false;
-    int laserSpawnCounter = 0;
+    private boolean shipSpawnTimeout = false;
+    private int shipSpawnCounter = 0;
+    private boolean laserSpawnTimeout = false;
+    private int laserSpawnCounter = 0;
 
     ////////////////////////////////
     InputProcessor inputManager;
@@ -240,9 +241,9 @@ public class VSSG implements ApplicationListener {
 
     private void handleInput() {
 
-        float cameraSpeed = camera.zoom*2500;
-System.out.println("Zoom: "+camera.zoom);
+        float cameraSpeed = camera.zoom * 2048;
 
+        //System.out.println("Zoom: "+camera.zoom);
 
         // Rotate the sprite with left arrow key
         if (InputManager.isAPressed()) {
@@ -260,12 +261,13 @@ System.out.println("Zoom: "+camera.zoom);
         }
 
         // Shoot lasers
+        float half = 0.5f;
         if (InputManager.isSpacePressed()) {
             if (!laserSpawnTimeout) {
                 for (Ship ship : playerShips) {
                     Laser laser = ship.fireLaser(greenLaserTexture, ship);
                     lasers.add(laser);
-                    laserSound1.play(0.5f);
+                    laserSound1.play(half);
                     laserSpawnTimeout = true;
                     laserSpawnCounter = 0;
 
@@ -322,7 +324,7 @@ System.out.println("Zoom: "+camera.zoom);
             for (PlayerShip playerShip : playerShips) {
 
                 if (playerShip.getSpeed() < 200f && playerShip.getSpeed() >= 0) {
-                    playerShip.setSpeed(playerShip.getSpeed() + 0.5f);
+                    playerShip.setSpeed(playerShip.getSpeed() + half);
                 }
 
             }
@@ -332,7 +334,7 @@ System.out.println("Zoom: "+camera.zoom);
         if (InputManager.isSPressed()) {
             for (PlayerShip playerShip : playerShips) {
                 if (playerShip.getSpeed() <= 200f && playerShip.getSpeed() > 0) {
-                    playerShip.setSpeed(playerShip.getSpeed() - 0.5f);
+                    playerShip.setSpeed(playerShip.getSpeed() - half);
                 }
             }
         }
@@ -357,7 +359,6 @@ System.out.println("Zoom: "+camera.zoom);
 
 
         if (InputManager.isQPressed()) {
-
            zoomIn();
         }
 
@@ -368,31 +369,21 @@ System.out.println("Zoom: "+camera.zoom);
     }
 
     private void zoomIn() {
-        camera.zoom -= zoomSpeed;
+        camera.zoom -= zoomSpeed * camera.zoom;
         camera.update();
     }
 
     // Method to zoom out
     private void zoomOut() {
-        camera.zoom += zoomSpeed;
+        camera.zoom += zoomSpeed * camera.zoom;
         camera.update();
     }
 
 
-public long getWorldWidth() {
-
-        return WORLD_WIDTH;
-}
-
-    public long getWorldHeight() {
-
-        return WORLD_HEIGHT;
-    }
-
     @Override
     public void dispose() {
         batch.dispose();
-      //  backgroundTexture.dispose();
+        backgroundTexture.dispose();
         purpleShipTexture.dispose();
         greenLaserTexture.dispose();
         blueLaserTexture.dispose();
