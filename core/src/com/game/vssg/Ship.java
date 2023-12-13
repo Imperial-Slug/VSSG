@@ -20,6 +20,7 @@ public class Ship extends Sprite {
     private Faction faction;
     private int actionCounter;
     private boolean isIdle;
+    private ShipPart exhaust;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -38,6 +39,7 @@ public class Ship extends Sprite {
     enum ActionState {
         PLAYER_CONTROL,
         CRUISE,
+        FIRE,
         LEFT_U_TURN,
         RIGHT_U_TURN,
         CIRCLE,
@@ -49,7 +51,7 @@ public class Ship extends Sprite {
 
     }
 
-    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, Rectangle hitbox, int actionCounter, Faction faction) {
+    public Ship(Texture texture, ShipPart exhaust, Vector2 position, float speed, ActionState actionState, Rectangle hitbox, int actionCounter, Faction faction) {
         super(texture);
         this.position = position;
         this.speed = speed;
@@ -58,6 +60,7 @@ public class Ship extends Sprite {
         this.shapeRenderer = new ShapeRenderer();
         this.actionCounter = 0;
         this.faction = faction;
+        this.exhaust = exhaust;
         this.active = true;
 
     }
@@ -69,6 +72,7 @@ public class Ship extends Sprite {
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
 
+
             // Check if the ship is out of screen bounds and deactivate it if necessary
             if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
                 active = false;
@@ -76,6 +80,7 @@ public class Ship extends Sprite {
 
             // Update the sprite's position
             setPosition(position.x, position.y);
+            this.exhaust.setPosition(this.position.x, this.position.y/2);
             updateHitBox(ship);
         }
     }
@@ -296,6 +301,29 @@ void handleActionState(Ship ship) {
         }
     }
 
+
+    public void handleFire(Ship ship) {
+        if (ship.getActionState() == ActionState.FIRE) {
+            if (ship.getActionCounter() <= 180*4) {
+                ship.setActionCounter(ship.getActionCounter() + 1);
+                ship.rotate(-0.25f);
+            } else if (ship.getActionCounter() > 180*4) {
+                if (ship.isIdle) {
+                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionCounter(0);
+                }
+                else {
+                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionCounter(0);
+                }
+            }
+        }
+    }
+
+
+
+
+
     void lookForEnemy(Ship ship) {
         System.out.println("Looking for enemy...");
     }
@@ -374,6 +402,12 @@ public ActionState getActionState() {
         this.actionCounter = actionCounter;
 
     }
+public ShipPart getExhaust(){
 
+        return this.exhaust;
+}
+    public void setExhaust(ShipPart exhaust) {
 
+        this.exhaust = exhaust;
+    }
 }

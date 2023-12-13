@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Iterator;
+import java.util.Random;
 
 public class VSSG implements ApplicationListener {
 
@@ -33,13 +34,13 @@ public class VSSG implements ApplicationListener {
     private ObjectSet<Explosion> explosions;
     private ObjectSet<Laser> lasers;
     private SpriteBatch batch;
-    private Sound laserSound1;
     private Sound explosionSound1;
+    private Sound laserBlast1;
+    private Sound laserBlast2;
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
     private final float wrapDivisor = (float) WORLD_WIDTH / 4096;
     private final float zoomSpeed = 0.002f;
-
 
     private Texture purpleShipTexture;
     private Texture greenLaserTexture;
@@ -49,6 +50,7 @@ public class VSSG implements ApplicationListener {
     private Texture redLaserTexture;
     private Texture greenShipTexture;
     private Texture backgroundTexture;
+    private Texture exhaustTexture;
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -65,7 +67,7 @@ public class VSSG implements ApplicationListener {
     public void create() {
         // Get number of processors for future multithreading purposes.
         int processors = Runtime.getRuntime().availableProcessors();
-        Gdx.app.debug("Get number of processors.", "Cores: " + processors);
+       System.out.println("Get number of processor cores: " + processors);
 
         // Load assets.
         purpleShipTexture = new Texture("purple_ship.png");
@@ -75,10 +77,11 @@ public class VSSG implements ApplicationListener {
         redLaserTexture = new Texture("laser_red.png");
         blueLaserTexture = new Texture("laser_blue.png");
         backgroundTexture = new Texture("background.png");
-
-        laserSound1 = Gdx.audio.newSound(Gdx.files.internal("short_laser_blast.wav"));
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
+        laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
         explosionTexture1 = new Texture("explosion_orange.png");
+        exhaustTexture = new Texture("ship_exhaust.png");
+
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 
@@ -110,7 +113,8 @@ public class VSSG implements ApplicationListener {
         Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
         Rectangle hitBox = new Rectangle();
         int playerActionCounter = 0;
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
+        ShipPart exhaust = new ShipPart(exhaustTexture);
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, exhaust, vector2, speed, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
         playerShip.setScale(purpleShipScale);
         playerShip.setRotation(0);
 
@@ -264,16 +268,15 @@ public class VSSG implements ApplicationListener {
         if (InputManager.isSpacePressed()) {
             if (!laserSpawnTimeout) {
                 for (Ship ship : playerShips) {
+
                     Laser laser = ship.fireLaser(greenLaserTexture, ship);
                     laser.setShip(ship);
                     lasers.add(laser);
-                    laserSound1.play(half);
-                    laserSpawnTimeout = true;
-                    laserSpawnCounter = 0;
 
-                    if (laserSound1 == null) {
-                        System.out.println("Sound file not loaded!");
-                    }
+                        laserBlast2.play(1.0f);
+                        laserSpawnTimeout = true;
+                        laserSpawnCounter = 0;
+
                 }
             }
         }
@@ -287,7 +290,7 @@ public class VSSG implements ApplicationListener {
 
 
         if (shipSpawnTimeout) {
-            if (shipSpawnCounter >= 111) {
+            if (shipSpawnCounter >= 90) {
 
                 shipSpawnTimeout = false;
             } else {
@@ -311,8 +314,9 @@ public class VSSG implements ApplicationListener {
                 Vector2 position = new Vector2((float) WORLD_WIDTH /2, (float) WORLD_HEIGHT /2);
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
-                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 40, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
-                cpuShip.spawnCpuShip(greenShipTexture, position, cpuShips, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
+                ShipPart exhaust = new ShipPart(exhaustTexture);
+                CpuShip cpuShip = new CpuShip(greenShipTexture, exhaust, position, 40, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
+                cpuShip.spawnCpuShip(greenShipTexture, exhaust, position, cpuShips, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
                 shipSpawnTimeout = true;
                 shipSpawnCounter = 0;
             }
@@ -391,9 +395,11 @@ public class VSSG implements ApplicationListener {
         redLaserTexture.dispose();
         greenShipTexture.dispose();
         explosionSound1.dispose();
-        laserSound1.dispose();
+        laserBlast2.dispose();
+        laserBlast1.dispose();
         explosionTexture1.dispose();
         otherShipTexture.dispose();
+        exhaustTexture.dispose();
 
     }
 
