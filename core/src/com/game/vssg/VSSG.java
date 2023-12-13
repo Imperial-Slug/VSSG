@@ -21,7 +21,7 @@ import java.util.Random;
 public class VSSG implements ApplicationListener {
 
     // DEBUGGING //
-    public static boolean showHitBoxes = true;
+    public static boolean showHitBoxes = false;
     public static boolean mute = false;
     ///////////////
 
