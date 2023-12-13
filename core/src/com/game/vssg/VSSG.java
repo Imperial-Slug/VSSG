@@ -197,7 +197,7 @@ public class VSSG implements ApplicationListener {
 
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
                     Vector2 position = new Vector2(laser.getX() - 40, laser.getY() - 65);
-                    Explosion.explode(camera, explosionTexture1, 0.08f, position, 30, explosions, explosionSound1, 300);
+                    Explosion.explode(camera, explosionTexture1, 0.08f, position, 30, explosions, explosionSound1, 300, 10);
                     System.out.println("Ship hit.");
                     ship.setInactive(ship);
                     laser.setInactive(laser);
@@ -209,6 +209,7 @@ public class VSSG implements ApplicationListener {
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
+           playerShip.setOrigin(-64, ((playerShip.getHeight())/2) );
 
             float playerX = playerShip.getX();
             float playerY = playerShip.getY();
@@ -217,8 +218,9 @@ public class VSSG implements ApplicationListener {
             camera.position.y = playerY;
 
             //Explosion for Ship exhaust
-            Vector2 position = new Vector2(playerX, playerY);
-            Explosion.explode(camera, explosionTexture1, 0.08f, position, 2, explosions, explosionSound1, 100);
+            Vector2 position = new Vector2((playerX+(playerShip.getOriginX())), playerY+(playerShip.getOriginY()-64));
+            Explosion.explode(camera, explosionTexture1, 0.08f, position, 10, explosions, explosionSound1, 0.5f, playerShip.getRotation());
+
 
         }
 
@@ -291,7 +293,7 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isRightMousePressed()) {
             Vector2 position = new Vector2(camera.position.x, camera.position.y);
-            Explosion.explode(camera, explosionTexture1, 10, position, 30, explosions, explosionSound1, 300);
+            Explosion.explode(camera, explosionTexture1, 0.08f, position, 30, explosions, explosionSound1, 100, 10);
 
         }
 

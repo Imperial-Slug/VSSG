@@ -35,7 +35,7 @@ public class Explosion extends Sprite {
         this.duration = duration;
         this.position = position;
         this.speed = speed;
-        active = true;
+        this.active = true;
     }
 
 
@@ -83,6 +83,8 @@ public class Explosion extends Sprite {
         explosion.duration = duration;
         explosion.setPosition(position.x, position.y);
         explosion.setScale(magnitude);
+        explosion.setOrigin(0, explosion.getHeight() / 2f);
+
         explosions.add(explosion);
     }
 
@@ -100,9 +102,12 @@ public float getSpeed() {
         return active;
     }
 
-    public static void explode(OrthographicCamera camera, Texture explosionTexture1, float magnitude, Vector2 position, float speed, ObjectSet<Explosion> explosions, Sound explosionSound, float duration) {
+    public static void explode(OrthographicCamera camera, Texture explosionTexture1, float magnitude, Vector2 position, float speed, ObjectSet<Explosion> explosions, Sound explosionSound, float duration, float rotation) {
 
         Explosion explosion = new Explosion(explosionTexture1, magnitude, position, speed, duration);
+        explosion.setOrigin(0, explosion.getHeight() / 2f);
+
+        explosion.setRotation(rotation);
         explosion.spawnExplosion(explosion, explosions);
         explosionSound.play(0.2f);
     }
