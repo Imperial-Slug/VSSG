@@ -20,7 +20,6 @@ public class Ship extends Sprite {
     private Faction faction;
     private int actionCounter;
     private boolean isIdle;
-    private ShipPart exhaust;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -51,7 +50,7 @@ public class Ship extends Sprite {
 
     }
 
-    public Ship(Texture texture, ShipPart exhaust, Vector2 position, float speed, ActionState actionState, Rectangle hitbox, int actionCounter, Faction faction) {
+    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, Rectangle hitbox, int actionCounter, Faction faction) {
         super(texture);
         this.position = position;
         this.speed = speed;
@@ -60,7 +59,6 @@ public class Ship extends Sprite {
         this.shapeRenderer = new ShapeRenderer();
         this.actionCounter = 0;
         this.faction = faction;
-        this.exhaust = exhaust;
         this.active = true;
 
     }
@@ -77,10 +75,9 @@ public class Ship extends Sprite {
             if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
                 active = false;
             }
-
             // Update the sprite's position
             setPosition(position.x, position.y);
-            this.exhaust.setPosition(this.position.x, this.position.y/2);
+
             updateHitBox(ship);
         }
     }
@@ -402,12 +399,5 @@ public ActionState getActionState() {
         this.actionCounter = actionCounter;
 
     }
-public ShipPart getExhaust(){
 
-        return this.exhaust;
-}
-    public void setExhaust(ShipPart exhaust) {
-
-        this.exhaust = exhaust;
-    }
 }

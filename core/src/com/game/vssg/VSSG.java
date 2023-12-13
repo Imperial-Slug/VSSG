@@ -113,15 +113,12 @@ public class VSSG implements ApplicationListener {
         Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
         Rectangle hitBox = new Rectangle();
         int playerActionCounter = 0;
-        ShipPart exhaust = new ShipPart(exhaustTexture);
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, exhaust, vector2, speed, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
         playerShip.setScale(purpleShipScale);
         playerShip.setRotation(0);
 
         // Add the new ship to the Ship list.
         playerShips.add(playerShip);
-        Gdx.app.debug("ships.add(ship)", "ships list has " + playerShips.size);
-
 
     }
 
@@ -138,6 +135,7 @@ public class VSSG implements ApplicationListener {
         Iterator<CpuShip> cpuIter = cpuShips.iterator();
         Iterator<Explosion> explosionIter = explosions.iterator();
         Iterator<Laser> laserIter = lasers.iterator();
+
 
         while (playerIter.hasNext()) {
 
@@ -162,7 +160,7 @@ public class VSSG implements ApplicationListener {
         while (explosionIter.hasNext()) {
 
             Explosion explosion = explosionIter.next();
-            explosion.update(deltaTime, explosion);
+            explosion.update(deltaTime);
 
             if (!explosion.isActive()) {
                 explosionIter.remove();
@@ -172,7 +170,7 @@ public class VSSG implements ApplicationListener {
         while (laserIter.hasNext()) {
 
             Laser laser = laserIter.next();
-            laser.update(Gdx.graphics.getDeltaTime(), WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
+            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
 
             if (!laser.isActive()) {
                 laserIter.remove();
@@ -199,7 +197,7 @@ public class VSSG implements ApplicationListener {
 
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
                     Vector2 position = new Vector2(laser.getX() - 40, laser.getY() - 65);
-                    Explosion.explode(camera, explosionTexture1, 10, position, 30, explosions, explosionSound1);
+                    Explosion.explode(camera, explosionTexture1, 0.08f, position, 30, explosions, explosionSound1, 300);
                     System.out.println("Ship hit.");
                     ship.setInactive(ship);
                     laser.setInactive(laser);
@@ -211,8 +209,17 @@ public class VSSG implements ApplicationListener {
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
-            camera.position.x = playerShip.getX();
-            camera.position.y = playerShip.getY();
+
+            float playerX = playerShip.getX();
+            float playerY = playerShip.getY();
+
+            camera.position.x = playerX;
+            camera.position.y = playerY;
+
+            //Explosion for Ship exhaust
+            Vector2 position = new Vector2(playerX, playerY);
+            Explosion.explode(camera, explosionTexture1, 0.08f, position, 2, explosions, explosionSound1, 100);
+
         }
 
         for (CpuShip cpuShip : cpuShips) {
@@ -223,7 +230,7 @@ public class VSSG implements ApplicationListener {
 
         for (Explosion explosion : explosions) {
             explosion.draw(batch);
-            explosion.update(deltaTime, explosion);
+            explosion.update(deltaTime);
         }
 
         batch.end();
@@ -284,7 +291,7 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isRightMousePressed()) {
             Vector2 position = new Vector2(camera.position.x, camera.position.y);
-            Explosion.explode(camera, explosionTexture1, 10, position, 30, explosions, explosionSound1);
+            Explosion.explode(camera, explosionTexture1, 10, position, 30, explosions, explosionSound1, 300);
 
         }
 
@@ -314,9 +321,8 @@ public class VSSG implements ApplicationListener {
                 Vector2 position = new Vector2((float) WORLD_WIDTH /2, (float) WORLD_HEIGHT /2);
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
-                ShipPart exhaust = new ShipPart(exhaustTexture);
-                CpuShip cpuShip = new CpuShip(greenShipTexture, exhaust, position, 40, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
-                cpuShip.spawnCpuShip(greenShipTexture, exhaust, position, cpuShips, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
+                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 40, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
+                cpuShip.spawnCpuShip(greenShipTexture, position, cpuShips, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
                 shipSpawnTimeout = true;
                 shipSpawnCounter = 0;
             }

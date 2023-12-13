@@ -19,57 +19,37 @@ public class Explosion extends Sprite {
     private ShapeRenderer shapeRenderer;
     private Texture texture2;
     private Texture texture3;
-    private int magnitude;
+    private float magnitude;
     private boolean active;
     private float speed;
+    private float duration;
 
     private final Texture texture1;
 
     ///// Constructors ////////
 
-    public Explosion (Texture texture1, int magnitude, Vector2 position, float speed) {
+    public Explosion (Texture texture1, float magnitude, Vector2 position, float speed, float duration) {
         super(texture1);
         this.magnitude = magnitude;
         this.texture1 = texture1;
-
+        this.duration = duration;
         this.position = position;
         this.speed = speed;
         active = true;
     }
 
-    public Explosion (Texture texture1, Texture texture2, int magnitude, Vector2 position, float speed) {
 
-        this.texture1 = texture1;
-        this.texture2 = texture2;
-        this.magnitude = magnitude;
-
-        this.position = position;
-        this.speed = speed;
-        this.active = true;
-    }
-
-    public Explosion (Texture texture1, Texture texture2, Texture texture3, int magnitude, Vector2 position, float speed) {
-        this.texture1 = texture1;
-        this.texture2 = texture2;
-        this.texture3 = texture3;
-        this.magnitude = magnitude;
-
-        this.position = position;
-        this.speed = speed;
-        this.active = true;
-    }
 
 /////////////////
     float speedCounter = 0;
     int durationCounter = 0;
 
-    public void update(float delta, Explosion explosion) {
-
+    public void update(float delta) {
         if (active) {
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
 
-            if (durationCounter <=300) {
+            if (durationCounter <=duration) {
                 durationCounter++;
             }
             else {  this.active = false;  }
@@ -83,7 +63,7 @@ public class Explosion extends Sprite {
             }
             else {
                 speedCounter = 0;
-                speed = 1;
+                speed = 10;
             }
 
 
@@ -96,12 +76,13 @@ public class Explosion extends Sprite {
         }
     }
 
-    public void spawnExplosion(Texture texture1, Vector2 position, int magnitude, float speed, ObjectSet<Explosion> explosions) {
-        this.magnitude = magnitude;
-        this.position = position;
-        Explosion explosion = new Explosion(texture1, magnitude, position, speed);
+    public void spawnExplosion(Explosion explosion, ObjectSet<Explosion> explosions) {
+
+        explosion.magnitude = magnitude;
+        explosion.position = position;
+        explosion.duration = duration;
         explosion.setPosition(position.x, position.y);
-        explosion.setScale(0.08f);
+        explosion.setScale(magnitude);
         explosions.add(explosion);
     }
 
@@ -119,10 +100,10 @@ public float getSpeed() {
         return active;
     }
 
-    public static void explode(OrthographicCamera camera, Texture explosionTexture1, int magnitude, Vector2 position, float speed, ObjectSet<Explosion> explosions, Sound explosionSound) {
+    public static void explode(OrthographicCamera camera, Texture explosionTexture1, float magnitude, Vector2 position, float speed, ObjectSet<Explosion> explosions, Sound explosionSound, float duration) {
 
-        Explosion explosion = new Explosion(explosionTexture1, magnitude, position, speed);
-        explosion.spawnExplosion(explosionTexture1, position, magnitude, speed, explosions);
+        Explosion explosion = new Explosion(explosionTexture1, magnitude, position, speed, duration);
+        explosion.spawnExplosion(explosion, explosions);
         explosionSound.play(0.2f);
     }
 
