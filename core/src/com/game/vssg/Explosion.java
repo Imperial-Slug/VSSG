@@ -105,8 +105,7 @@ public float getSpeed() {
     public static void explode(OrthographicCamera camera, Texture explosionTexture1, float magnitude, Vector2 position, float speed, ObjectSet<Explosion> explosions, Sound explosionSound, float duration, float rotation) {
 
         Explosion explosion = new Explosion(explosionTexture1, magnitude, position, speed, duration);
-        explosion.setOrigin(0, explosion.getHeight() / 2f);
-
+        explosion.setOrigin(explosion.getWidth()/2, explosion.getHeight() / 2f);
         explosion.setRotation(rotation);
         explosion.spawnExplosion(explosion, explosions);
         explosionSound.play(0.2f);

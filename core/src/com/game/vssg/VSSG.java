@@ -21,7 +21,7 @@ import java.util.Random;
 public class VSSG implements ApplicationListener {
 
     // DEBUGGING //
-    public static boolean showHitBoxes = false;
+    public static boolean showHitBoxes = true;
     public static boolean mute = false;
     ///////////////
 
@@ -196,7 +196,8 @@ public class VSSG implements ApplicationListener {
                 }
 
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
-                    Vector2 position = new Vector2(laser.getX() - 40, laser.getY() - 65);
+                    Vector2 position = new Vector2(laser.getX(), laser.getY()-64);
+
                     Explosion.explode(camera, explosionTexture1, 0.08f, position, 30, explosions, explosionSound1, 300, 10);
                     System.out.println("Ship hit.");
                     ship.setInactive(ship);
