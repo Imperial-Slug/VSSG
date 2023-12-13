@@ -219,7 +219,7 @@ public class VSSG implements ApplicationListener {
 
             //Explosion for Ship exhaust
             Vector2 position = new Vector2((playerX+(playerShip.getOriginX())), playerY+(playerShip.getOriginY()-64));
-            Explosion.explode(camera, explosionTexture1, 0.08f, position, 10, explosions, explosionSound1, 0.5f, playerShip.getRotation());
+            Explosion.explode(camera, exhaustTexture, 0.08f, position, 10, explosions, explosionSound1, 0.5f, playerShip.getRotation());
 
 
         }
