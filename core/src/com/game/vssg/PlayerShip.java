@@ -16,8 +16,6 @@ public class PlayerShip extends Ship {
 
     }
 
-
-
     public void spawnPlayerShip(Texture texture, Vector2 position, ObjectSet<PlayerShip> ships, ActionState actionState, Rectangle hitbox, int actionCounter, Faction faction) {
         if (!playerActive) {
             PlayerShip playerShip = new PlayerShip(texture, position, 0, actionState, hitbox, actionCounter, faction);

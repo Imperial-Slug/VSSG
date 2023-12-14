@@ -210,7 +210,8 @@ public class VSSG implements ApplicationListener {
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
-           playerShip.setOrigin(-64, ((playerShip.getHeight())/2) );
+            playerShip.handleActionState(playerShip);
+            playerShip.setOrigin(-64, ((playerShip.getHeight())/2) );
 
             float playerX = playerShip.getX();
             float playerY = playerShip.getY();
@@ -229,6 +230,11 @@ public class VSSG implements ApplicationListener {
             cpuShip.draw(batch);
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.handleActionState(cpuShip);
+
+            float cpuShipX = cpuShip.getX();
+            float cpuShipY = cpuShip.getY();
+
+
         }
 
         for (Explosion explosion : explosions) {
