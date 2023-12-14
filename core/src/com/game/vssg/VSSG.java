@@ -314,7 +314,7 @@ public class VSSG implements ApplicationListener {
         if (InputManager.isLeftMousePressed()) {
             if (!shipSpawnTimeout) {
                 Vector2 position = new Vector2((float) camera.position.x, (float) camera.position.y);
-                CpuShip.ActionState actionState = Ship.ActionState.FIRE;
+                CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
                 CpuShip cpuShip = new CpuShip(greenShipTexture, position, 40, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL);
                 cpuShip.spawnCpuShip(greenShipTexture, position, cpuShips, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL);

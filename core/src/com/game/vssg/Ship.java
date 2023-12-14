@@ -148,9 +148,11 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
 
     public void handleCruise(Ship ship) {
         if (ship.getActionState() == Ship.ActionState.CRUISE) {
-            if (ship.getActionCounter() <= angleCalc) {
+
+
+            if (ship.getActionCounter() <= 2000) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-            } else if (ship.getActionCounter() > angleCalc) {
+            } else if (ship.getActionCounter() > 2000) {
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE, ActionState.CRUISE);
                     ship.setActionCounter(0);
@@ -265,10 +267,10 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
 
     public void handleStop(Ship ship) {
         if (ship.getActionState() == ActionState.STOP) {
-            if (ship.getActionCounter() <= 0) {
+            if (ship.getActionCounter() <= angleCalc) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.setSpeed(0);
-            } else if (ship.getActionCounter() >= 1) {
+            } else if (ship.getActionCounter() > angleCalc) {
                 ship.setActionState(Ship.ActionState.READY, ActionState.STOP);
                 ship.setActionCounter(0);
             }
@@ -294,8 +296,14 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                     ship.setActionState(ActionState.RIGHT_U_TURN, ship.actionState);
 
                 }
-                else if (rand_int == 5 || rand_int == 6) {
+                else if (rand_int == 5) {
                     ship.setActionState(ActionState.QUARTER_RIGHT_TURN, ship.actionState);
+                }
+
+                 else if (rand_int == 6) {
+
+                     ship.setActionState(ActionState.CRUISE, ship.actionState);
+                     System.out.println("CRUISING");
                 }
             }
                 else { ship.setActionState(ActionState.CRUISE, ship.actionState);}
@@ -337,7 +345,7 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
 
 
     void lookForEnemy(Ship ship) {
-        System.out.println("Looking for enemy...");
+
     }
 
     void checkWalls(Ship ship) {
