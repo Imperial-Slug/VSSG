@@ -1,6 +1,7 @@
 package com.game.vssg;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,6 +21,7 @@ public class Ship extends Sprite {
     private Faction faction;
     private int actionCounter;
     private boolean isIdle;
+    private ActionState previousActionState;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -50,11 +52,12 @@ public class Ship extends Sprite {
 
     }
 
-    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, Rectangle hitbox, int actionCounter, Faction faction) {
+    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Rectangle hitbox, int actionCounter, Faction faction) {
         super(texture);
         this.position = position;
         this.speed = speed;
         this.actionState = actionState;
+        this.previousActionState = previousActionState;
         this.hitbox = new Rectangle();
         this.shapeRenderer = new ShapeRenderer();
         this.actionCounter = 0;
@@ -128,7 +131,7 @@ public class Ship extends Sprite {
         hitbox.set(ship.getX()+ hitboxOffset, ship.getY()+ hitboxOffset, scaledWidth, scaledHeight);
     }
 
-void handleActionState(Ship ship) {
+void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTexture, Texture blueLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
     ship.handleIdle(ship);
     ship.handleLeftUTurn(ship);
     ship.handleRightUTurn(ship);
@@ -138,6 +141,7 @@ void handleActionState(Ship ship) {
     ship.handleStop(ship);
     ship.handleReady(ship);
     ship.handleCruise(ship);
+    ship.handleFire(ship, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
     ship.lookForEnemy(ship);
 
 }
@@ -148,11 +152,11 @@ void handleActionState(Ship ship) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
             } else if (ship.getActionCounter() > angleCalc) {
                 if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionState(ActionState.IDLE, ActionState.CRUISE);
                     ship.setActionCounter(0);
                 }
                 else {
-                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionState(Ship.ActionState.READY, ActionState.CRUISE);
                     ship.setActionCounter(0);
                 }
             }
@@ -166,11 +170,11 @@ void handleActionState(Ship ship) {
                 ship.rotate(half);
             } else if (ship.getActionCounter() > angleCalc) {
                 if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionState(ActionState.IDLE, ActionState.LEFT_U_TURN);
                     ship.setActionCounter(0);
                 }
                 else {
-                        ship.setActionState(Ship.ActionState.READY);
+                        ship.setActionState(Ship.ActionState.READY, ActionState.LEFT_U_TURN);
                         ship.setActionCounter(0);
                     }
                 }
@@ -185,11 +189,11 @@ void handleActionState(Ship ship) {
                 ship.rotate(-half);
             } else if (ship.getActionCounter() > angleCalc) {
                 if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionState(ActionState.IDLE, ActionState.RIGHT_U_TURN);
                     ship.setActionCounter(0);
                 }
                 else {
-                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionState(Ship.ActionState.READY, ActionState.RIGHT_U_TURN);
                     ship.setActionCounter(0);
                 }
             }
@@ -203,11 +207,11 @@ void handleActionState(Ship ship) {
                 ship.rotate(0.25f);
             } else if (ship.getActionCounter() > 180*4) {
                 if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionState(ActionState.IDLE, ActionState.CIRCLE);
                     ship.setActionCounter(0);
                 }
                 else {
-                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionState(Ship.ActionState.READY, ActionState.CIRCLE);
                     ship.setActionCounter(0);
                 }
             }
@@ -221,11 +225,11 @@ void handleActionState(Ship ship) {
                 ship.rotate(0.25f);
             } else if (ship.getActionCounter() > 180*4) {
                 if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionState(ActionState.IDLE, ActionState.QUARTER_LEFT_TURN);
                     ship.setActionCounter(0);
                 }
                 else {
-                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionState(Ship.ActionState.READY, ActionState.QUARTER_LEFT_TURN);
                     ship.setActionCounter(0);
                 }
             }
@@ -239,11 +243,11 @@ void handleActionState(Ship ship) {
                 ship.rotate(-0.25f);
             } else if (ship.getActionCounter() > 180*4) {
                 if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE);
+                    ship.setActionState(ActionState.IDLE, ActionState.QUARTER_RIGHT_TURN);
                     ship.setActionCounter(0);
                 }
                 else {
-                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionState(Ship.ActionState.READY, ActionState.QUARTER_RIGHT_TURN);
                     ship.setActionCounter(0);
                 }
             }
@@ -265,7 +269,7 @@ void handleActionState(Ship ship) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.setSpeed(0);
             } else if (ship.getActionCounter() >= 1) {
-                ship.setActionState(Ship.ActionState.READY);
+                ship.setActionState(Ship.ActionState.READY, ActionState.STOP);
                 ship.setActionCounter(0);
             }
         }
@@ -280,37 +284,48 @@ void handleActionState(Ship ship) {
                 Random rand = new Random();
                 int rand_int = rand.nextInt(10);
                 if (rand_int == 1) {
-                    ship.setActionState(ActionState.LEFT_U_TURN);
+                    ship.setActionState(ActionState.LEFT_U_TURN, ship.actionState);
                 } else if (rand_int == 2) {
-                    ship.setActionState(ActionState.CIRCLE);
+                    ship.setActionState(ActionState.CIRCLE, ship.actionState);
                 } else if (rand_int == 3) {
-                    ship.setActionState(ActionState.QUARTER_LEFT_TURN);
+                    ship.setActionState(ActionState.QUARTER_LEFT_TURN, ship.actionState);
                 }
                 else if (rand_int == 4){
-                    ship.setActionState(ActionState.RIGHT_U_TURN);
+                    ship.setActionState(ActionState.RIGHT_U_TURN, ship.actionState);
 
                 }
                 else if (rand_int == 5 || rand_int == 6) {
-                    ship.setActionState(ActionState.QUARTER_RIGHT_TURN);
+                    ship.setActionState(ActionState.QUARTER_RIGHT_TURN, ship.actionState);
                 }
             }
-                else { ship.setActionState(ActionState.CRUISE);}
+                else { ship.setActionState(ActionState.CRUISE, ship.actionState);}
         }
     }
 
 
-    public void handleFire(Ship ship) {
+
+    public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
         if (ship.getActionState() == ActionState.FIRE) {
-            if (ship.getActionCounter() <= 180*4) {
-                ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(-0.25f);
-            } else if (ship.getActionCounter() > 180*4) {
-                if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE);
+            if (ship.getActionCounter() <= 100) {
+
+            actionCounter++;
+
+            } else if (ship.getActionCounter() > 100) {
+
+                Laser laser = ship.fireLaser(redLaserTexture, ship);
+                laser.setShip(ship);
+                lasers.add(laser);
+                laserBlast.play(1.0f);
+                ship.setActionCounter(0);
+
+                if (ship.previousActionState == ActionState.IDLE) {
+                    ship.setActionState(ActionState.IDLE, ActionState.FIRE);
                     ship.setActionCounter(0);
                 }
+
+
                 else {
-                    ship.setActionState(Ship.ActionState.READY);
+                    ship.setActionState(Ship.ActionState.READY, ActionState.FIRE);
                     ship.setActionCounter(0);
                 }
             }
@@ -384,8 +399,9 @@ public ActionState getActionState() {
 
 }
 
-    public void setActionState(ActionState actionState){
+    public void setActionState(ActionState actionState, ActionState previousActionState){
         this.actionState = actionState;
+        this.previousActionState = previousActionState;
 
     }
 

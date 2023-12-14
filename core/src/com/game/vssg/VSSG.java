@@ -113,7 +113,7 @@ public class VSSG implements ApplicationListener {
         Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
         Rectangle hitBox = new Rectangle();
         int playerActionCounter = 0;
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE);
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, Ship.ActionState.PLAYER_CONTROL, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
         playerShip.setScale(purpleShipScale);
         playerShip.setRotation(0);
 
@@ -199,8 +199,7 @@ public class VSSG implements ApplicationListener {
                     Vector2 position = new Vector2(laser.getX(), laser.getY()-64);
 
                     Explosion.explode(camera, explosionTexture1, 0.08f, position, 30, explosions, explosionSound1, 300, 10);
-                    System.out.println("Ship hit.");
-                    ship.setInactive(ship);
+                                        ship.setInactive(ship);
                     laser.setInactive(laser);
 
                 }
@@ -210,23 +209,18 @@ public class VSSG implements ApplicationListener {
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
-            playerShip.handleActionState(playerShip);
+            playerShip.handleActionState(playerShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
 
-            float playerX = playerShip.getX();
-            float playerY = playerShip.getY();
-
-            camera.position.x = playerX;
-            camera.position.y = playerY;
+            camera.position.x = playerShip.getX();
+            camera.position.y = playerShip.getY();
 
         }
 
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.draw(batch);
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
-            cpuShip.handleActionState(cpuShip);
+            cpuShip.handleActionState(cpuShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
 
-            float playerX = cpuShip.getX();
-            float playerY = cpuShip.getY();
 
         }
 
@@ -282,9 +276,10 @@ public class VSSG implements ApplicationListener {
                     laser.setShip(ship);
                     lasers.add(laser);
 
-                        laserBlast2.play(1.0f);
-                        laserSpawnTimeout = true;
-                        laserSpawnCounter = 0;
+                    laserBlast2.play(1.0f);
+                    laserSpawnTimeout = true;
+                    laserSpawnCounter = 0;
+
 
                 }
             }
@@ -292,9 +287,7 @@ public class VSSG implements ApplicationListener {
 
 
         if (InputManager.isRightMousePressed()) {
-            Vector2 position = new Vector2(camera.position.x, camera.position.y);
-            Explosion.explode(camera, explosionTexture1, 0.08f, position, 30, explosions, explosionSound1, 100, 10);
-
+            System.out.println("Placeholder");
         }
 
 
@@ -306,7 +299,7 @@ public class VSSG implements ApplicationListener {
                 shipSpawnCounter++;
             }
         }
-
+// For player ship only during runtime. CpuShip laser timing is handled differently.
         if (laserSpawnTimeout) {
             if (laserSpawnCounter >= 200) {
 
@@ -321,10 +314,10 @@ public class VSSG implements ApplicationListener {
         if (InputManager.isLeftMousePressed()) {
             if (!shipSpawnTimeout) {
                 Vector2 position = new Vector2((float) camera.position.x, (float) camera.position.y);
-                CpuShip.ActionState actionState = Ship.ActionState.IDLE;
+                CpuShip.ActionState actionState = Ship.ActionState.FIRE;
                 Rectangle hitBox = new Rectangle();
-                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 40, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
-                cpuShip.spawnCpuShip(greenShipTexture, position, cpuShips, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
+                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 40, actionState, null, hitBox, actionCounter, Ship.Faction.TEAL);
+                cpuShip.spawnCpuShip(greenShipTexture, position, cpuShips, actionState, null, hitBox, actionCounter, Ship.Faction.TEAL);
                 shipSpawnTimeout = true;
                 shipSpawnCounter = 0;
             }
