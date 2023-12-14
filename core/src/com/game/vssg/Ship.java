@@ -271,7 +271,7 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.setSpeed(0);
             } else if (ship.getActionCounter() > angleCalc) {
-                ship.setActionState(Ship.ActionState.READY, ActionState.STOP);
+                ship.setActionState(ship.previousActionState, ActionState.STOP);
                 ship.setActionCounter(0);
             }
         }
@@ -293,7 +293,8 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                     ship.setActionState(ActionState.QUARTER_LEFT_TURN, ship.actionState);
                 }
                 else if (rand_int == 4){
-                    ship.setActionState(ActionState.RIGHT_U_TURN, ship.actionState);
+                    ship.setActionState(ActionState.STOP, ship.actionState);
+                    System.out.println("STOPPED");
 
                 }
                 else if (rand_int == 5) {
@@ -306,7 +307,10 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                      System.out.println("CRUISING");
                 }
             }
-                else { ship.setActionState(ActionState.CRUISE, ship.actionState);}
+                else { ship.setActionState(ActionState.STOP, ship.actionState);
+                System.out.println("STOPPED");
+
+                }
         }
     }
 
