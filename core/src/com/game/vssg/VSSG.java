@@ -117,7 +117,7 @@ public class VSSG implements ApplicationListener {
         Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
         Rectangle hitBox = new Rectangle();
         int playerActionCounter = 0;
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, null, hitBox, playerActionCounter, Ship.Faction.PURPLE, null);
         playerShip.setOriginCenter();
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
@@ -232,7 +232,7 @@ public class VSSG implements ApplicationListener {
                 Vector2 position = new Vector2(camera.position.x,  camera.position.y);
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
-                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 60, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL);
+                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL, null);
                 cpuShip.setPosition(position.x, position.y);
                 cpuShip.setScale(shipScale);
                 cpuShips.add(cpuShip);

@@ -22,6 +22,7 @@ public class Ship extends Sprite {
     private int actionCounter;
     private boolean isIdle;
     private ActionState previousActionState;
+    private ObjectSet<Ship> targets;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -52,7 +53,7 @@ public class Ship extends Sprite {
 
     }
 
-    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Rectangle hitbox, int actionCounter, Faction faction) {
+    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Rectangle hitbox, int actionCounter, Faction faction, ObjectSet<Ship> targets) {
         super(texture);
         this.position = position;
         this.speed = speed;
@@ -62,6 +63,7 @@ public class Ship extends Sprite {
         this.shapeRenderer = new ShapeRenderer();
         this.actionCounter = 0;
         this.faction = faction;
+        this.targets = targets;
         this.active = true;
 
     }
@@ -84,6 +86,8 @@ public class Ship extends Sprite {
             updateHitBox(ship);
         }
     }
+
+
 
     public void setFaction(Faction faction) {
 
@@ -271,16 +275,49 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
             } else if (ship.getActionCounter() > angleCalc) {
                 ship.setActionState(ship.previousActionState, ActionState.STOP);
                 ship.setActionCounter(0);
+                //ship.setSpeed(300);
             }
         }
     }
+
+
+    public float getRandomSpeed() {
+        Random rand = new Random();
+        int randInt = rand.nextInt(10);
+
+        if (randInt == 1) {
+            this.setSpeed(20);
+        } else if (randInt == 2) {
+            this.setSpeed(30);
+        } else if (randInt == 3) {
+            this.setSpeed(40);
+        }
+        else if (randInt == 4){
+            this.setSpeed(60);
+        }
+        else if (randInt == 5) {
+            this.setSpeed(70);
+        }
+        else if (randInt == 6) {
+            this.setSpeed(80);
+        }
+        else {
+            this.setSpeed(90);
+        }
+
+
+        return this.speed;
+    }
+
+
+
 
     public void handleIdle(Ship ship) {
 
         if (ship.getActionState() == ActionState.IDLE) {
             ship.isIdle = true;
-            ship.setSpeed(20);
-            if (ship.actionCounter == 0) {
+            ship.setSpeed(ship.getRandomSpeed());
+            if (ship.actionCounter <= 0) {
                 Random rand = new Random();
                 int rand_int = rand.nextInt(10);
                 if (rand_int == 1) {
@@ -304,11 +341,12 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                      ship.setActionState(ActionState.CRUISE, ship.actionState);
                      System.out.println("CRUISING");
                 }
-            }
                 else { ship.setActionState(ActionState.STOP, ship.actionState);
-                System.out.println("STOPPED");
+                    System.out.println("STOPPED");
 
                 }
+            }
+
         }
     }
 

@@ -10,8 +10,8 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 public class PlayerShip extends Ship {
 
-    public PlayerShip(Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Rectangle hitbox, int actionCounter, Faction faction) {
-        super(texture, position, speed, actionState, previousActionState, hitbox, actionCounter, faction);
+    public PlayerShip(Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Rectangle hitbox, int actionCounter, Faction faction, ObjectSet<Ship> targets) {
+        super(texture, position, speed, actionState, previousActionState, hitbox, actionCounter, faction, targets);
         this.setActionState(actionState, previousActionState);
 
     }
