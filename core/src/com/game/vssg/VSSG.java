@@ -113,7 +113,7 @@ public class VSSG implements ApplicationListener {
         Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
         Rectangle hitBox = new Rectangle();
         int playerActionCounter = 0;
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE);
         playerShip.setScale(purpleShipScale);
         playerShip.setRotation(0);
 
@@ -211,18 +211,12 @@ public class VSSG implements ApplicationListener {
             playerShip.draw(batch);
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.handleActionState(playerShip);
-            playerShip.setOrigin(-64, ((playerShip.getHeight())/2) );
 
             float playerX = playerShip.getX();
             float playerY = playerShip.getY();
 
             camera.position.x = playerX;
             camera.position.y = playerY;
-
-            //Explosion for Ship exhaust
-            Vector2 position = new Vector2((playerX+(playerShip.getOriginX())), playerY+(playerShip.getOriginY()-64));
-            Explosion.explode(camera, exhaustTexture, 0.08f, position, 10, explosions, explosionSound1, 0.5f, playerShip.getRotation());
-
 
         }
 
@@ -231,9 +225,8 @@ public class VSSG implements ApplicationListener {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.handleActionState(cpuShip);
 
-            float cpuShipX = cpuShip.getX();
-            float cpuShipY = cpuShip.getY();
-
+            float playerX = cpuShip.getX();
+            float playerY = cpuShip.getY();
 
         }
 
@@ -327,7 +320,7 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isLeftMousePressed()) {
             if (!shipSpawnTimeout) {
-                Vector2 position = new Vector2((float) WORLD_WIDTH /2, (float) WORLD_HEIGHT /2);
+                Vector2 position = new Vector2((float) camera.position.x, (float) camera.position.y);
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
                 CpuShip cpuShip = new CpuShip(greenShipTexture, position, 40, actionState, hitBox, actionCounter, Ship.Faction.TEAL);
