@@ -325,7 +325,7 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                 Laser laser = ship.fireLaser(redLaserTexture, ship);
                 laser.setShip(ship);
                 lasers.add(laser);
-                laserBlast.play(1.0f);
+                laserBlast.play(1f);
                 ship.setActionCounter(0);
 
                 if (ship.previousActionState == ActionState.IDLE) {
@@ -352,12 +352,11 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
 
     void checkWalls(Ship ship) {
         if (ship.position.x >= Gdx.graphics.getWidth()-50 || ship.position.y >= Gdx.graphics.getHeight()-50)  {
-        System.out.println("Boundary x alert");
-
+        ship.handleLeftUTurn(ship);
         }
         if (ship.position.x <= 50 || ship.position.y <= 50){
 
-            System.out.println("Boundary y alert");
+            ship.handleLeftUTurn(ship);
 
         }
     }

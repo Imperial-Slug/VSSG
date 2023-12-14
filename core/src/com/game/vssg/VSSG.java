@@ -350,30 +350,54 @@ public class VSSG implements ApplicationListener {
 
     public void checkObjects(float deltaTime){
         for (Laser laser : lasers) {
-            laser.setScale(2);
+            laser.setScale(3);
             laser.draw(batch);
             Rectangle laserHitBox = laser.getHitbox();
             laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
             laser.updateHitBox(laser);
-
+////////////////////////
             for (CpuShip ship : cpuShips) {
                 Rectangle shipHitBox = ship.getHitbox();
-
-                if (showHitBoxes) {
-                    ship.getShapeRenderer().setProjectionMatrix(camera.combined);
-                    ship.drawBoundingBox();
-                }
 
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY()-64);
 
                     Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
+
                     ship.setInactive(ship);
                     laser.setInactive(laser);
 
+                    if (showHitBoxes) {
+                        ship.getShapeRenderer().setProjectionMatrix(camera.combined);
+                        ship.drawBoundingBox();
+                    }
                 }
             }
+        /////////////////////////
+
+            for (Ship ship : playerShips) {
+                Rectangle shipHitBox = ship.getHitbox();
+
+                if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
+                    Vector2 position = new Vector2(laser.getX(), laser.getY()-64);
+
+                    Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
+
+                    ship.setInactive(ship);
+                    laser.setInactive(laser);
+
+                    if (showHitBoxes) {
+                        ship.getShapeRenderer().setProjectionMatrix(camera.combined);
+                        ship.drawBoundingBox();
+                    }
+                }
+            }
+
+
+        //////////////////////////
+        ///////////////////////////
         }
+
 
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
@@ -389,8 +413,6 @@ public class VSSG implements ApplicationListener {
             cpuShip.draw(batch);
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.handleActionState(cpuShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
-
-
         }
 
         for (Explosion explosion : explosions) {
