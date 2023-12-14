@@ -21,7 +21,7 @@ import java.util.Random;
 public class VSSG implements ApplicationListener {
 
     // DEBUGGING //
-    public static boolean showHitBoxes = true;
+    public static boolean showHitBoxes = false;
     public static boolean mute = false;
     ///////////////
 
@@ -140,98 +140,12 @@ public class VSSG implements ApplicationListener {
         Iterator<Explosion> explosionIter = explosions.iterator();
         Iterator<Laser> laserIter = lasers.iterator();
 
-
-        while (playerIter.hasNext()) {
-
-            PlayerShip playerShip = playerIter.next();
-            playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
-
-            if (!playerShip.isActive()) {
-                playerIter.remove();
-            }
-        }
-
-        while (cpuIter.hasNext()) {
-
-            CpuShip cpuShip = cpuIter.next();
-            cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
-
-            if (!cpuShip.isActive()) {
-                cpuIter.remove();
-            }
-        }
-
-        while (explosionIter.hasNext()) {
-
-            Explosion explosion = explosionIter.next();
-            explosion.update(deltaTime);
-
-            if (!explosion.isActive()) {
-                explosionIter.remove();
-            }
-        }
-
-        while (laserIter.hasNext()) {
-
-            Laser laser = laserIter.next();
-            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
-
-            if (!laser.isActive()) {
-                laserIter.remove();
-            }
-        }
+        checkIterators(playerIter, explosionIter, cpuIter, laserIter, deltaTime);
 
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, (int) wrapDivisor, (int) wrapDivisor);
 
-        for (Laser laser : lasers) {
-            laser.setScale(2);
-            laser.draw(batch);
-            Rectangle laserHitBox = laser.getHitbox();
-            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
-            laser.updateHitBox(laser);
-
-            for (CpuShip ship : cpuShips) {
-                Rectangle shipHitBox = ship.getHitbox();
-
-                if (showHitBoxes) {
-                    ship.getShapeRenderer().setProjectionMatrix(camera.combined);
-                    ship.drawBoundingBox();
-                }
-
-                if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
-                    Vector2 position = new Vector2(laser.getX(), laser.getY()-64);
-
-                    Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
-                    ship.setInactive(ship);
-                    laser.setInactive(laser);
-
-                }
-            }
-        }
-
-        for (PlayerShip playerShip : playerShips) {
-            playerShip.draw(batch);
-            playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
-            playerShip.handleActionState(playerShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
-
-            camera.position.x = playerShip.getX()+64;
-            camera.position.y = playerShip.getY()+64;
-
-        }
-
-        for (CpuShip cpuShip : cpuShips) {
-            cpuShip.draw(batch);
-            cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
-            cpuShip.handleActionState(cpuShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
-
-
-        }
-
-        for (Explosion explosion : explosions) {
-            explosion.draw(batch);
-            explosion.update(deltaTime);
-        }
+        checkObjects(deltaTime);
 
         batch.end();
 
@@ -391,6 +305,103 @@ public class VSSG implements ApplicationListener {
         camera.zoom += zoomSpeed * camera.zoom;
         camera.update();
     }
+
+    public void checkIterators(Iterator<PlayerShip> playerIter, Iterator<Explosion> explosionIter, Iterator<CpuShip> cpuIter,Iterator<Laser> laserIter, float deltaTime ) {
+        while (playerIter.hasNext()) {
+
+            PlayerShip playerShip = playerIter.next();
+            playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
+
+            if (!playerShip.isActive()) {
+                playerIter.remove();
+            }
+        }
+
+        while (cpuIter.hasNext()) {
+
+            CpuShip cpuShip = cpuIter.next();
+            cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
+
+            if (!cpuShip.isActive()) {
+                cpuIter.remove();
+            }
+        }
+
+        while (explosionIter.hasNext()) {
+
+            Explosion explosion = explosionIter.next();
+            explosion.update(deltaTime);
+
+            if (!explosion.isActive()) {
+                explosionIter.remove();
+            }
+        }
+
+        while (laserIter.hasNext()) {
+
+            Laser laser = laserIter.next();
+            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
+
+            if (!laser.isActive()) {
+                laserIter.remove();
+            }
+        }
+
+    }
+
+
+    public void checkObjects(float deltaTime){
+        for (Laser laser : lasers) {
+            laser.setScale(2);
+            laser.draw(batch);
+            Rectangle laserHitBox = laser.getHitbox();
+            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
+            laser.updateHitBox(laser);
+
+            for (CpuShip ship : cpuShips) {
+                Rectangle shipHitBox = ship.getHitbox();
+
+                if (showHitBoxes) {
+                    ship.getShapeRenderer().setProjectionMatrix(camera.combined);
+                    ship.drawBoundingBox();
+                }
+
+                if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
+                    Vector2 position = new Vector2(laser.getX(), laser.getY()-64);
+
+                    Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
+                    ship.setInactive(ship);
+                    laser.setInactive(laser);
+
+                }
+            }
+        }
+
+        for (PlayerShip playerShip : playerShips) {
+            playerShip.draw(batch);
+            playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
+            playerShip.handleActionState(playerShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
+
+            camera.position.x = playerShip.getX()+64;
+            camera.position.y = playerShip.getY()+64;
+
+        }
+
+        for (CpuShip cpuShip : cpuShips) {
+            cpuShip.draw(batch);
+            cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
+            cpuShip.handleActionState(cpuShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
+
+
+        }
+
+        for (Explosion explosion : explosions) {
+            explosion.draw(batch);
+            explosion.update(deltaTime);
+        }
+
+    }
+
 
 
     @Override
