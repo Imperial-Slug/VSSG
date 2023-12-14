@@ -111,10 +111,8 @@ public class Ship extends Sprite {
         float offsetY = -1.5f;
 
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);
-        Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 500, hitbox, 0, ship);
-       laser.setOrigin(0, laser.getOriginY()/2);
-        Rectangle hitbox = laser.getBoundingRectangle();
-        laser.setScale(half);
+        Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 1000, hitbox, 0, ship);
+        laser.setOrigin(0, laser.getOriginY()/2);
         return laser;
     }
 
@@ -122,12 +120,12 @@ public class Ship extends Sprite {
 
     // Update the bounding box based on the scaled sprite's position and size
     private void updateHitBox(Ship ship) {
-        float shipScale = 0.08f;
+        float shipScale = VSSG.shipScale;
         float scaledWidth = ship.getWidth() * shipScale;
         float scaledHeight = ship.getHeight() * shipScale;
 
         // Update the bounding box's position and size to match the scaled sprite
-        float hitboxOffset = 59f;
+        float hitboxOffset = 0;
         hitbox.set(ship.getX()+ hitboxOffset, ship.getY()+ hitboxOffset, scaledWidth, scaledHeight);
     }
 

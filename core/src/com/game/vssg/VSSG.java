@@ -21,13 +21,14 @@ import java.util.Random;
 public class VSSG implements ApplicationListener {
 
     // DEBUGGING //
-    public static boolean showHitBoxes = false;
+    public static boolean showHitBoxes = true;
     public static boolean mute = false;
     ///////////////
 
     public static long WORLD_CONSTANT = 32768;
     public static long WORLD_WIDTH = WORLD_CONSTANT;
     public static long WORLD_HEIGHT = WORLD_CONSTANT;
+    public static float shipScale = 1f;
 
     private ObjectSet<PlayerShip> playerShips;
     private ObjectSet<CpuShip> cpuShips;
@@ -37,6 +38,7 @@ public class VSSG implements ApplicationListener {
     private Sound explosionSound1;
     private Sound laserBlast1;
     private Sound laserBlast2;
+    private float DEFAULT_ZOOM = 2;
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
     private final float wrapDivisor = (float) WORLD_WIDTH / 4096;
@@ -95,6 +97,7 @@ public class VSSG implements ApplicationListener {
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.x = worldWidthCentre;
         camera.position.y = worldHeightCentre;
+        camera.zoom = DEFAULT_ZOOM;
         float viewportWidth = Gdx.graphics.getWidth();
         float viewportHeight = Gdx.graphics.getHeight();
         viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
@@ -109,16 +112,13 @@ public class VSSG implements ApplicationListener {
         lasers = new ObjectSet<>();
 
         //Set scales for textures.
-        float purpleShipScale = 0.08f * 2;
-        float speed = 40;
-
 
         // Initial ship's details.
         Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
         Rectangle hitBox = new Rectangle();
         int playerActionCounter = 0;
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, speed, Ship.ActionState.PLAYER_CONTROL, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
-        playerShip.setScale(purpleShipScale);
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
+        playerShip.setScale(shipScale);
         playerShip.setRotation(0);
 
         // Add the new ship to the Ship list.
@@ -185,7 +185,7 @@ public class VSSG implements ApplicationListener {
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, (int) wrapDivisor, (int) wrapDivisor);
 
         for (Laser laser : lasers) {
-            laser.setScale(1);
+            laser.setScale(2);
             laser.draw(batch);
             Rectangle laserHitBox = laser.getHitbox();
             laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
@@ -202,8 +202,8 @@ public class VSSG implements ApplicationListener {
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY()-64);
 
-                    Explosion.explode(camera, explosionTexture1, 0.08f, position, 30, explosions, explosionSound1, 300, 10);
-                                        ship.setInactive(ship);
+                    Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
+                    ship.setInactive(ship);
                     laser.setInactive(laser);
 
                 }
@@ -322,7 +322,7 @@ public class VSSG implements ApplicationListener {
                 Rectangle hitBox = new Rectangle();
                 CpuShip cpuShip = new CpuShip(greenShipTexture, position, 60, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL);
                 cpuShip.setPosition(position.x, position.y);
-                cpuShip.setScale(0.08f*2);
+                cpuShip.setScale(shipScale);
                 cpuShips.add(cpuShip);
 
                 shipSpawnTimeout = true;
