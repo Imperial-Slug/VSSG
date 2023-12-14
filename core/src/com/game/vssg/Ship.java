@@ -108,10 +108,10 @@ public class Ship extends Sprite {
 
     public Laser fireLaser(Texture texture, Ship ship) {
         float offsetX = -1.5f;
-        float offsetY = -1.5f;
-
+        float offsetY = -2.25f;
+        ship.setOrigin(ship.getOriginX(), ship.getOriginY());
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);
-        Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 1000, hitbox, 0, ship);
+        Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 2048, hitbox, 0, ship);
         laser.setOrigin(0, laser.getOriginY()/2);
         return laser;
     }

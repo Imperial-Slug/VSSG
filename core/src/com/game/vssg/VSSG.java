@@ -118,8 +118,10 @@ public class VSSG implements ApplicationListener {
         Rectangle hitBox = new Rectangle();
         int playerActionCounter = 0;
         PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, null, hitBox, playerActionCounter, Ship.Faction.PURPLE);
+        playerShip.setOriginCenter();
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
+
 
         // Add the new ship to the Ship list.
         playerShips.add(playerShip);
@@ -132,8 +134,9 @@ public class VSSG implements ApplicationListener {
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
-        batch.setProjectionMatrix(camera.combined);
         handleInput();
+
+        batch.setProjectionMatrix(camera.combined);
         float deltaTime = Gdx.graphics.getDeltaTime();
         Iterator<PlayerShip> playerIter = playerShips.iterator();
         Iterator<CpuShip> cpuIter = cpuShips.iterator();
@@ -141,12 +144,9 @@ public class VSSG implements ApplicationListener {
         Iterator<Laser> laserIter = lasers.iterator();
 
         checkIterators(playerIter, explosionIter, cpuIter, laserIter, deltaTime);
-
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, (int) wrapDivisor, (int) wrapDivisor);
-
         checkObjects(deltaTime);
-
         batch.end();
 
     }
@@ -203,11 +203,9 @@ public class VSSG implements ApplicationListener {
             }
         }
 
-
         if (InputManager.isRightMousePressed()) {
             System.out.println("Placeholder");
         }
-
 
         if (shipSpawnTimeout) {
             if (shipSpawnCounter >= 90) {
@@ -244,7 +242,7 @@ public class VSSG implements ApplicationListener {
             }
         }
 
-        float speedLimit = 200f;
+        float speedLimit = 500f;
         // Speed up.
         if (InputManager.isWPressed()) {
 
@@ -294,7 +292,7 @@ public class VSSG implements ApplicationListener {
         }
 
     }
-
+/////////////////////////////////
     private void zoomIn() {
         camera.zoom -= zoomSpeed * camera.zoom;
         camera.update();
@@ -305,7 +303,7 @@ public class VSSG implements ApplicationListener {
         camera.zoom += zoomSpeed * camera.zoom;
         camera.update();
     }
-
+/////////////////////////////////
     public void checkIterators(Iterator<PlayerShip> playerIter, Iterator<Explosion> explosionIter, Iterator<CpuShip> cpuIter,Iterator<Laser> laserIter, float deltaTime ) {
         while (playerIter.hasNext()) {
 
@@ -348,7 +346,7 @@ public class VSSG implements ApplicationListener {
         }
 
     }
-
+///////////////////////////
 
     public void checkObjects(float deltaTime){
         for (Laser laser : lasers) {
@@ -402,7 +400,7 @@ public class VSSG implements ApplicationListener {
 
     }
 
-
+//////////////////////
 
     @Override
     public void dispose() {
