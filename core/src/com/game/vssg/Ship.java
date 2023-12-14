@@ -150,9 +150,9 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
         if (ship.getActionState() == Ship.ActionState.CRUISE) {
 
 
-            if (ship.getActionCounter() <= 2000) {
+            if (ship.getActionCounter() <= 2048) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-            } else if (ship.getActionCounter() > 2000) {
+            } else if (ship.getActionCounter() > 2048) {
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE, ActionState.CRUISE);
                     ship.setActionCounter(0);
@@ -206,8 +206,8 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
         if (ship.getActionState() == ActionState.CIRCLE) {
             if (ship.getActionCounter() <= angleCalc*4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(0.25f);
-            } else if (ship.getActionCounter() > 180*4) {
+                ship.rotate(0.125f);
+            } else if (ship.getActionCounter() > 180*8) {
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE, ActionState.CIRCLE);
                     ship.setActionCounter(0);

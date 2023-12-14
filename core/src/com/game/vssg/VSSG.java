@@ -25,7 +25,7 @@ public class VSSG implements ApplicationListener {
     public static boolean mute = false;
     ///////////////
 
-    public static long WORLD_CONSTANT = 16384;
+    public static long WORLD_CONSTANT = 32768;
     public static long WORLD_WIDTH = WORLD_CONSTANT;
     public static long WORLD_HEIGHT = WORLD_CONSTANT;
 
@@ -77,14 +77,13 @@ public class VSSG implements ApplicationListener {
         redLaserTexture = new Texture("laser_red.png");
         blueLaserTexture = new Texture("laser_blue.png");
         backgroundTexture = new Texture("background.png");
-        explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
-        laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
         explosionTexture1 = new Texture("explosion_orange.png");
         exhaustTexture = new Texture("ship_exhaust.png");
+        explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
+        laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
 
+        // Covers the playable map in the specified texture.  To be modularized for customization.
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-
-
 
         // Setup camera, viewport, controls input.
         camera = new OrthographicCamera();
@@ -211,8 +210,8 @@ public class VSSG implements ApplicationListener {
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.handleActionState(playerShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
 
-            camera.position.x = playerShip.getX();
-            camera.position.y = playerShip.getY();
+            camera.position.x = playerShip.getX()+64;
+            camera.position.y = playerShip.getY()+64;
 
         }
 
