@@ -51,6 +51,8 @@ public class VSSG implements ApplicationListener {
     private Texture greenShipTexture;
     private Texture backgroundTexture;
     private Texture exhaustTexture;
+    private Texture tealShipButton;
+    private Texture purpleShipButton;
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -72,15 +74,18 @@ public class VSSG implements ApplicationListener {
         // Load assets.
         purpleShipTexture = new Texture("purple_ship.png");
         otherShipTexture = new Texture("N1.png");
-        greenShipTexture = new Texture("green_ship.png");
+        greenShipTexture = new Texture("teal_ship.png");
         greenLaserTexture = new Texture("laser_green.png");
         redLaserTexture = new Texture("laser_red.png");
         blueLaserTexture = new Texture("laser_blue.png");
         backgroundTexture = new Texture("background.png");
         explosionTexture1 = new Texture("explosion_orange.png");
         exhaustTexture = new Texture("ship_exhaust.png");
+        tealShipButton = new Texture("teal_ship_button.png");
+        purpleShipButton = new Texture("purple_ship_button.png");
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
         laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
+
 
         // Covers the playable map in the specified texture.  To be modularized for customization.
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -312,11 +317,14 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isLeftMousePressed()) {
             if (!shipSpawnTimeout) {
-                Vector2 position = new Vector2((float) camera.position.x, (float) camera.position.y);
+                Vector2 position = new Vector2(camera.position.x,  camera.position.y);
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
-                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 40, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL);
-                cpuShip.spawnCpuShip(greenShipTexture, position, cpuShips, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL);
+                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 60, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL);
+                cpuShip.setPosition(position.x, position.y);
+                cpuShip.setScale(0.08f*2);
+                cpuShips.add(cpuShip);
+
                 shipSpawnTimeout = true;
                 shipSpawnCounter = 0;
             }

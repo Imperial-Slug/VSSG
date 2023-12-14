@@ -16,14 +16,6 @@ public class PlayerShip extends Ship {
 
     }
 
-    public void spawnPlayerShip(Texture texture, Vector2 position, ObjectSet<PlayerShip> ships, ActionState actionState, ActionState previousActionState, Rectangle hitbox, int actionCounter, Faction faction) {
-        if (!playerActive) {
-            PlayerShip playerShip = new PlayerShip(texture, position, 0, actionState, previousActionState, hitbox, actionCounter, faction);
-            playerShip.setPosition(position.x, position.y);
-            ships.add(playerShip);
-        }
-        else { System.out.println("Player already created!"); }
-        }
 
 
 }
