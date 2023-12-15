@@ -19,7 +19,6 @@ public class Ship extends Sprite {
     private ActionState actionState;
     private Faction faction;
     private int actionCounter;
-    private int fireCounter;
     private boolean isIdle;
     private ActionState previousActionState;
     private ObjectSet<Ship> targets;
@@ -144,7 +143,7 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
     ship.handleReady(ship);
     ship.handleCruise(ship);
     ship.handleFire(ship, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
-    ship.handleAttack(redLaserTexture, ship);
+    ship.handleAttack(ship);
 
 }
 
@@ -339,8 +338,8 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                      ship.setActionState(ActionState.CRUISE, ship.actionState);
                      System.out.println("CRUISING");
                 }
-                else { ship.setActionState(ActionState.STOP, ship.actionState);
-                    System.out.println("STOPPED");
+                else { ship.setActionState(ActionState.CRUISE, ship.actionState);
+                    System.out.println("CRUISING");
 
                 }
             }
@@ -436,7 +435,7 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
         } else {
             sourceShip.setRotation(targetAngle);
         }
-
+System.out.println("angleDifference = "+targetAngle);
     }
 
     void checkWalls(Ship ship) {
@@ -529,29 +528,28 @@ public ActionState getActionState() {
         }
     }
 
-    void handleAttack(Texture laserTexture, Ship ship) {
+    void handleAttack(Ship ship) {
 
         if (ship.getActionState() == ActionState.ATTACK) {
 
-
-
         if (ship.targets.size > 0) {
+            float offset = 5;
             Ship target = ship.targets.first();
             float targetAngle = getTargetAngle(ship, target);
             if (ship.getActionCounter() != targetAngle) {
                 System.out.println("Handle Attack! COUNTER ="+ship.getActionCounter());
 
-                if (ship.getRotation() != getTargetAngle(ship, target)) {
+                if (ship.getRotation() < getTargetAngle(ship, target) - offset || ship.getRotation() > getTargetAngle(ship, target) + offset ) {
+
 
                 actionCounter++;
                 ship.rotateTowardTarget(ship, target, 100, Gdx.graphics.getDeltaTime());
 
-                } else if (ship.getRotation() >= getTargetAngle(ship, target) || ship.getRotation() <= getTargetAngle(ship, target) +5 ) {
+                } else if (ship.getRotation() >= getTargetAngle(ship, target) - offset || ship.getRotation() <= getTargetAngle(ship, target) + offset ) {
                     ship.setActionState(ActionState.FIRE, ship.actionState);
                     System.out.println("Set to Fire");
-                    //ship.fireLaser(laserTexture, ship);
                     ship.setActionCounter(0);
-                  //  ship.setActionState(ActionState.IDLE, ship.actionState);
+                   // ship.setActionState(ship.previousActionState, ship.actionState);
                 }
             }
             }
