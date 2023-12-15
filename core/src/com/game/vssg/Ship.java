@@ -30,7 +30,6 @@ public class Ship extends Sprite {
     private final float angleCalc = 360;
 
 
-
     enum Faction {
         PURPLE,
         TEAL
@@ -87,18 +86,17 @@ public class Ship extends Sprite {
     }
 
 
-
     public void setFaction(Faction faction) {
 
         this.faction = faction;
     }
 
-    public Faction getFaction(){
+    public Faction getFaction() {
 
         return this.faction;
     }
 
-    public float getSpeed(){
+    public float getSpeed() {
 
         return this.speed;
     }
@@ -115,10 +113,9 @@ public class Ship extends Sprite {
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);
         Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 2048, hitbox, 0, ship);
-        laser.setOrigin(0, laser.getOriginY()/2);
+        laser.setOrigin(0, laser.getOriginY() / 2);
         return laser;
     }
-
 
 
     // Update the bounding box based on the scaled sprite's position and size
@@ -129,23 +126,23 @@ public class Ship extends Sprite {
 
         // Update the bounding box's position and size to match the scaled sprite
         float hitboxOffset = 0;
-        hitbox.set(ship.getX()+ hitboxOffset, ship.getY()+ hitboxOffset, scaledWidth, scaledHeight);
+        hitbox.set(ship.getX() + hitboxOffset, ship.getY() + hitboxOffset, scaledWidth, scaledHeight);
     }
 
-void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTexture, Texture blueLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
-    ship.handleIdle(ship);
-    ship.handleLeftUTurn(ship);
-    ship.handleRightUTurn(ship);
-    ship.handleCircle(ship);
-    ship.handleQuarterLeftTurn(ship);
-    ship.handleQuarterRightTurn(ship);
-    ship.handleStop(ship);
-    ship.handleReady(ship);
-    ship.handleCruise(ship);
-    ship.handleFire(ship, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
-    ship.handleAttack(ship);
+    void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTexture, Texture blueLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
+        ship.handleIdle(ship);
+        ship.handleLeftUTurn(ship);
+        ship.handleRightUTurn(ship);
+        ship.handleCircle(ship);
+        ship.handleQuarterLeftTurn(ship);
+        ship.handleQuarterRightTurn(ship);
+        ship.handleStop(ship);
+        ship.handleReady(ship);
+        ship.handleCruise(ship);
+        ship.handleFire(ship, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
+        ship.handleAttack(ship);
 
-}
+    }
 
     public void handleCruise(Ship ship) {
         if (ship.getActionState() == Ship.ActionState.CRUISE) {
@@ -157,8 +154,7 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE, ActionState.CRUISE);
                     ship.setActionCounter(0);
-                }
-                else {
+                } else {
                     ship.setActionState(Ship.ActionState.IDLE, ActionState.CRUISE);
                     ship.setActionCounter(0);
                 }
@@ -175,12 +171,11 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE, ActionState.LEFT_U_TURN);
                     ship.setActionCounter(0);
+                } else {
+                    ship.setActionState(Ship.ActionState.IDLE, ActionState.LEFT_U_TURN);
+                    ship.setActionCounter(0);
                 }
-                else {
-                        ship.setActionState(Ship.ActionState.IDLE, ActionState.LEFT_U_TURN);
-                        ship.setActionCounter(0);
-                    }
-                }
+            }
 
         }
     }
@@ -194,8 +189,7 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE, ActionState.RIGHT_U_TURN);
                     ship.setActionCounter(0);
-                }
-                else {
+                } else {
                     ship.setActionState(Ship.ActionState.IDLE, ActionState.RIGHT_U_TURN);
                     ship.setActionCounter(0);
                 }
@@ -205,15 +199,14 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
 
     public void handleCircle(Ship ship) {
         if (ship.getActionState() == ActionState.CIRCLE) {
-            if (ship.getActionCounter() <= angleCalc*4) {
+            if (ship.getActionCounter() <= angleCalc * 4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(0.125f);
-            } else if (ship.getActionCounter() >angleCalc*4) {
+            } else if (ship.getActionCounter() > angleCalc * 4) {
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE, ActionState.CIRCLE);
                     ship.setActionCounter(0);
-                }
-                else {
+                } else {
                     ship.setActionState(Ship.ActionState.IDLE, ActionState.CIRCLE);
                     ship.setActionCounter(0);
                 }
@@ -223,15 +216,14 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
 
     public void handleQuarterLeftTurn(Ship ship) {
         if (ship.getActionState() == ActionState.QUARTER_LEFT_TURN) {
-            if (ship.getActionCounter() <= 180*4) {
+            if (ship.getActionCounter() <= 180 * 4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(0.25f);
-            } else if (ship.getActionCounter() > 180*4) {
+            } else if (ship.getActionCounter() > 180 * 4) {
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE, ActionState.QUARTER_LEFT_TURN);
                     ship.setActionCounter(0);
-                }
-                else {
+                } else {
                     ship.setActionState(Ship.ActionState.IDLE, ActionState.QUARTER_LEFT_TURN);
                     ship.setActionCounter(0);
                 }
@@ -241,15 +233,14 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
 
     public void handleQuarterRightTurn(Ship ship) {
         if (ship.getActionState() == ActionState.QUARTER_RIGHT_TURN) {
-            if (ship.getActionCounter() <= 180*4) {
+            if (ship.getActionCounter() <= 180 * 4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(-0.25f);
-            } else if (ship.getActionCounter() > 180*4) {
+            } else if (ship.getActionCounter() > 180 * 4) {
                 if (ship.isIdle) {
                     ship.setActionState(ActionState.IDLE, ActionState.QUARTER_RIGHT_TURN);
                     ship.setActionCounter(0);
-                }
-                else {
+                } else {
                     ship.setActionState(Ship.ActionState.IDLE, ActionState.QUARTER_RIGHT_TURN);
                     ship.setActionCounter(0);
                 }
@@ -288,25 +279,19 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
             this.setSpeed(30);
         } else if (randInt == 3) {
             this.setSpeed(40);
-        }
-        else if (randInt == 4){
+        } else if (randInt == 4) {
             this.setSpeed(60);
-        }
-        else if (randInt == 5) {
+        } else if (randInt == 5) {
             this.setSpeed(70);
-        }
-        else if (randInt == 6) {
+        } else if (randInt == 6) {
             this.setSpeed(80);
-        }
-        else {
+        } else {
             this.setSpeed(90);
         }
 
 
         return this.speed;
     }
-
-
 
 
     public void handleIdle(Ship ship) {
@@ -323,22 +308,18 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                     ship.setActionState(ActionState.CIRCLE, ship.actionState);
                 } else if (rand_int == 3) {
                     ship.setActionState(ActionState.QUARTER_LEFT_TURN, ship.actionState);
-                }
-                else if (rand_int == 4){
+                } else if (rand_int == 4) {
                     ship.setActionState(ActionState.STOP, ship.actionState);
                     System.out.println("STOPPED");
 
-                }
-                else if (rand_int == 5) {
+                } else if (rand_int == 5) {
                     ship.setActionState(ActionState.QUARTER_RIGHT_TURN, ship.actionState);
-                }
+                } else if (rand_int == 6) {
 
-                 else if (rand_int == 6) {
-
-                     ship.setActionState(ActionState.CRUISE, ship.actionState);
-                     System.out.println("CRUISING");
-                }
-                else { ship.setActionState(ActionState.CRUISE, ship.actionState);
+                    ship.setActionState(ActionState.CRUISE, ship.actionState);
+                    System.out.println("CRUISING");
+                } else {
+                    ship.setActionState(ActionState.CRUISE, ship.actionState);
                     System.out.println("CRUISING");
 
                 }
@@ -348,12 +329,11 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
     }
 
 
-
     public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
         if (ship.getActionState() == ActionState.FIRE) {
             if (ship.getActionCounter() <= 100) {
 
-            actionCounter++;
+                actionCounter++;
 
             } else if (ship.getActionCounter() > 100) {
 
@@ -383,12 +363,11 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
 
         while (sourceShip.getRotation() != targetAngle) {
 
-            if ((subtractSmallerFromLarger(targetAngle, sourceShip.getRotation())) < 180){
-                sourceShip.setRotation(sourceShip.getRotation()+1);
+            if ((subtractSmallerFromLarger(targetAngle, sourceShip.getRotation())) < 180) {
+                sourceShip.setRotation(sourceShip.getRotation() + 1);
 
-            }
-            else {
-                sourceShip.setRotation(sourceShip.getRotation()-1);
+            } else {
+                sourceShip.setRotation(sourceShip.getRotation() - 1);
             }
         }
     }
@@ -435,32 +414,32 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
         } else {
             sourceShip.setRotation(targetAngle);
         }
-System.out.println("angleDifference = "+targetAngle);
+        System.out.println("angleDifference = " + targetAngle);
     }
 
     void checkWalls(Ship ship) {
-        if (ship.position.x >= Gdx.graphics.getWidth()-50 || ship.position.y >= Gdx.graphics.getHeight()-50)  {
-        ship.handleLeftUTurn(ship);
+        if (ship.position.x >= Gdx.graphics.getWidth() - 50 || ship.position.y >= Gdx.graphics.getHeight() - 50) {
+            ship.handleLeftUTurn(ship);
         }
-        if (ship.position.x <= 50 || ship.position.y <= 50){
+        if (ship.position.x <= 50 || ship.position.y <= 50) {
 
             ship.handleLeftUTurn(ship);
 
         }
     }
 
-public Rectangle getHitbox() {
+    public Rectangle getHitbox() {
 
         return this.hitbox;
 
-}
+    }
 
-    public boolean isActive(){
+    public boolean isActive() {
 
         return active;
     }
 
-    public void setInactive(Ship ship){
+    public void setInactive(Ship ship) {
         ship.active = false;
 
     }
@@ -486,17 +465,17 @@ public Rectangle getHitbox() {
     }
 
 
-public ShapeRenderer getShapeRenderer(){
+    public ShapeRenderer getShapeRenderer() {
 
         return this.shapeRenderer;
-}
+    }
 
-public ActionState getActionState() {
+    public ActionState getActionState() {
         return this.actionState;
 
-}
+    }
 
-    public void setActionState(ActionState actionState, ActionState previousActionState){
+    public void setActionState(ActionState actionState, ActionState previousActionState) {
         this.actionState = actionState;
         this.previousActionState = previousActionState;
 
@@ -508,7 +487,7 @@ public ActionState getActionState() {
 
     }
 
-    public void setActionCounter(int actionCounter){
+    public void setActionCounter(int actionCounter) {
         this.actionCounter = actionCounter;
 
     }
@@ -521,48 +500,46 @@ public ActionState getActionState() {
 
     public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
         if ((subtractSmallerFromLarger(targetShip.getX(), this.getX())) < 1000 || (subtractSmallerFromLarger(targetShip.getY(), this.getY())) < 1000) {
-            if(!targets.contains(targetShip)){
-            targets.add(targetShip);
-            System.out.println("Target Acquired!");
-        }
+            if (!targets.contains(targetShip)) {
+                targets.add(targetShip);
+                System.out.println("Target Acquired!");
+            }
         }
     }
 
     void handleAttack(Ship ship) {
 
         if (ship.getActionState() == ActionState.ATTACK) {
+// Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
 
+            seekDestroy(ship);
+
+        }
+    }
+
+    void seekDestroy(Ship ship) {
         if (ship.targets.size > 0) {
-            float offset = 5;
+            float offset = 2;
             Ship target = ship.targets.first();
             float targetAngle = getTargetAngle(ship, target);
             if (ship.getActionCounter() != targetAngle) {
-                System.out.println("Handle Attack! COUNTER ="+ship.getActionCounter());
+                System.out.println("Handle Attack. COUNTER =" + ship.getActionCounter());
 
-                if (ship.getRotation() < getTargetAngle(ship, target) - offset || ship.getRotation() > getTargetAngle(ship, target) + offset ) {
+                if (ship.getRotation() < getTargetAngle(ship, target) - offset || ship.getRotation() > getTargetAngle(ship, target) + offset) {
+                    actionCounter++;
+                    ship.rotateTowardTarget(ship, target, 200, Gdx.graphics.getDeltaTime());
+                } else if (ship.getRotation() >= getTargetAngle(ship, target) - offset || ship.getRotation() <= getTargetAngle(ship, target) + offset) {
 
-
-                actionCounter++;
-                ship.rotateTowardTarget(ship, target, 100, Gdx.graphics.getDeltaTime());
-
-                } else if (ship.getRotation() >= getTargetAngle(ship, target) - offset || ship.getRotation() <= getTargetAngle(ship, target) + offset ) {
-                    ship.setActionState(ActionState.FIRE, ship.actionState);
-                    System.out.println("Set to Fire");
-                    ship.setActionCounter(0);
-                   // ship.setActionState(ship.previousActionState, ship.actionState);
+                    if (target.active) {
+                        ship.setActionState(ActionState.FIRE, ship.actionState);
+                        System.out.println("Set to Fire");
+                        ship.setActionCounter(0);
+                    }
                 }
             }
-            }
-
-        }
         }
 
-
-
-
-
-
-
+    }
 
     public ObjectSet<Ship> getTargets() {
 

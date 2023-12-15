@@ -32,7 +32,7 @@ public class Laser extends Sprite {
             despawnCounter = this.getDespawnCounter();
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
-            this.setDespawnCounter(this.getDespawnCounter()+1);
+            this.setDespawnCounter(this.getDespawnCounter() + 1);
             // Check if the laser is out of screen bounds and deactivate it if necessary
             if (position.x >= WORLD_WIDTH || position.y >= WORLD_HEIGHT || this.despawnCounter > 600) {
                 active = false;
@@ -51,7 +51,7 @@ public class Laser extends Sprite {
         hitbox.set(laser.getX(), laser.getY(), scaledWidth, scaledHeight);
     }
 
-    public float getSpeed(){
+    public float getSpeed() {
 
         return this.speed;
     }
@@ -60,30 +60,31 @@ public class Laser extends Sprite {
         this.speed = s;
 
     }
-    public boolean isActive(){
+
+    public boolean isActive() {
 
         return active;
     }
 
-    public void setInactive(Laser laser){
+    public void setInactive(Laser laser) {
         laser.active = false;
 
     }
 
-public Rectangle getHitbox() {
+    public Rectangle getHitbox() {
 
         return this.hitbox;
-}
+    }
 
-public void setDespawnCounter(int despawnCounter) {
+    public void setDespawnCounter(int despawnCounter) {
 
         this.despawnCounter = despawnCounter;
-}
+    }
 
-public int getDespawnCounter() {
+    public int getDespawnCounter() {
 
         return this.despawnCounter;
-}
+    }
 
     public Ship getShip() {
         return this.ship;

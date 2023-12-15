@@ -71,7 +71,7 @@ public class VSSG implements ApplicationListener {
     public void create() {
         // Get number of processors for future multithreading purposes.
         int processors = Runtime.getRuntime().availableProcessors();
-       System.out.println("Get number of processor cores: " + processors);
+        System.out.println("Get number of processor cores: " + processors);
 
         // Load assets.
         purpleShipTexture = new Texture("purple_ship.png");
@@ -205,11 +205,11 @@ public class VSSG implements ApplicationListener {
         }
 //attack player
         if (InputManager.isRightMousePressed()) {
-        for (CpuShip cpuShip : cpuShips) {
+            for (CpuShip cpuShip : cpuShips) {
 
                 cpuShip.setActionState(Ship.ActionState.ATTACK, cpuShip.getActionState());
 
-        }
+            }
 
         }
 
@@ -235,7 +235,7 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isLeftMousePressed()) {
             if (!shipSpawnTimeout) {
-                Vector2 position = new Vector2(camera.position.x,  camera.position.y);
+                Vector2 position = new Vector2(camera.position.x, camera.position.y);
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
@@ -289,9 +289,8 @@ public class VSSG implements ApplicationListener {
         }
 
 
-
         if (InputManager.isQPressed()) {
-           zoomIn();
+            zoomIn();
         }
 
         if (InputManager.isEPressed()) {
@@ -299,7 +298,8 @@ public class VSSG implements ApplicationListener {
         }
 
     }
-/////////////////////////////////
+
+    /////////////////////////////////
     private void zoomIn() {
         camera.zoom -= zoomSpeed * camera.zoom;
         camera.update();
@@ -310,8 +310,9 @@ public class VSSG implements ApplicationListener {
         camera.zoom += zoomSpeed * camera.zoom;
         camera.update();
     }
-/////////////////////////////////
-    public void checkIterators(Iterator<PlayerShip> playerIter, Iterator<Explosion> explosionIter, Iterator<CpuShip> cpuIter,Iterator<Laser> laserIter, float deltaTime ) {
+
+    /////////////////////////////////
+    public void checkIterators(Iterator<PlayerShip> playerIter, Iterator<Explosion> explosionIter, Iterator<CpuShip> cpuIter, Iterator<Laser> laserIter, float deltaTime) {
         while (playerIter.hasNext()) {
 
             PlayerShip playerShip = playerIter.next();
@@ -355,7 +356,7 @@ public class VSSG implements ApplicationListener {
     }
 ///////////////////////////
 
-    public void checkObjects(float deltaTime){
+    public void checkObjects(float deltaTime) {
         for (Laser laser : lasers) {
             laser.setScale(3);
             laser.draw(batch);
@@ -367,7 +368,7 @@ public class VSSG implements ApplicationListener {
                 Rectangle shipHitBox = ship.getHitbox();
 
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
-                    Vector2 position = new Vector2(laser.getX(), laser.getY()-64);
+                    Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
 
                     Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
 
@@ -380,13 +381,13 @@ public class VSSG implements ApplicationListener {
                     }
                 }
             }
-        /////////////////////////
+            /////////////////////////
 
             for (Ship ship : playerShips) {
                 Rectangle shipHitBox = ship.getHitbox();
 
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
-                    Vector2 position = new Vector2(laser.getX(), laser.getY()-64);
+                    Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
 
                     Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
 
@@ -408,8 +409,8 @@ public class VSSG implements ApplicationListener {
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.handleActionState(playerShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
 
-            camera.position.x = playerShip.getX()+64;
-            camera.position.y = playerShip.getY()+64;
+            camera.position.x = playerShip.getX() + 64;
+            camera.position.y = playerShip.getY() + 64;
 
         }
 
@@ -423,13 +424,12 @@ public class VSSG implements ApplicationListener {
             }
 
 
+        }
 
-            }
-
-      //  for (CpuShip cpuShip : cpuShips) {
-       //     for (Ship cpuShip2 : cpuShips) {
+        //  for (CpuShip cpuShip : cpuShips) {
+        //     for (Ship cpuShip2 : cpuShips) {
 //       //     }
-       // }
+        // }
 
 
         for (Explosion explosion : explosions) {
@@ -452,7 +452,7 @@ public class VSSG implements ApplicationListener {
         greenShipTexture.dispose();
         explosionSound1.dispose();
         laserBlast2.dispose();
-     //   laserBlast1.dispose();
+        //   laserBlast1.dispose();
         explosionTexture1.dispose();
         otherShipTexture.dispose();
         exhaustTexture.dispose();
