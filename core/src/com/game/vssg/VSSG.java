@@ -207,11 +207,7 @@ public class VSSG implements ApplicationListener {
         if (InputManager.isRightMousePressed()) {
         for (CpuShip cpuShip : cpuShips) {
 
-            for (PlayerShip playerShip : playerShips) {
-
-                cpuShip.attackTarget(cpuShip, playerShip);
-
-            }
+                cpuShip.setActionState(Ship.ActionState.ATTACK, cpuShip.getActionState());
 
         }
 
@@ -240,7 +236,7 @@ public class VSSG implements ApplicationListener {
         if (InputManager.isLeftMousePressed()) {
             if (!shipSpawnTimeout) {
                 Vector2 position = new Vector2(camera.position.x,  camera.position.y);
-                CpuShip.ActionState actionState = Ship.ActionState.IDLE;
+                CpuShip.ActionState actionState = Ship.ActionState.FIRE;
                 Rectangle hitBox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
                 CpuShip cpuShip = new CpuShip(greenShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL, targets);

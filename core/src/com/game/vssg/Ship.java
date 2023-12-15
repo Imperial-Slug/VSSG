@@ -3,7 +3,6 @@ package com.game.vssg;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -144,6 +143,7 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
     ship.handleReady(ship);
     ship.handleCruise(ship);
     ship.handleFire(ship, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
+    ship.handleAttack(redLaserTexture, ship);
 
 }
 
@@ -363,20 +363,11 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
                 laserBlast.play(1f);
                 ship.setActionCounter(0);
 
-                if (ship.previousActionState == ActionState.IDLE) {
-                    ship.setActionState(ActionState.IDLE, ActionState.FIRE);
-                    ship.setActionCounter(0);
-                }
+                ship.setActionState(ship.previousActionState, ship.actionState);
 
-
-                else {
-                    ship.setActionState(Ship.ActionState.IDLE, ActionState.FIRE);
-                    ship.setActionCounter(0);
-                }
             }
         }
     }
-
 
 
     public void faceDirectionOf(Ship sourceShip, Ship targetShip) {
@@ -388,13 +379,64 @@ void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTex
         Vector2 direction = targetPos.sub(sourcePos).nor();
 
         // Calculate the angle between the source and target ships
-        float angle = direction.angleDeg();
+        float targetAngle = direction.angleDeg();
 
-        // Set the rotation of the source ship to face the target ship
-        sourceShip.setRotation(angle);
+        while (sourceShip.getRotation() != targetAngle) {
+
+            if ((subtractSmallerFromLarger(targetAngle, sourceShip.getRotation())) < 180){
+                sourceShip.setRotation(sourceShip.getRotation()+1);
+
+            }
+            else {
+                sourceShip.setRotation(sourceShip.getRotation()-1);
+            }
+        }
     }
 
 
+    float getTargetAngle(Ship sourceShip, Ship targetShip) {
+
+        Vector2 sourcePos = new Vector2(sourceShip.getX(), sourceShip.getY());
+        Vector2 targetPos = new Vector2(targetShip.getX(), targetShip.getY());
+
+        // Calculate the direction vector from source to target
+        Vector2 direction = targetPos.sub(sourcePos).nor();
+
+        // Calculate the angle between the source and target ships
+        return direction.angleDeg();
+
+    }
+
+
+    public void rotateTowardTarget(Ship sourceShip, Ship targetShip, float rotationSpeed, float deltaTime) {
+        // Get the positions of the source and target ships and
+        // calculate the angle between the source and target ships
+        float targetAngle = getTargetAngle(sourceShip, targetShip);
+
+        // Get the current rotation of the source ship
+        float currentAngle = sourceShip.getRotation();
+
+        // Calculate the shortest angle difference between the current and target angles
+        float angleDifference = Math.abs(targetAngle - currentAngle);
+        if (angleDifference > 180) {
+            angleDifference = 360 - angleDifference;
+        }
+
+        // Calculate the amount to rotate based on rotationSpeed and deltaTime
+        float rotateAmount = rotationSpeed * deltaTime;
+
+        // Determine the direction of rotation (clockwise or counterclockwise)
+        if (angleDifference > rotateAmount) {
+            if ((targetAngle - currentAngle + 360) % 360 > 180) {
+                sourceShip.rotate(-rotateAmount);
+            } else {
+                sourceShip.rotate(rotateAmount);
+            }
+        } else {
+            sourceShip.setRotation(targetAngle);
+        }
+
+    }
 
     void checkWalls(Ship ship) {
         if (ship.position.x >= Gdx.graphics.getWidth()-50 || ship.position.y >= Gdx.graphics.getHeight()-50)  {
@@ -486,13 +528,40 @@ public ActionState getActionState() {
         }
     }
 
+    void handleAttack(Texture laserTexture, Ship ship) {
 
-    void attackTarget(Ship ship, Ship target) {
+        if (ship.getActionState() == ActionState.ATTACK) {
 
-        ship.faceDirectionOf(ship, target);
-        ship.setActionState(ActionState.FIRE, ship.actionState);
 
-    }
+
+        if (ship.targets.size > 0) {
+            Ship target = ship.targets.first();
+            float targetAngle = getTargetAngle(ship, target);
+            if (ship.getActionCounter() != targetAngle) {
+                System.out.println("Handle Attack! COUNTER ="+ship.getActionCounter());
+
+                if (ship.getRotation() != getTargetAngle(ship, target)) {
+
+                    ship.setActionCounter(ship.getActionCounter() + 1);
+                    ship.rotateTowardTarget(ship, target, 100, Gdx.graphics.getDeltaTime());
+
+                } else if (ship.getRotation() == getTargetAngle(ship, target)) {
+                    ship.setActionState(ActionState.FIRE, ship.actionState);
+                    //ship.fireLaser(laserTexture, ship);
+                    ship.setActionCounter(0);
+                    ship.setActionState(ActionState.IDLE, ship.actionState);
+                }
+            }
+            }
+
+        }
+        }
+
+
+
+
+
+
 
 
     public ObjectSet<Ship> getTargets() {
