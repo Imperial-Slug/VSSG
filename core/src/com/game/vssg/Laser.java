@@ -17,7 +17,7 @@ public class Laser extends Sprite {
 
 
     public Laser(Texture texture, float x, float y, float shipRotation, float speed, Rectangle hitbox, int despawnCounter, Ship ship) {
-        super();
+        super(texture);
         this.position = new Vector2(x, y);
         this.speed = speed;
         this.setRotation(shipRotation);
