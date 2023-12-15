@@ -19,6 +19,7 @@ public class Ship extends Sprite {
     private ActionState actionState;
     private Faction faction;
     private int actionCounter;
+    private int fireCounter;
     private boolean isIdle;
     private ActionState previousActionState;
     private ObjectSet<Ship> targets;
@@ -542,14 +543,15 @@ public ActionState getActionState() {
 
                 if (ship.getRotation() != getTargetAngle(ship, target)) {
 
-                    ship.setActionCounter(ship.getActionCounter() + 1);
-                    ship.rotateTowardTarget(ship, target, 100, Gdx.graphics.getDeltaTime());
+                actionCounter++;
+                ship.rotateTowardTarget(ship, target, 100, Gdx.graphics.getDeltaTime());
 
-                } else if (ship.getRotation() == getTargetAngle(ship, target)) {
+                } else if (ship.getRotation() >= getTargetAngle(ship, target) || ship.getRotation() <= getTargetAngle(ship, target) +5 ) {
                     ship.setActionState(ActionState.FIRE, ship.actionState);
+                    System.out.println("Set to Fire");
                     //ship.fireLaser(laserTexture, ship);
                     ship.setActionCounter(0);
-                    ship.setActionState(ActionState.IDLE, ship.actionState);
+                  //  ship.setActionState(ActionState.IDLE, ship.actionState);
                 }
             }
             }

@@ -236,7 +236,7 @@ public class VSSG implements ApplicationListener {
         if (InputManager.isLeftMousePressed()) {
             if (!shipSpawnTimeout) {
                 Vector2 position = new Vector2(camera.position.x,  camera.position.y);
-                CpuShip.ActionState actionState = Ship.ActionState.FIRE;
+                CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
                 CpuShip cpuShip = new CpuShip(greenShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL, targets);
@@ -452,7 +452,7 @@ public class VSSG implements ApplicationListener {
         greenShipTexture.dispose();
         explosionSound1.dispose();
         laserBlast2.dispose();
-        laserBlast1.dispose();
+     //   laserBlast1.dispose();
         explosionTexture1.dispose();
         otherShipTexture.dispose();
         exhaustTexture.dispose();
