@@ -203,9 +203,18 @@ public class VSSG implements ApplicationListener {
                 }
             }
         }
-
+//attack player
         if (InputManager.isRightMousePressed()) {
-            System.out.println("Placeholder");
+        for (CpuShip cpuShip : cpuShips) {
+
+            for (PlayerShip playerShip : playerShips) {
+
+                cpuShip.attackTarget(cpuShip, playerShip);
+
+            }
+
+        }
+
         }
 
         if (shipSpawnTimeout) {
