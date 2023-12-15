@@ -419,13 +419,19 @@ public class VSSG implements ApplicationListener {
                 cpuShip.detectTargets(playerShip, cpuShip.getTargets());
             }
 
-
         }
 
-        //  for (CpuShip cpuShip : cpuShips) {
-        //     for (Ship cpuShip2 : cpuShips) {
-//       //     }
-        // }
+
+
+          for (CpuShip cpuShip : cpuShips) {
+
+
+              for (Ship cpuShip2 : cpuShips) {
+
+                  cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
+
+              }
+         }
 
 
         for (Explosion explosion : explosions) {
