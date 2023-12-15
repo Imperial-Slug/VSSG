@@ -274,19 +274,19 @@ public class Ship extends Sprite {
         int randInt = rand.nextInt(10);
 
         if (randInt == 1) {
-            this.setSpeed(20);
+            this.setSpeed(50);
         } else if (randInt == 2) {
-            this.setSpeed(30);
-        } else if (randInt == 3) {
-            this.setSpeed(40);
-        } else if (randInt == 4) {
-            this.setSpeed(60);
-        } else if (randInt == 5) {
             this.setSpeed(70);
-        } else if (randInt == 6) {
+        } else if (randInt == 3) {
             this.setSpeed(80);
-        } else {
+        } else if (randInt == 4) {
             this.setSpeed(90);
+        } else if (randInt == 5) {
+            this.setSpeed(100);
+        } else if (randInt == 6) {
+            this.setSpeed(110);
+        } else {
+            this.setSpeed(120);
         }
 
 
@@ -316,7 +316,7 @@ public class Ship extends Sprite {
                     ship.setActionState(ActionState.QUARTER_RIGHT_TURN, ship.actionState);
                 } else if (rand_int == 6) {
 
-                    ship.setActionState(ActionState.CRUISE, ship.actionState);
+                    ship.setActionState(ActionState.RIGHT_U_TURN, ship.actionState);
                     System.out.println("CRUISING");
                 } else {
                     ship.setActionState(ActionState.CRUISE, ship.actionState);
@@ -345,29 +345,6 @@ public class Ship extends Sprite {
 
                 ship.setActionState(ship.previousActionState, ship.actionState);
 
-            }
-        }
-    }
-
-
-    public void faceDirectionOf(Ship sourceShip, Ship targetShip) {
-        // Get the positions of the source and target ships
-        Vector2 sourcePos = new Vector2(sourceShip.getX(), sourceShip.getY());
-        Vector2 targetPos = new Vector2(targetShip.getX(), targetShip.getY());
-
-        // Calculate the direction vector from source to target
-        Vector2 direction = targetPos.sub(sourcePos).nor();
-
-        // Calculate the angle between the source and target ships
-        float targetAngle = direction.angleDeg();
-
-        while (sourceShip.getRotation() != targetAngle) {
-
-            if ((subtractSmallerFromLarger(targetAngle, sourceShip.getRotation())) < 180) {
-                sourceShip.setRotation(sourceShip.getRotation() + 1);
-
-            } else {
-                sourceShip.setRotation(sourceShip.getRotation() - 1);
             }
         }
     }
@@ -418,10 +395,10 @@ public class Ship extends Sprite {
     }
 
     void checkWalls(Ship ship) {
-        if (ship.position.x >= Gdx.graphics.getWidth() - 50 || ship.position.y >= Gdx.graphics.getHeight() - 50) {
+        if (ship.position.x >= Gdx.graphics.getWidth() - 200 || ship.position.y >= Gdx.graphics.getHeight() - 200) {
             ship.handleLeftUTurn(ship);
         }
-        if (ship.position.x <= 50 || ship.position.y <= 50) {
+        if (ship.position.x <= 200 || ship.position.y <= 200) {
 
             ship.handleLeftUTurn(ship);
 
@@ -499,7 +476,7 @@ public class Ship extends Sprite {
     }
 
     public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
-        if ((subtractSmallerFromLarger(targetShip.getX(), this.getX())) < 1000 || (subtractSmallerFromLarger(targetShip.getY(), this.getY())) < 1000) {
+        if ((subtractSmallerFromLarger(targetShip.getX(), this.getX())) < 2000 || (subtractSmallerFromLarger(targetShip.getY(), this.getY())) < 1000) {
             if (!targets.contains(targetShip)) {
                 targets.add(targetShip);
                 System.out.println("Target Acquired!");

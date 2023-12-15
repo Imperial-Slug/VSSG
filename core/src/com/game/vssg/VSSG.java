@@ -95,8 +95,7 @@ public class VSSG implements ApplicationListener {
         // Setup camera, viewport, controls input.
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
-        camera.position.x = worldWidthCentre;
-        camera.position.y = worldHeightCentre;
+
         camera.zoom = DEFAULT_ZOOM;
         float viewportWidth = Gdx.graphics.getWidth();
         float viewportHeight = Gdx.graphics.getHeight();
@@ -111,18 +110,14 @@ public class VSSG implements ApplicationListener {
         explosions = new ObjectSet<>();
         lasers = new ObjectSet<>();
 
-        //Set scales for textures.
-
         // Initial ship's details.
         Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
         Rectangle hitBox = new Rectangle();
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, null, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
-        playerShip.setOriginCenter();
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
-
 
         // Add the new ship to the Ship list.
         playerShips.add(playerShip);
@@ -186,7 +181,6 @@ public class VSSG implements ApplicationListener {
         }
 
         // Shoot lasers
-        float half = 0.5f;
         if (InputManager.isSpacePressed()) {
             if (!laserSpawnTimeout) {
                 for (Ship ship : playerShips) {
@@ -195,7 +189,7 @@ public class VSSG implements ApplicationListener {
                     laser.setShip(ship);
                     lasers.add(laser);
 
-                    laserBlast2.play(1.0f);
+                    laserBlast2.play(2.0f);
                     laserSpawnTimeout = true;
                     laserSpawnCounter = 0;
 
@@ -364,39 +358,41 @@ public class VSSG implements ApplicationListener {
             laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
             laser.updateHitBox(laser);
 ////////////////////////
-            for (CpuShip ship : cpuShips) {
-                Rectangle shipHitBox = ship.getHitbox();
+            for (CpuShip cpuShip : cpuShips) {
+                Rectangle shipHitBox = cpuShip.getHitbox();
 
-                if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
+                if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != cpuShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
 
                     Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
 
-                    ship.setInactive(ship);
+                    cpuShip.setInactive(cpuShip);
                     laser.setInactive(laser);
 
                     if (showHitBoxes) {
-                        ship.getShapeRenderer().setProjectionMatrix(camera.combined);
-                        ship.drawBoundingBox();
+                        cpuShip.getShapeRenderer().setProjectionMatrix(camera.combined);
+                        cpuShip.drawBoundingBox();
                     }
                 }
+                cpuShip.setActionState(Ship.ActionState.ATTACK, cpuShip.getActionState());
+
             }
             /////////////////////////
 
-            for (Ship ship : playerShips) {
-                Rectangle shipHitBox = ship.getHitbox();
+            for (PlayerShip playerShip : playerShips) {
+                Rectangle shipHitBox = playerShip.getHitbox();
 
-                if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
+                if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != playerShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
 
                     Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
 
-                    ship.setInactive(ship);
+                    playerShip.setInactive(playerShip);
                     laser.setInactive(laser);
 
                     if (showHitBoxes) {
-                        ship.getShapeRenderer().setProjectionMatrix(camera.combined);
-                        ship.drawBoundingBox();
+                        playerShip.getShapeRenderer().setProjectionMatrix(camera.combined);
+                        playerShip.drawBoundingBox();
                     }
                 }
             }
