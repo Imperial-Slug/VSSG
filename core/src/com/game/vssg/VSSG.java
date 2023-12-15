@@ -32,6 +32,7 @@ public class VSSG implements ApplicationListener {
 
     private ObjectSet<PlayerShip> playerShips;
     private ObjectSet<CpuShip> cpuShips;
+    private ObjectSet<CpuShip> copiedSet;
     private ObjectSet<Explosion> explosions;
     private ObjectSet<Laser> lasers;
     private SpriteBatch batch;
@@ -106,6 +107,7 @@ public class VSSG implements ApplicationListener {
         // Prepare SpriteBatch and lists for keeping track of/accessing game objects.
         batch = new SpriteBatch();
         cpuShips = new ObjectSet<>();
+        copiedSet = new ObjectSet<>(cpuShips);
         playerShips = new ObjectSet<>();
         explosions = new ObjectSet<>();
         lasers = new ObjectSet<>();
@@ -138,8 +140,10 @@ public class VSSG implements ApplicationListener {
         Iterator<CpuShip> cpuIter = cpuShips.iterator();
         Iterator<Explosion> explosionIter = explosions.iterator();
         Iterator<Laser> laserIter = lasers.iterator();
+        Iterator<CpuShip> copyIter = copiedSet.iterator();
 
-        checkIterators(playerIter, explosionIter, cpuIter, laserIter, deltaTime);
+
+        checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, (int) wrapDivisor, (int) wrapDivisor);
         checkObjects(deltaTime);
@@ -238,10 +242,15 @@ public class VSSG implements ApplicationListener {
                 cpuShip.setScale(shipScale);
                 cpuShips.add(cpuShip);
 
+
                 shipSpawnTimeout = true;
                 shipSpawnCounter = 0;
             }
         }
+
+
+
+
 
         float speedLimit = 500f;
         // Speed up.
@@ -280,6 +289,22 @@ public class VSSG implements ApplicationListener {
         }
         if (InputManager.isDownPressed()) {
             camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
+
+            if (!shipSpawnTimeout) {
+                Vector2 position = new Vector2(camera.position.x, camera.position.y);
+                CpuShip.ActionState actionState = Ship.ActionState.IDLE;
+                Rectangle hitBox = new Rectangle();
+                ObjectSet<Ship> targets = new ObjectSet<>();
+                CpuShip cpuShip = new CpuShip(otherShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.PURPLE, targets);
+                cpuShip.setPosition(position.x, position.y);
+                cpuShip.setScale(shipScale);
+                cpuShips.add(cpuShip);
+
+
+                shipSpawnTimeout = true;
+                shipSpawnCounter = 0;
+            }
+
         }
 
 
@@ -306,7 +331,7 @@ public class VSSG implements ApplicationListener {
     }
 
     /////////////////////////////////
-    public void checkIterators(Iterator<PlayerShip> playerIter, Iterator<Explosion> explosionIter, Iterator<CpuShip> cpuIter, Iterator<Laser> laserIter, float deltaTime) {
+    public void checkIterators(Iterator<PlayerShip> playerIter, Iterator<Explosion> explosionIter, Iterator<CpuShip> cpuIter, Iterator<CpuShip> copyIter, Iterator<Laser> laserIter, float deltaTime) {
         while (playerIter.hasNext()) {
 
             PlayerShip playerShip = playerIter.next();
@@ -320,6 +345,16 @@ public class VSSG implements ApplicationListener {
         while (cpuIter.hasNext()) {
 
             CpuShip cpuShip = cpuIter.next();
+            cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
+
+            if (!cpuShip.isActive()) {
+                cpuIter.remove();
+            }
+        }
+
+        while (copyIter.hasNext()) {
+
+            CpuShip cpuShip = copyIter.next();
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
 
             if (!cpuShip.isActive()) {
@@ -426,7 +461,7 @@ public class VSSG implements ApplicationListener {
           for (CpuShip cpuShip : cpuShips) {
 
 
-              for (Ship cpuShip2 : cpuShips) {
+              for (CpuShip cpuShip2 : copiedSet) {
 
                   cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
 
@@ -460,6 +495,8 @@ public class VSSG implements ApplicationListener {
         exhaustTexture.dispose();
 
     }
+
+
 
 
 }

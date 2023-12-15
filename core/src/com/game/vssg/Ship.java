@@ -476,11 +476,14 @@ public class Ship extends Sprite {
     }
 
     public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
+
+        if (targetShip.faction != this.faction) {
         if ((subtractSmallerFromLarger(targetShip.getX(), this.getX())) < 2000 || (subtractSmallerFromLarger(targetShip.getY(), this.getY())) < 1000) {
             if (!targets.contains(targetShip)) {
                 targets.add(targetShip);
                 System.out.println("Target Acquired!");
             }
+        }
         }
     }
 
