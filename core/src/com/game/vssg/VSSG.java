@@ -427,8 +427,6 @@ public class VSSG implements ApplicationListener {
        // }
 
 
-
-
         for (Explosion explosion : explosions) {
             explosion.draw(batch);
             explosion.update(deltaTime);
