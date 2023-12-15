@@ -295,7 +295,7 @@ public class VSSG implements ApplicationListener {
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
-                CpuShip cpuShip = new CpuShip(otherShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.PURPLE, targets);
+                CpuShip cpuShip = new CpuShip(otherShipTexture,  position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.PURPLE, targets);
                 cpuShip.setPosition(position.x, position.y);
                 cpuShip.setScale(shipScale);
                 cpuShips.add(cpuShip);
