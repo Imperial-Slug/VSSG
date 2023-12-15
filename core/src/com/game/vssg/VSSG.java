@@ -116,8 +116,9 @@ public class VSSG implements ApplicationListener {
         // Initial ship's details.
         Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
         Rectangle hitBox = new Rectangle();
+        ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, null, hitBox, playerActionCounter, Ship.Faction.PURPLE, null);
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, null, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
         playerShip.setOriginCenter();
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
@@ -232,7 +233,8 @@ public class VSSG implements ApplicationListener {
                 Vector2 position = new Vector2(camera.position.x,  camera.position.y);
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
-                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL, null);
+                ObjectSet<Ship> targets = new ObjectSet<>();
+                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL, targets);
                 cpuShip.setPosition(position.x, position.y);
                 cpuShip.setScale(shipScale);
                 cpuShips.add(cpuShip);
@@ -249,7 +251,7 @@ public class VSSG implements ApplicationListener {
             for (PlayerShip playerShip : playerShips) {
 
                 if (playerShip.getSpeed() < speedLimit && playerShip.getSpeed() >= 0) {
-                    playerShip.setSpeed(playerShip.getSpeed() + half);
+                    playerShip.setSpeed(playerShip.getSpeed() + 1);
                 }
 
             }
@@ -259,7 +261,7 @@ public class VSSG implements ApplicationListener {
         if (InputManager.isSPressed()) {
             for (PlayerShip playerShip : playerShips) {
                 if (playerShip.getSpeed() <= speedLimit && playerShip.getSpeed() > 0) {
-                    playerShip.setSpeed(playerShip.getSpeed() - half);
+                    playerShip.setSpeed(playerShip.getSpeed() - 1);
                 }
             }
         }
@@ -393,9 +395,6 @@ public class VSSG implements ApplicationListener {
                 }
             }
 
-
-        //////////////////////////
-        ///////////////////////////
         }
 
 
@@ -413,7 +412,22 @@ public class VSSG implements ApplicationListener {
             cpuShip.draw(batch);
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.handleActionState(cpuShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
-        }
+
+            for (PlayerShip playerShip : playerShips) {
+                cpuShip.detectTargets(playerShip, cpuShip.getTargets());
+            }
+
+
+
+            }
+
+      //  for (CpuShip cpuShip : cpuShips) {
+       //     for (Ship cpuShip2 : cpuShips) {
+//       //     }
+       // }
+
+
+
 
         for (Explosion explosion : explosions) {
             explosion.draw(batch);

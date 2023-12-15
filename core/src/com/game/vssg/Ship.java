@@ -49,7 +49,8 @@ public class Ship extends Sprite {
         QUARTER_RIGHT_TURN,
         IDLE,
         READY,
-        STOP
+        STOP,
+        ATTACK
 
     }
 
@@ -462,5 +463,28 @@ public ActionState getActionState() {
         this.actionCounter = actionCounter;
 
     }
+
+    public float subtractSmallerFromLarger(float a, float b) {
+        float larger = Math.max(a, b);
+        float smaller = Math.min(a, b);
+        return larger - smaller;
+    }
+
+    public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
+        if ((subtractSmallerFromLarger(targetShip.getX(), this.getX())) < 1000 || (subtractSmallerFromLarger(targetShip.getY(), this.getY())) < 1000) {
+            if(!targets.contains(targetShip)){
+            targets.add(targetShip);
+            System.out.println("Target Acquired!");
+        }
+        }
+
+
+    }
+
+    public ObjectSet<Ship> getTargets() {
+
+        return this.targets;
+    }
+
 
 }
