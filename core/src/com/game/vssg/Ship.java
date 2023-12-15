@@ -511,13 +511,18 @@ public class Ship extends Sprite {
 
         if (ship.getActionState() == ActionState.ATTACK) {
 // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
+            if (!seekDestroy(ship)) {
 
-            seekDestroy(ship);
+                ship.setActionState(ActionState.IDLE, ship.actionState);
 
-        }
+            }
+
+            }
+
     }
 
-    void seekDestroy(Ship ship) {
+    boolean seekDestroy(Ship ship) {
+        boolean alive = false;
         if (ship.targets.size > 0) {
             float offset = 2;
             Ship target = ship.targets.first();
@@ -537,8 +542,10 @@ public class Ship extends Sprite {
                     }
                 }
             }
-        }
 
+            alive = target.active;
+        }
+        return alive;
     }
 
     public ObjectSet<Ship> getTargets() {
