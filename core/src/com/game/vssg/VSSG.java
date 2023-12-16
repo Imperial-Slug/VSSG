@@ -432,11 +432,8 @@ public class VSSG implements ApplicationListener {
             playerShip.draw(batch);
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.handleActionState(playerShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
-
             camera.position.x = playerShip.getX() + 64;
             camera.position.y = playerShip.getY() + 64;
-
-
         }
 
         for (CpuShip cpuShip : cpuShips) {
@@ -445,7 +442,6 @@ public class VSSG implements ApplicationListener {
             cpuShip.handleActionState(cpuShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
 
             for (Ship target : cpuShip.getTargets()) {
-
                 if (!target.isActive()) {
                     cpuShip.getTargets().remove(target);
                     System.out.println("TARGET REMOVED");
@@ -455,10 +451,9 @@ public class VSSG implements ApplicationListener {
             for (PlayerShip playerShip : playerShips) {
                 cpuShip.detectTargets(playerShip, cpuShip.getTargets());
             }
+
             for (CpuShip cpuShip2 : copiedSet) {
-
                 cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
-
             }
 
         }

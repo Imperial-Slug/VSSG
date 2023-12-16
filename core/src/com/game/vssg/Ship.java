@@ -406,7 +406,6 @@ public class Ship extends Sprite {
         } else {
             sourceShip.setRotation(targetAngle);
         }
-        System.out.println("angleDifference = " + targetAngle);
     }
 
 
