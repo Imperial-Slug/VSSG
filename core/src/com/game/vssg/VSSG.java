@@ -20,7 +20,7 @@ import java.util.Iterator;
 public class VSSG implements ApplicationListener {
 
     // DEBUGGING //
-    public static boolean showHitBoxes = true;
+    public static boolean showHitBoxes = false;
     public static boolean mute = false;
     ///////////////
 
@@ -295,6 +295,7 @@ public class VSSG implements ApplicationListener {
                 cpuShip.setPosition(position.x, position.y);
                 cpuShip.setScale(shipScale);
                 cpuShips.add(cpuShip);
+                copiedSet.add(cpuShip);
 
 
                 shipSpawnTimeout = true;
@@ -403,7 +404,7 @@ public class VSSG implements ApplicationListener {
 
 
                 }
-                // cpuShip.setActionState(Ship.ActionState.ATTACK, cpuShip.getActionState());
+                 cpuShip.setActionState(Ship.ActionState.ATTACK, cpuShip.getActionState());
 
             }
 
@@ -445,6 +446,8 @@ public class VSSG implements ApplicationListener {
                     if (!target.isActive()) {
                         cpuShip.getTargets().remove(target);
                         System.out.println("TARGET REMOVED");
+
+
                     }
                 }
             }

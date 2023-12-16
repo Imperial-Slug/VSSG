@@ -21,6 +21,7 @@ public class Ship extends Sprite {
     private ActionState actionState;
     private Faction faction;
     private int actionCounter;
+    private int fireCounter;
     private boolean isIdle;
     private boolean flag = false;
     private ActionState previousActionState;
@@ -82,8 +83,10 @@ public class Ship extends Sprite {
             }
             // Update the sprite's position
             setPosition(position.x, position.y);
-
             updateHitBox(ship);
+
+
+
         }
 
         if (ship.position.x >= WORLD_CONSTANT - 500 || ship.position.y >= WORLD_CONSTANT - 500) {
@@ -338,10 +341,8 @@ public class Ship extends Sprite {
         }
     }
 
-    private int fireCounter;
-
     public int getFireCounter() {
-        return fireCounter;
+        return this.fireCounter;
     }
 
     private void setFireCounter(int fireCounter) {
@@ -352,21 +353,21 @@ public class Ship extends Sprite {
 
     public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
         Texture texture = null;
-        if (ship.getActionState() == ActionState.FIRE) {
-            if (ship.getFireCounter() <= 100) {
+        if (ship.actionState == ActionState.FIRE) {
+            if (ship.fireCounter <= 100) {
 
                 ship.fireCounter++;
 
-            } else if (ship.getFireCounter() > 100) {
+            } else if (ship.fireCounter > 100) {
 
                 if (ship.faction == Faction.TEAL) {
                     texture = redLaserTexture;
-                    ship.setFireCounter(0);
+                    ship.fireCounter = 0;
 
                 } else if (ship.faction == Faction.PURPLE) {
 
                     texture = greenLaserTexture;
-                    ship.setFireCounter(0);
+                    ship.fireCounter = 0;
 
                 }
 
