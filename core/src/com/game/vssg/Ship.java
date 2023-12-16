@@ -345,6 +345,7 @@ public class Ship extends Sprite {
 
 
     public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
+       Texture texture = null;
         if (ship.getActionState() == ActionState.FIRE) {
             if (ship.getActionCounter() <= 100) {
 
@@ -352,7 +353,15 @@ public class Ship extends Sprite {
 
             } else if (ship.getActionCounter() > 100) {
 
-                Laser laser = ship.fireLaser(redLaserTexture, ship);
+                if (ship.faction == Faction.TEAL) {
+                     texture = redLaserTexture;
+                }
+                else if (ship.faction == Faction.PURPLE) {
+                    
+                     texture = greenLaserTexture;
+                } 
+                    
+                    Laser laser = ship.fireLaser(texture, ship);
                 laser.setShip(ship);
                 lasers.add(laser);
                 laserBlast.play(2f);
