@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
 
 import java.util.Random;
+import java.util.UUID;
 
 public class Ship extends Sprite {
 
@@ -27,6 +28,7 @@ public class Ship extends Sprite {
     private boolean flag = false;
     private ActionState previousActionState;
     private ObjectSet<Ship> targets;
+    private UUID uuid;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -56,7 +58,7 @@ public class Ship extends Sprite {
 
     }
 
-    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Faction faction, ObjectSet<Ship> targets) {
+    public Ship(UUID uuid, Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Faction faction, ObjectSet<Ship> targets) {
         super(texture);
         this.position = position;
         this.speed = speed;
@@ -68,6 +70,8 @@ public class Ship extends Sprite {
         this.faction = faction;
         this.targets = targets;
         this.active = true;
+        this.uuid = uuid;
+
 
     }
 
@@ -95,10 +99,10 @@ public class Ship extends Sprite {
 
                 ship.setActionState(ActionState.LEFT_U_TURN, ship.previousActionState);
                 this.flag = true;
-                System.out.println("Obstacle avoidance engaged");
+                //System.out.println("Obstacle avoidance engaged");
             } else {
                 ship.setActionState(ActionState.CRUISE, ship.previousActionState);
-                System.out.println("Obstacle avoidance engaged2222");
+               // System.out.println("Obstacle avoidance engaged2222");
 
                 this.flag = false;
             }
@@ -519,18 +523,14 @@ public class Ship extends Sprite {
 
 
     public void setAttackMode() {
-
-        System.out.println("Set to attack mode.");
-        System.out.println("Set to attack mode.");
         this.actionState = ActionState.ATTACK;
-
     }
 
 
     void handleAttack(Ship ship) {
 
         if (ship.getActionState() == ActionState.ATTACK) {
-            System.out.println("Engaging target");
+            //System.out.println("Engaging target");
 // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
             if (!seekDestroy(ship)) {
                 ship.setActionState(ActionState.IDLE, ship.actionState);

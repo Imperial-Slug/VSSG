@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Iterator;
+import java.util.UUID;
 
 public class VSSG implements ApplicationListener {
 
@@ -117,7 +118,11 @@ public class VSSG implements ApplicationListener {
         Rectangle hitBox = new Rectangle();
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
+        UUID uuid = UUID.randomUUID();
+        String uuidAsString = uuid.toString();
+        System.out.println("New ship UUID is: " + uuidAsString);
+
+        PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
 
@@ -236,7 +241,11 @@ public class VSSG implements ApplicationListener {
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
-                CpuShip cpuShip = new CpuShip(greenShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL, targets);
+                UUID uuid = UUID.randomUUID();
+                String uuidAsString = uuid.toString();
+                System.out.println("New ship UUID is: " + uuidAsString);
+
+                CpuShip cpuShip = new CpuShip(uuid, greenShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL, targets);
                 cpuShip.setPosition(position.x, position.y);
                 cpuShip.setScale(shipScale);
                 cpuShips.add(cpuShip);
@@ -470,8 +479,11 @@ public class VSSG implements ApplicationListener {
             CpuShip.ActionState actionState = Ship.ActionState.IDLE;
             Rectangle hitBox = new Rectangle();
             int actionCounter = 0;
+            UUID uuid = UUID.randomUUID();
+            String uuidAsString = uuid.toString();
+            System.out.println("New ship UUID is: " + uuidAsString);
             ObjectSet<Ship> targets = new ObjectSet<>();
-            CpuShip cpuShip = new CpuShip(shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.PURPLE, targets);
+            CpuShip cpuShip = new CpuShip(uuid, shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.PURPLE, targets);
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
             cpuShips.add(cpuShip);
