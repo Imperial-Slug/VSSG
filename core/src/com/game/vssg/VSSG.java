@@ -239,6 +239,7 @@ public class VSSG implements ApplicationListener {
                 cpuShip.setPosition(position.x, position.y);
                 cpuShip.setScale(shipScale);
                 cpuShips.add(cpuShip);
+                copiedSet.add(cpuShip);
 
 
                 shipSpawnTimeout = true;
@@ -352,7 +353,7 @@ public class VSSG implements ApplicationListener {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
 
             if (!cpuShip.isActive()) {
-                cpuIter.remove();
+                copyIter.remove();
 
             }
         }
@@ -412,9 +413,7 @@ public class VSSG implements ApplicationListener {
 
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != playerShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
-
                     Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
-
                     playerShip.setInactive(playerShip);
                     laser.setInactive(laser);
 
