@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Iterator;
-import java.util.Random;
 
 public class VSSG implements ApplicationListener {
 
@@ -124,18 +123,19 @@ public class VSSG implements ApplicationListener {
         // Add the new ship to the Ship list.
         playerShips.add(playerShip);
 
+
     }
 
     @Override
     public void render() {
 
+        float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.setProjectionMatrix(camera.combined);
         camera.update();
         handleInput();
 
-        batch.setProjectionMatrix(camera.combined);
-        float deltaTime = Gdx.graphics.getDeltaTime();
         Iterator<PlayerShip> playerIter = playerShips.iterator();
         Iterator<CpuShip> cpuIter = cpuShips.iterator();
         Iterator<Explosion> explosionIter = explosions.iterator();
@@ -249,9 +249,6 @@ public class VSSG implements ApplicationListener {
         }
 
 
-
-
-
         float speedLimit = 500f;
         // Speed up.
         if (InputManager.isWPressed()) {
@@ -295,7 +292,7 @@ public class VSSG implements ApplicationListener {
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
                 Rectangle hitBox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
-                CpuShip cpuShip = new CpuShip(otherShipTexture,  position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.PURPLE, targets);
+                CpuShip cpuShip = new CpuShip(otherShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.PURPLE, targets);
                 cpuShip.setPosition(position.x, position.y);
                 cpuShip.setScale(shipScale);
                 cpuShips.add(cpuShip);
@@ -457,16 +454,15 @@ public class VSSG implements ApplicationListener {
         }
 
 
+        for (CpuShip cpuShip : cpuShips) {
 
-          for (CpuShip cpuShip : cpuShips) {
 
+            for (CpuShip cpuShip2 : copiedSet) {
 
-              for (CpuShip cpuShip2 : copiedSet) {
+                cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
 
-                  cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
-
-              }
-         }
+            }
+        }
 
 
         for (Explosion explosion : explosions) {
@@ -493,8 +489,6 @@ public class VSSG implements ApplicationListener {
         exhaustTexture.dispose();
 
     }
-
-
 
 
 }

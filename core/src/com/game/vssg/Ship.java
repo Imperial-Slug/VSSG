@@ -396,11 +396,13 @@ public class Ship extends Sprite {
 
     void checkWalls(Ship ship) {
         if (ship.position.x >= Gdx.graphics.getWidth() - 200 || ship.position.y >= Gdx.graphics.getHeight() - 200) {
-            ship.handleLeftUTurn(ship);
-        }
-        if (ship.position.x <= 200 || ship.position.y <= 200) {
+            ship.setActionState(ActionState.LEFT_U_TURN, ship.previousActionState);
+            System.out.println("Obstacle avoidance engaged");
 
-            ship.handleLeftUTurn(ship);
+        }
+        if (ship.position.x <= Gdx.graphics.getWidth() - 200 || ship.position.y <= Gdx.graphics.getHeight() - 200) {
+            ship.setActionState(ActionState.LEFT_U_TURN, ship.previousActionState);
+            System.out.println("Obstacle avoidance engaged");
 
         }
     }
