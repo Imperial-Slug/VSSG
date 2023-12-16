@@ -128,7 +128,7 @@ public class VSSG implements ApplicationListener {
 
     @Override
     public void render() {
-        System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
+       // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
 
         float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0, 0, 0, 1);
@@ -143,7 +143,6 @@ public class VSSG implements ApplicationListener {
         Iterator<Laser> laserIter = lasers.iterator();
         Iterator<CpuShip> copyIter = copiedSet.iterator();
 
-
         checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, (int) wrapDivisor, (int) wrapDivisor);
@@ -151,7 +150,6 @@ public class VSSG implements ApplicationListener {
         batch.end();
 
     }
-
 
     public void resize(int width, int height) {
         viewport.update(width, height);
@@ -177,7 +175,6 @@ public class VSSG implements ApplicationListener {
             }
         }
 
-
         // Rotate the sprite with right arrow key
         if (InputManager.isDPressed()) {
             for (Ship ship : playerShips) {
@@ -190,7 +187,7 @@ public class VSSG implements ApplicationListener {
             if (!laserSpawnTimeout) {
                 for (Ship ship : playerShips) {
 
-                    Laser laser = ship.fireLaser(greenLaserTexture, ship);
+                    Laser laser = ship.fireLaser(blueLaserTexture, ship);
                     laser.setShip(ship);
                     lasers.add(laser);
 
@@ -290,7 +287,7 @@ public class VSSG implements ApplicationListener {
 
             if (!shipSpawnTimeout) {
                 Vector2 position = new Vector2(camera.position.x, camera.position.y);
-                CpuShip.ActionState actionState = Ship.ActionState.IDLE;
+                CpuShip.ActionState actionState = Ship.ActionState.FIRE;
                 Rectangle hitBox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
                 CpuShip cpuShip = new CpuShip(otherShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.PURPLE, targets);
@@ -304,7 +301,6 @@ public class VSSG implements ApplicationListener {
             }
 
         }
-
 
         if (InputManager.isQPressed()) {
             zoomIn();
@@ -357,6 +353,7 @@ public class VSSG implements ApplicationListener {
 
             if (!cpuShip.isActive()) {
                 cpuIter.remove();
+
             }
         }
 
@@ -396,9 +393,7 @@ public class VSSG implements ApplicationListener {
 
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != cpuShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
-
                     Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
-
                     cpuShip.setInactive(cpuShip);
                     laser.setInactive(laser);
 
@@ -441,6 +436,7 @@ public class VSSG implements ApplicationListener {
             camera.position.x = playerShip.getX() + 64;
             camera.position.y = playerShip.getY() + 64;
 
+
         }
 
         for (CpuShip cpuShip : cpuShips) {
@@ -448,22 +444,27 @@ public class VSSG implements ApplicationListener {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.handleActionState(cpuShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
 
+            for (Ship target : cpuShip.getTargets()) {
+
+                if (!target.isActive()) {
+                    cpuShip.getTargets().remove(target);
+                    System.out.println("TARGET REMOVED");
+                }
+            }
+
             for (PlayerShip playerShip : playerShips) {
                 cpuShip.detectTargets(playerShip, cpuShip.getTargets());
             }
-
-        }
-
-
-        for (CpuShip cpuShip : cpuShips) {
-
-
             for (CpuShip cpuShip2 : copiedSet) {
 
                 cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
 
             }
+
         }
+
+
+
 
 
         for (Explosion explosion : explosions) {

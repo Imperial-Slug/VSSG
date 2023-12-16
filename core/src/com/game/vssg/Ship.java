@@ -159,7 +159,6 @@ public class Ship extends Sprite {
         ship.handleQuarterLeftTurn(ship);
         ship.handleQuarterRightTurn(ship);
         ship.handleStop(ship);
-        ship.handleReady(ship);
         ship.handleCruise(ship);
         ship.handleFire(ship, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
         ship.handleAttack(ship);
@@ -270,13 +269,7 @@ public class Ship extends Sprite {
         }
     }
 
-    public void handleReady(Ship ship) {
-        if (ship.getActionState() == ActionState.IDLE) {
-            if (ship.getActionCounter() == 0) {
-                ship.checkWalls(ship);
-            }
-        }
-    }
+
 
     public void handleStop(Ship ship) {
         if (ship.getActionState() == ActionState.STOP) {
@@ -362,7 +355,7 @@ public class Ship extends Sprite {
                 Laser laser = ship.fireLaser(redLaserTexture, ship);
                 laser.setShip(ship);
                 lasers.add(laser);
-                laserBlast.play(1f);
+                laserBlast.play(2f);
                 ship.setActionCounter(0);
 
                 ship.setActionState(ship.previousActionState, ship.actionState);
@@ -416,11 +409,6 @@ public class Ship extends Sprite {
         System.out.println("angleDifference = " + targetAngle);
     }
 
-    void checkWalls(Ship ship) {
-
-
-
-    }
 
     public Rectangle getHitbox() {
 
@@ -495,7 +483,7 @@ public class Ship extends Sprite {
     public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
 
         if (targetShip.faction != this.faction) {
-        if ((subtractSmallerFromLarger(targetShip.getX(), this.getX())) < 2000 || (subtractSmallerFromLarger(targetShip.getY(), this.getY())) < 1000) {
+        if ((subtractSmallerFromLarger(targetShip.getX(), this.getX())) < 2000 || (subtractSmallerFromLarger(targetShip.getY(), this.getY())) < 2000) {
             if (!targets.contains(targetShip)) {
                 targets.add(targetShip);
                 System.out.println("Target Acquired!");
@@ -509,9 +497,7 @@ public class Ship extends Sprite {
         if (ship.getActionState() == ActionState.ATTACK) {
 // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
             if (!seekDestroy(ship)) {
-
                 ship.setActionState(ActionState.IDLE, ship.actionState);
-
             }
 
             }
@@ -526,7 +512,6 @@ public class Ship extends Sprite {
             Ship target = ship.targets.first();
             float targetAngle = getTargetAngle(ship, target);
             if (ship.getActionCounter() != targetAngle) {
-                System.out.println("Handle Attack. COUNTER =" + ship.getActionCounter());
 
                 if (ship.getRotation() < getTargetAngle(ship, target) - offset || ship.getRotation() > getTargetAngle(ship, target) + offset) {
                     actionCounter++;
@@ -535,7 +520,6 @@ public class Ship extends Sprite {
 
                     if (target.active) {
                         ship.setActionState(ActionState.FIRE, ship.actionState);
-                        System.out.println("Set to Fire");
                         ship.setActionCounter(0);
                     }
                 }
