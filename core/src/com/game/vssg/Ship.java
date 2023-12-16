@@ -51,7 +51,7 @@ public class Ship extends Sprite {
 
     }
 
-    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Rectangle hitbox, int actionCounter, Faction faction, ObjectSet<Ship> targets) {
+    public Ship(Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Faction faction, ObjectSet<Ship> targets) {
         super(texture);
         this.position = position;
         this.speed = speed;
