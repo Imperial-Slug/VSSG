@@ -69,6 +69,7 @@ public class VSSG implements ApplicationListener {
 
     @Override
     public void create() {
+
         // Get number of processors for future multithreading purposes.
         int processors = Runtime.getRuntime().availableProcessors();
         System.out.println("Get number of processor cores: " + processors);
@@ -286,21 +287,7 @@ public class VSSG implements ApplicationListener {
         if (InputManager.isDownPressed()) {
             camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
 
-            if (!shipSpawnTimeout) {
-                Vector2 position = new Vector2(camera.position.x, camera.position.y);
-                CpuShip.ActionState actionState = Ship.ActionState.IDLE;
-                Rectangle hitBox = new Rectangle();
-                ObjectSet<Ship> targets = new ObjectSet<>();
-                CpuShip cpuShip = new CpuShip(otherShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.PURPLE, targets);
-                cpuShip.setPosition(position.x, position.y);
-                cpuShip.setScale(shipScale);
-                cpuShips.add(cpuShip);
-                copiedSet.add(cpuShip);
-
-
-                shipSpawnTimeout = true;
-                shipSpawnCounter = 0;
-            }
+           spawnShip(otherShipTexture);
 
         }
 
@@ -312,6 +299,11 @@ public class VSSG implements ApplicationListener {
             zoomOut();
         }
 
+    }
+
+    int getShipSpawnCounter(){
+
+        return this.shipSpawnCounter;
     }
 
     /////////////////////////////////
@@ -469,6 +461,27 @@ public class VSSG implements ApplicationListener {
         }
 
     }
+
+
+
+    void spawnShip(Texture shipTexture){
+        if (!shipSpawnTimeout) {
+            Vector2 position = new Vector2(camera.position.x, camera.position.y);
+            CpuShip.ActionState actionState = Ship.ActionState.IDLE;
+            Rectangle hitBox = new Rectangle();
+            int actionCounter = 0;
+            ObjectSet<Ship> targets = new ObjectSet<>();
+            CpuShip cpuShip = new CpuShip(shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.PURPLE, targets);
+            cpuShip.setPosition(position.x, position.y);
+            cpuShip.setScale(shipScale);
+            cpuShips.add(cpuShip);
+            copiedSet.add(cpuShip);
+
+            shipSpawnCounter = 0;
+            shipSpawnTimeout = true;
+        }
+    }
+
 
     @Override
     public void dispose() {

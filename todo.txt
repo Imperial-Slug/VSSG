@@ -25,3 +25,5 @@ CHANGE:  IDLE will mean more like stopped, barely moving, and there will be anot
 - add more sprites: med and capital ships, purple and teal
 - change colors, mskr modular with color wheel
 - make vsync editable
+CURRENT: MAKE MENU IN GAME
+- make smaller laser explosion, different explosions by rand

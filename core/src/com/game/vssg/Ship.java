@@ -5,6 +5,7 @@ import static com.game.vssg.VSSG.WORLD_CONSTANT;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -383,38 +384,38 @@ public class Ship extends Sprite {
     }
 
 
+    // ANGLE CALCULATIONS //
     float getTargetAngle(Ship sourceShip, Ship targetShip) {
 
         Vector2 sourcePos = new Vector2(sourceShip.getX(), sourceShip.getY());
         Vector2 targetPos = new Vector2(targetShip.getX(), targetShip.getY());
 
-        // Calculate the direction vector from source to target
+        // Calculate the direction vector from source to target.
         Vector2 direction = targetPos.sub(sourcePos).nor();
 
-        // Calculate the angle between the source and target ships
+        // Calculate the angle between the source and target ships.
         return direction.angleDeg();
 
     }
 
 
     public void rotateTowardTarget(Ship sourceShip, Ship targetShip, float rotationSpeed, float deltaTime) {
-        // Get the positions of the source and target ships and
-        // calculate the angle between the source and target ships
+        // Get the positions of the source and target ships and calculate the angle between the source and target ships.
         float targetAngle = getTargetAngle(sourceShip, targetShip);
 
-        // Get the current rotation of the source ship
+        // Get the current rotation of the source ship.
         float currentAngle = sourceShip.getRotation();
 
-        // Calculate the shortest angle difference between the current and target angles
+        // Calculate the shortest angle difference between the current and target angles.
         float angleDifference = Math.abs(targetAngle - currentAngle);
         if (angleDifference > 180) {
             angleDifference = 360 - angleDifference;
         }
 
-        // Calculate the amount to rotate based on rotationSpeed and deltaTime
+        // Calculate the amount to rotate based on rotationSpeed and deltaTime.
         float rotateAmount = rotationSpeed * deltaTime;
 
-        // Determine the direction of rotation (clockwise or counterclockwise)
+        // Determine the direction of rotation (clockwise or counterclockwise).
         if (angleDifference > rotateAmount) {
             if ((targetAngle - currentAngle + 360) % 360 > 180) {
                 sourceShip.rotate(-rotateAmount);
@@ -570,6 +571,15 @@ public class Ship extends Sprite {
 
         return this.targets;
     }
+
+
+
+
+
+
+
+
+
 
 
 }
