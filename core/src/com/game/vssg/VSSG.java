@@ -28,6 +28,7 @@ public class VSSG implements ApplicationListener {
     public static long WORLD_WIDTH = WORLD_CONSTANT;
     public static long WORLD_HEIGHT = WORLD_CONSTANT;
     public static float shipScale = 1f;
+    public static float DEFAULT_ZOOM = 2;
 
     private ObjectSet<PlayerShip> playerShips;
     private ObjectSet<CpuShip> cpuShips;
@@ -38,7 +39,6 @@ public class VSSG implements ApplicationListener {
     private Sound explosionSound1;
     private Sound laserBlast1;
     private Sound laserBlast2;
-    private float DEFAULT_ZOOM = 2;
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
     private final float wrapDivisor = (float) WORLD_WIDTH / 4096;
@@ -128,6 +128,7 @@ public class VSSG implements ApplicationListener {
 
     @Override
     public void render() {
+        System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
 
         float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0, 0, 0, 1);

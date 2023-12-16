@@ -1,5 +1,7 @@
 package com.game.vssg;
 
+import static com.game.vssg.VSSG.WORLD_CONSTANT;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -20,6 +22,7 @@ public class Ship extends Sprite {
     private Faction faction;
     private int actionCounter;
     private boolean isIdle;
+    private boolean flag = false;
     private ActionState previousActionState;
     private ObjectSet<Ship> targets;
 
@@ -73,7 +76,6 @@ public class Ship extends Sprite {
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
 
-
             // Check if the ship is out of screen bounds and deactivate it if necessary
             if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
                 active = false;
@@ -83,6 +85,26 @@ public class Ship extends Sprite {
 
             updateHitBox(ship);
         }
+
+        if (ship.position.x >= WORLD_CONSTANT - 500 || ship.position.y >= WORLD_CONSTANT - 500) {
+            if (!this.flag) {
+
+                ship.setActionState(ActionState.LEFT_U_TURN, ship.previousActionState);
+                this.flag = true;
+                System.out.println("Obstacle avoidance engaged");
+            }
+
+            else {
+                ship.setActionState(ActionState.CRUISE, ship.previousActionState);
+                System.out.println("Obstacle avoidance engaged2222");
+
+                this.flag = false;
+            }
+        }
+
+
+
+
     }
 
 
@@ -395,16 +417,9 @@ public class Ship extends Sprite {
     }
 
     void checkWalls(Ship ship) {
-        if (ship.position.x >= Gdx.graphics.getWidth() - 200 || ship.position.y >= Gdx.graphics.getHeight() - 200) {
-            ship.setActionState(ActionState.LEFT_U_TURN, ship.previousActionState);
-            System.out.println("Obstacle avoidance engaged");
 
-        }
-        if (ship.position.x <= Gdx.graphics.getWidth() - 200 || ship.position.y <= Gdx.graphics.getHeight() - 200) {
-            ship.setActionState(ActionState.LEFT_U_TURN, ship.previousActionState);
-            System.out.println("Obstacle avoidance engaged");
 
-        }
+
     }
 
     public Rectangle getHitbox() {
