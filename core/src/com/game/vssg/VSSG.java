@@ -383,7 +383,7 @@ public class VSSG implements ApplicationListener {
         }
 
     }
-///////////////////////////
+
 
     public void checkObjects(float deltaTime) {
         for (Laser laser : lasers) {
@@ -392,7 +392,7 @@ public class VSSG implements ApplicationListener {
             Rectangle laserHitBox = laser.getHitbox();
             laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getDespawnCounter(), laser.getShip());
             laser.updateHitBox(laser);
-////////////////////////
+
             for (CpuShip cpuShip : cpuShips) {
                 Rectangle shipHitBox = cpuShip.getHitbox();
 
@@ -412,7 +412,7 @@ public class VSSG implements ApplicationListener {
                 cpuShip.setActionState(Ship.ActionState.ATTACK, cpuShip.getActionState());
 
             }
-            /////////////////////////
+
 
             for (PlayerShip playerShip : playerShips) {
                 Rectangle shipHitBox = playerShip.getHitbox();
@@ -475,8 +475,6 @@ public class VSSG implements ApplicationListener {
         }
 
     }
-
-//////////////////////
 
     @Override
     public void dispose() {

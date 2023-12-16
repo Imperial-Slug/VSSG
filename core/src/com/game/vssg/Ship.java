@@ -504,7 +504,8 @@ public class Ship extends Sprite {
     boolean seekDestroy(Ship ship) {
         boolean alive = false;
         if (ship.targets.size > 0) {
-            float offset = 2;
+            //offset = range of how far off center ship will fire.
+            float offset = 5;
             Ship target = ship.targets.first();
             float targetAngle = getTargetAngle(ship, target);
             if (ship.getActionCounter() != targetAngle) {
