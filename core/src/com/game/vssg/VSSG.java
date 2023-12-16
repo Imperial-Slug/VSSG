@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -25,8 +26,8 @@ public class VSSG implements ApplicationListener {
     public static boolean mute = false;
     ///////////////
 
-    public static long WORLD_CONSTANT = 32768;
-    public static long WORLD_WIDTH = WORLD_CONSTANT;
+    public static int WORLD_CONSTANT = 32768;
+    public static int WORLD_WIDTH = WORLD_CONSTANT;
     public static long WORLD_HEIGHT = WORLD_CONSTANT;
     public static float shipScale = 1f;
     public static float DEFAULT_ZOOM = 2;
@@ -42,7 +43,7 @@ public class VSSG implements ApplicationListener {
     private Sound laserBlast2;
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
-    private final float wrapDivisor = (float) WORLD_WIDTH / 4096;
+    private final int wrapDivisor =  (WORLD_WIDTH / 4096);
     private final float zoomSpeed = 0.002f;
 
     private Texture purpleShipTexture;
@@ -54,8 +55,11 @@ public class VSSG implements ApplicationListener {
     private Texture greenShipTexture;
     private Texture backgroundTexture;
     private Texture exhaustTexture;
-    private Texture tealShipButton;
-    private Texture purpleShipButton;
+    private Sprite tealShipButton;
+    private Sprite purpleShipButton;
+    private Texture purpleShipButtonTexture;
+    private Texture tealShipButtonTexture;
+
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -85,11 +89,14 @@ public class VSSG implements ApplicationListener {
         backgroundTexture = new Texture("background.png");
         explosionTexture1 = new Texture("explosion_orange.png");
         exhaustTexture = new Texture("ship_exhaust.png");
-        tealShipButton = new Texture("teal_ship_button.png");
-        purpleShipButton = new Texture("purple_ship_button.png");
+        purpleShipButtonTexture = new Texture("purple_ship_button.png");
+        tealShipButtonTexture = new Texture("teal_ship_button.png");
+
+        tealShipButton = new Sprite(tealShipButtonTexture);
+        purpleShipButton = new Sprite(purpleShipButtonTexture);
+
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
         laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
-
 
         // Covers the playable map in the specified texture.  To be modularized for customization.
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -150,8 +157,11 @@ public class VSSG implements ApplicationListener {
         Iterator<CpuShip> copyIter = copiedSet.iterator();
 
         checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
+
         batch.begin();
-        batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, (int) wrapDivisor, (int) wrapDivisor);
+        batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
+        batch.draw(purpleShipButton , camera.position.x - viewport.getScreenWidth()*camera.zoom / 2, camera.position.y-viewport.getScreenHeight()*camera.zoom/2);
+        batch.draw(tealShipButton , (camera.position.x - viewport.getScreenWidth()*camera.zoom / 2)+130, camera.position.y-viewport.getScreenHeight()*camera.zoom/2);
         checkObjects(deltaTime);
         batch.end();
 
@@ -166,6 +176,13 @@ public class VSSG implements ApplicationListener {
 
     public void resume() {
     }
+
+void scaleSprites(){
+
+    purpleShipButton.scale(-(camera.zoom)/2);
+    tealShipButton.scale(-(camera.zoom)/2);
+
+}
 
 
     private void handleInput() {
@@ -248,17 +265,16 @@ public class VSSG implements ApplicationListener {
                 CpuShip cpuShip = new CpuShip(uuid, greenShipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, Ship.Faction.TEAL, targets);
                 cpuShip.setPosition(position.x, position.y);
                 cpuShip.setScale(shipScale);
+                // The copy is for recursive iteration of the CpuShip for-loops during their auto-targeting routine.
                 cpuShips.add(cpuShip);
                 copiedSet.add(cpuShip);
-
 
                 shipSpawnTimeout = true;
                 shipSpawnCounter = 0;
             }
         }
 
-
-        float speedLimit = 500f;
+        float speedLimit = 600f;
         // Speed up.
         if (InputManager.isWPressed()) {
 
@@ -302,17 +318,16 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isQPressed()) {
             zoomIn();
+            scaleSprites();
+
         }
 
         if (InputManager.isEPressed()) {
             zoomOut();
+            scaleSprites();
+
         }
 
-    }
-
-    int getShipSpawnCounter(){
-
-        return this.shipSpawnCounter;
     }
 
     /////////////////////////////////
@@ -500,6 +515,8 @@ public class VSSG implements ApplicationListener {
         batch.dispose();
         backgroundTexture.dispose();
         purpleShipTexture.dispose();
+        tealShipButtonTexture.dispose();
+        purpleShipButtonTexture.dispose();
         greenLaserTexture.dispose();
         blueLaserTexture.dispose();
         redLaserTexture.dispose();
