@@ -92,17 +92,13 @@ public class Ship extends Sprite {
                 ship.setActionState(ActionState.LEFT_U_TURN, ship.previousActionState);
                 this.flag = true;
                 System.out.println("Obstacle avoidance engaged");
-            }
-
-            else {
+            } else {
                 ship.setActionState(ActionState.CRUISE, ship.previousActionState);
                 System.out.println("Obstacle avoidance engaged2222");
 
                 this.flag = false;
             }
         }
-
-
 
 
     }
@@ -270,7 +266,6 @@ public class Ship extends Sprite {
     }
 
 
-
     public void handleStop(Ship ship) {
         if (ship.getActionState() == ActionState.STOP) {
             if (ship.getActionCounter() <= angleCalc) {
@@ -343,7 +338,7 @@ public class Ship extends Sprite {
         }
     }
 
-private int fireCounter;
+    private int fireCounter;
 
     public int getFireCounter() {
         return fireCounter;
@@ -356,7 +351,7 @@ private int fireCounter;
     }
 
     public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
-       Texture texture = null;
+        Texture texture = null;
         if (ship.getActionState() == ActionState.FIRE) {
             if (ship.getFireCounter() <= 100) {
 
@@ -365,17 +360,16 @@ private int fireCounter;
             } else if (ship.getFireCounter() > 100) {
 
                 if (ship.faction == Faction.TEAL) {
-                     texture = redLaserTexture;
-                     ship.setFireCounter(0);
+                    texture = redLaserTexture;
+                    ship.setFireCounter(0);
+
+                } else if (ship.faction == Faction.PURPLE) {
+
+                    texture = greenLaserTexture;
+                    ship.setFireCounter(0);
 
                 }
-                else if (ship.faction == Faction.PURPLE) {
-                    
-                     texture = greenLaserTexture;
-                     ship.setFireCounter(0);
 
-                } 
-                    
                 Laser laser = ship.fireLaser(texture, ship);
                 laser.setShip(ship);
                 lasers.add(laser);
@@ -496,39 +490,37 @@ private int fireCounter;
 
     }
 
-    public float subtractSmallerFromLarger(float a, float b) {
+    public float getDifference(float a, float b) {
         float larger = Math.max(a, b);
         float smaller = Math.min(a, b);
         return larger - smaller;
     }
 
     public boolean detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
-boolean flag = false;
+        boolean flag = false;
         if (targetShip.faction != this.faction) {
             float detectionRadius = 2000;
 
-            if ((subtractSmallerFromLarger(targetShip.getX(), this.getX())) < detectionRadius || (subtractSmallerFromLarger(targetShip.getY(), this.getY())) < detectionRadius) {
-            if (!targets.contains(targetShip)) {
-                targets.add(targetShip);
-                System.out.println("Target Acquired!");
-                this.setAttackMode();
-                flag = true;
+            if ((getDifference(targetShip.getX(), this.getX())) < detectionRadius || (getDifference(targetShip.getY(), this.getY())) < detectionRadius) {
+                if (!targets.contains(targetShip)) {
+                    targets.add(targetShip);
+                    System.out.println("Target Acquired!");
+                    this.setAttackMode();
+                    flag = true;
+                }
+
             }
-
         }
-        }
-
 
         return flag;
     }
 
 
-
     public void setAttackMode() {
 
         System.out.println("Set to attack mode.");
-                    System.out.println("Set to attack mode.");
-                    this.actionState = ActionState.ATTACK;
+        System.out.println("Set to attack mode.");
+        this.actionState = ActionState.ATTACK;
 
     }
 
@@ -542,10 +534,9 @@ boolean flag = false;
                 ship.setActionState(ActionState.IDLE, ship.actionState);
             }
 
-            }
+        }
 
     }
-
 
 
     boolean seekDestroy(Ship ship) {

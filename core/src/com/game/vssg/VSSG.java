@@ -20,7 +20,7 @@ import java.util.Iterator;
 public class VSSG implements ApplicationListener {
 
     // DEBUGGING //
-    public static boolean showHitBoxes = false;
+    public static boolean showHitBoxes = true;
     public static boolean mute = false;
     ///////////////
 
@@ -128,7 +128,7 @@ public class VSSG implements ApplicationListener {
 
     @Override
     public void render() {
-       // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
+        // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
 
         float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0, 0, 0, 1);
@@ -391,36 +391,36 @@ public class VSSG implements ApplicationListener {
 
             for (CpuShip cpuShip : cpuShips) {
                 Rectangle shipHitBox = cpuShip.getHitbox();
-
+                if (showHitBoxes) {
+                    cpuShip.getShapeRenderer().setProjectionMatrix(camera.combined);
+                    cpuShip.drawBoundingBox();
+                }
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != cpuShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
                     Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
                     cpuShip.setInactive(cpuShip);
                     laser.setInactive(laser);
 
-                    if (showHitBoxes) {
-                        cpuShip.getShapeRenderer().setProjectionMatrix(camera.combined);
-                        cpuShip.drawBoundingBox();
-                    }
+
                 }
-               // cpuShip.setActionState(Ship.ActionState.ATTACK, cpuShip.getActionState());
+                // cpuShip.setActionState(Ship.ActionState.ATTACK, cpuShip.getActionState());
 
             }
 
 
             for (PlayerShip playerShip : playerShips) {
                 Rectangle shipHitBox = playerShip.getHitbox();
-
+                if (showHitBoxes) {
+                    playerShip.getShapeRenderer().setProjectionMatrix(camera.combined);
+                    playerShip.drawBoundingBox();
+                }
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != playerShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
                     Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
                     playerShip.setInactive(playerShip);
                     laser.setInactive(laser);
 
-                    if (showHitBoxes) {
-                        playerShip.getShapeRenderer().setProjectionMatrix(camera.combined);
-                        playerShip.drawBoundingBox();
-                    }
+
                 }
             }
 
@@ -458,9 +458,6 @@ public class VSSG implements ApplicationListener {
             }
 
         }
-
-
-
 
 
         for (Explosion explosion : explosions) {
