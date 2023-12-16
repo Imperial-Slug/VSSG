@@ -20,6 +20,8 @@ While ship is is IDLE action state, it is trying to decide what to do next, most
 
 CHANGE:  IDLE will mean more like stopped, barely moving, and there will be another status called READY that will act as a neutral in between state while determining next behavior.  Ready will search for next targets or movements needed. 
 
-NEED T MAKE SEPERATE OBJECTSET LISTS FOR BOTH SIDES WHO WILL BE ATTACKING EACH OTHER
-- remove little guns from ship sprites
 
+- remove little guns from ship sprites
+- add more sprites: med and capital ships, purple and teal
+- change colors, mskr modular with color wheel
+- make vsync editable

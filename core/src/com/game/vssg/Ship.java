@@ -343,29 +343,43 @@ public class Ship extends Sprite {
         }
     }
 
+private int fireCounter;
+
+    public int getFireCounter() {
+        return fireCounter;
+    }
+
+    private void setFireCounter(int fireCounter) {
+
+        this.fireCounter = fireCounter;
+
+    }
 
     public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
        Texture texture = null;
         if (ship.getActionState() == ActionState.FIRE) {
-            if (ship.getActionCounter() <= 100) {
+            if (ship.getFireCounter() <= 100) {
 
-                actionCounter++;
+                ship.fireCounter++;
 
-            } else if (ship.getActionCounter() > 100) {
+            } else if (ship.getFireCounter() > 100) {
 
                 if (ship.faction == Faction.TEAL) {
                      texture = redLaserTexture;
+                     ship.setFireCounter(0);
+
                 }
                 else if (ship.faction == Faction.PURPLE) {
                     
                      texture = greenLaserTexture;
+                     ship.setFireCounter(0);
+
                 } 
                     
-                    Laser laser = ship.fireLaser(texture, ship);
+                Laser laser = ship.fireLaser(texture, ship);
                 laser.setShip(ship);
                 lasers.add(laser);
                 laserBlast.play(2f);
-                ship.setActionCounter(0);
 
                 ship.setActionState(ship.previousActionState, ship.actionState);
 
@@ -488,21 +502,41 @@ public class Ship extends Sprite {
         return larger - smaller;
     }
 
-    public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
-
+    public boolean detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
+boolean flag = false;
         if (targetShip.faction != this.faction) {
-        if ((subtractSmallerFromLarger(targetShip.getX(), this.getX())) < 2000 || (subtractSmallerFromLarger(targetShip.getY(), this.getY())) < 2000) {
+            float detectionRadius = 2000;
+
+            if ((subtractSmallerFromLarger(targetShip.getX(), this.getX())) < detectionRadius || (subtractSmallerFromLarger(targetShip.getY(), this.getY())) < detectionRadius) {
             if (!targets.contains(targetShip)) {
                 targets.add(targetShip);
                 System.out.println("Target Acquired!");
+                this.setAttackMode();
+                flag = true;
             }
+
         }
         }
+
+
+        return flag;
     }
+
+
+
+    public void setAttackMode() {
+
+        System.out.println("Set to attack mode.");
+                    System.out.println("Set to attack mode.");
+                    this.actionState = ActionState.ATTACK;
+
+    }
+
 
     void handleAttack(Ship ship) {
 
         if (ship.getActionState() == ActionState.ATTACK) {
+            System.out.println("Engaging target");
 // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
             if (!seekDestroy(ship)) {
                 ship.setActionState(ActionState.IDLE, ship.actionState);
@@ -512,11 +546,13 @@ public class Ship extends Sprite {
 
     }
 
+
+
     boolean seekDestroy(Ship ship) {
         boolean alive = false;
         if (ship.targets.size > 0) {
             //offset = range of how far off center ship will fire.
-            float offset = 5;
+            float offset = 4;
             Ship target = ship.targets.first();
             float targetAngle = getTargetAngle(ship, target);
             if (ship.getActionCounter() != targetAngle) {
