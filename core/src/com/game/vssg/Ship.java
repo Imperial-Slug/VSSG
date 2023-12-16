@@ -111,7 +111,10 @@ public class Ship extends Sprite {
 
     }
 
+public UUID getUuid(){
+       return this.uuid;
 
+}
     public void setFaction(Faction faction) {
 
         this.faction = faction;
@@ -324,21 +327,26 @@ public class Ship extends Sprite {
                     ship.setActionState(ActionState.LEFT_U_TURN, ship.actionState);
                 } else if (rand_int == 2) {
                     ship.setActionState(ActionState.CIRCLE, ship.actionState);
+                    System.out.println(ship.uuid+" DO CIRCLE");
+
                 } else if (rand_int == 3) {
                     ship.setActionState(ActionState.QUARTER_LEFT_TURN, ship.actionState);
+                    System.out.println(ship.uuid+" QUARTER LEFT TURN");
+
                 } else if (rand_int == 4) {
                     ship.setActionState(ActionState.STOP, ship.actionState);
-                    System.out.println("STOPPED");
+                    System.out.println(ship.uuid+" STOPPED");
 
                 } else if (rand_int == 5) {
                     ship.setActionState(ActionState.QUARTER_RIGHT_TURN, ship.actionState);
+                    System.out.println(ship.uuid+" QUARTER LEFT TURN");
                 } else if (rand_int == 6) {
 
                     ship.setActionState(ActionState.RIGHT_U_TURN, ship.actionState);
-                    System.out.println("CRUISING");
+                    System.out.println(ship.uuid+" CRUISING");
                 } else {
                     ship.setActionState(ActionState.CRUISE, ship.actionState);
-                    System.out.println("CRUISING");
+                    System.out.println(ship.uuid+" CRUISING");
 
                 }
             }
@@ -363,7 +371,7 @@ public class Ship extends Sprite {
 
                 ship.fireCounter++;
 
-            } else if (ship.fireCounter > 100) {
+            } else {
 
                 if (ship.faction == Faction.TEAL) {
                     texture = redLaserTexture;
@@ -510,7 +518,7 @@ public class Ship extends Sprite {
             if ((getDifference(targetShip.getX(), this.getX())) < detectionRadius || (getDifference(targetShip.getY(), this.getY())) < detectionRadius) {
                 if (!targets.contains(targetShip)) {
                     targets.add(targetShip);
-                    System.out.println("Target Acquired!");
+                    System.out.println("Target Acquired! Targeting "+targetShip.uuid);
                     this.setAttackMode();
                     flag = true;
                 }

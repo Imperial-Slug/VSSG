@@ -446,7 +446,7 @@ public class VSSG implements ApplicationListener {
                 if (target != null) {
                     if (!target.isActive()) {
                         cpuShip.getTargets().remove(target);
-                        System.out.println("TARGET REMOVED");
+                        System.out.println("TARGET "+target.getUuid()+" REMOVED");
 
 
                     }
