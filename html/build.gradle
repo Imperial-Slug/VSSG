@@ -2,6 +2,7 @@ gwt {
     gwtVersion='2.8.2' // Should match the gwt version used for building the gwt backend
     maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
     minHeapSize="1G"
+    compiler.style = Style.DETAILED
 
     src = files(file("src/")) // Needs to be in front of "modules" below.
     modules 'com.game.vssg.GdxDefinition'
@@ -16,6 +17,7 @@ gwt {
 
 import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
 import org.akhikhl.gretty.AppBeforeIntegrationTestTask
+import org.wisepersist.gradle.plugins.gwt.Style
 
 gretty.httpPort = 8080
 gretty.resourceBase = project.buildDir.path + "/gwt/draftOut"
@@ -38,7 +40,8 @@ tasks.register('startHttpServer') {
     }
 }
 
-task beforeRun(type: AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
+tasks.register('beforeRun', AppBeforeIntegrationTestTask) {
+    dependsOn startHttpServer
     // The next line allows ports to be reused instead of
     // needing a process to be manually terminated.
     file("build/TEMP_PORTS.properties").delete()
@@ -87,7 +90,9 @@ tasks.draftCompileGwt.dependsOn(addSource)
 tasks.checkGwt.dependsOn(addSource)
 checkGwt.war = file("war")
 
-sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-html"
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}

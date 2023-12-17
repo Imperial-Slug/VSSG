@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import javax.swing.text.View;
 
-public final class InputManager {
+public final class InputManager  {
 
     public static boolean isAPressed() {
         return Gdx.input.isKeyPressed(Input.Keys.A);
@@ -56,5 +56,9 @@ public final class InputManager {
     public static boolean isQPressed() {return Gdx.input.isKeyPressed(Input.Keys.Q); }
 
     public static boolean isEPressed() {return Gdx.input.isKeyPressed(Input.Keys.E); }
+
+
+
+
 
 }

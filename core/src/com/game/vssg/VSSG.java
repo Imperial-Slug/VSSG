@@ -2,6 +2,7 @@ package com.game.vssg;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -132,10 +134,18 @@ public class VSSG implements ApplicationListener {
         PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
-
+        //playerShip.setOriginCenter();
         // Add the new ship to the Ship list.
         playerShips.add(playerShip);
 
+        float position1x = camera.position.x - (viewport.getScreenWidth())*camera.zoom / 2;
+        float position1y = camera.position.y-viewport.getScreenHeight()*camera.zoom/2;
+
+        float position2x = camera.position.x - (viewport.getScreenWidth())*camera.zoom / 2;
+        float position2y = camera.position.y-viewport.getScreenHeight()*camera.zoom/2;
+
+        purpleShipButton.setPosition(position1x, position1y);
+        tealShipButton.setPosition(position2x, position2y);
 
     }
 
@@ -150,6 +160,16 @@ public class VSSG implements ApplicationListener {
         camera.update();
         handleInput();
 
+
+        float position1x = camera.position.x - (viewport.getScreenWidth())*camera.zoom / 2;
+        float position1y = camera.position.y-viewport.getScreenHeight()*camera.zoom/2;
+
+        float position2x = camera.position.x - (viewport.getScreenWidth())*camera.zoom / 2;
+        float position2y = camera.position.y-viewport.getScreenHeight()*camera.zoom/2;
+
+        purpleShipButton.setPosition(position1x, position1y);
+        tealShipButton.setPosition(position2x, position2y);
+
         Iterator<PlayerShip> playerIter = playerShips.iterator();
         Iterator<CpuShip> cpuIter = cpuShips.iterator();
         Iterator<Explosion> explosionIter = explosions.iterator();
@@ -157,11 +177,15 @@ public class VSSG implements ApplicationListener {
         Iterator<CpuShip> copyIter = copiedSet.iterator();
 
         checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
+        scaleButtons();
 
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
-        batch.draw(purpleShipButton , camera.position.x - viewport.getScreenWidth()*camera.zoom / 2, camera.position.y-viewport.getScreenHeight()*camera.zoom/2);
-        batch.draw(tealShipButton , (camera.position.x - viewport.getScreenWidth()*camera.zoom / 2)+130, camera.position.y-viewport.getScreenHeight()*camera.zoom/2);
+
+        purpleShipButton.draw(batch);
+        tealShipButton.draw(batch);
+
+
         checkObjects(deltaTime);
         batch.end();
 
@@ -177,10 +201,10 @@ public class VSSG implements ApplicationListener {
     public void resume() {
     }
 
-void scaleSprites(){
+void scaleButtons(){
 
-    purpleShipButton.scale(-(camera.zoom)/2);
-    tealShipButton.scale(-(camera.zoom)/2);
+    purpleShipButton.setScale(camera.zoom/2);
+    tealShipButton.setScale(camera.zoom/2);
 
 }
 
@@ -188,8 +212,6 @@ void scaleSprites(){
     private void handleInput() {
 
         float cameraSpeed = camera.zoom * 2048;
-
-        //System.out.println("Zoom: "+camera.zoom);
 
         // Rotate the sprite with left arrow key
         if (InputManager.isAPressed()) {
@@ -253,6 +275,20 @@ void scaleSprites(){
         int actionCounter = 0;
 
         if (InputManager.isLeftMousePressed()) {
+
+            int mouseX = Gdx.input.getX();
+            int mouseY = Gdx.input.getY();
+
+            System.out.println("Mouse coordinates: ("+mouseX+", "+mouseY+")" );
+
+            if ((mouseX <= 64 && mouseX >= 0) && (mouseY <= 1400 && mouseY >= 1340)) {
+                System.out.println("Purple button CLICKED" );
+            }
+
+            if ((mouseX <= 128 && mouseX > 64) && (mouseY <= 1400 && mouseY >= 1340)) {
+                System.out.println("Teal button CLICKED" );
+            }
+
             if (!shipSpawnTimeout) {
                 Vector2 position = new Vector2(camera.position.x, camera.position.y);
                 CpuShip.ActionState actionState = Ship.ActionState.IDLE;
@@ -272,6 +308,10 @@ void scaleSprites(){
                 shipSpawnTimeout = true;
                 shipSpawnCounter = 0;
             }
+
+
+
+
         }
 
         float speedLimit = 600f;
@@ -286,6 +326,8 @@ void scaleSprites(){
 
             }
         }
+
+
 
         // Slow down.
         if (InputManager.isSPressed()) {
@@ -318,13 +360,11 @@ void scaleSprites(){
 
         if (InputManager.isQPressed()) {
             zoomIn();
-            scaleSprites();
 
         }
 
         if (InputManager.isEPressed()) {
             zoomOut();
-            scaleSprites();
 
         }
 
@@ -448,8 +488,8 @@ void scaleSprites(){
             playerShip.draw(batch);
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.handleActionState(playerShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
-            camera.position.x = playerShip.getX() + 64;
-            camera.position.y = playerShip.getY() + 64;
+            camera.position.x = playerShip.getX()+playerShip.getWidth()/2;
+            camera.position.y = playerShip.getY()+playerShip.getHeight()/2;
         }
 
         for (CpuShip cpuShip : cpuShips) {
