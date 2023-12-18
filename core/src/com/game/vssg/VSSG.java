@@ -75,8 +75,7 @@ public class VSSG implements ApplicationListener {
     private Sprite purpleShipButton;
     private Texture purpleShipButtonTexture;
     private Texture tealShipButtonTexture;
-    private Label label;
-
+    private boolean pausable;
     private static enum CursorMode {
         MENU_MODE,
         SELECTION_MODE,
@@ -109,17 +108,7 @@ public class VSSG implements ApplicationListener {
 
         initObjects(viewportWidth, viewportHeight);
         // Initial ship's details.
-        Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
-        Rectangle hitBox = new Rectangle();
-        ObjectSet<Ship> targets = new ObjectSet<>();
-        int playerActionCounter = 0;
-        UUID uuid = UUID.randomUUID();
-        String uuidAsString = uuid.toString();
-        System.out.println("New ship UUID is: " + uuidAsString);
-        PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
-        playerShip.setScale(shipScale);
-        playerShip.setRotation(0);
-        playerShips.add(playerShip);
+        initPlayerShip();
 
         purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y+viewportHeight);
         purpleShipButton.setPosition((float) viewport.getScreenX() /2, (float) viewport.getScreenY() /2);
@@ -128,7 +117,7 @@ public class VSSG implements ApplicationListener {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 120;
         parameter.color = Color.GREEN;
-         font = generator.generateFont(parameter);
+        font = generator.generateFont(parameter);
         generator.dispose();
 
         skin = new Skin();
@@ -141,20 +130,32 @@ public class VSSG implements ApplicationListener {
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = skin.getFont("default-font"); // Set the font
         buttonStyle.fontColor = Color.WHITE; // Set the font color
-        button = new TextButton("VSSG\nVery Simple Ship Game\nPress any key to begin.", buttonStyle);
+        button = new TextButton("PAUSED:  CLICK TO QUIT", buttonStyle);
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Perform actions when the button is clicked
-                System.out.println("Button clicked!");
-            }
+Gdx.app.exit();            }
         });
 
         // Add the button to the stage
         stage.addActor(button);
 
     }
+void initPlayerShip(){
 
+    Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
+    Rectangle hitBox = new Rectangle();
+    ObjectSet<Ship> targets = new ObjectSet<>();
+    int playerActionCounter = 0;
+    UUID uuid = UUID.randomUUID();
+    String uuidAsString = uuid.toString();
+    System.out.println("New ship UUID is: " + uuidAsString);
+    PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
+    playerShip.setScale(shipScale);
+    playerShip.setRotation(0);
+    playerShips.add(playerShip);
+}
     void initObjects(float viewportWidth, float viewportHeight) {
 
         camera = new OrthographicCamera();
@@ -253,6 +254,8 @@ public class VSSG implements ApplicationListener {
 void relinquishControl(PlayerShip playerShip){
 
         CpuShip cpuShip = new CpuShip(playerShip.getUuid(), playerShip.getTexture(), playerShip.getPosition(), playerShip.getSpeed(), Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getHitbox(), playerShip.getActionCounter(), playerShip.getFaction(), playerShip.getTargets());
+        cpuShip.setRotation(playerShip.getRotation());
+        cpuShip.setSpeed(playerShip.getSpeed());
         playerShip.setInactive(playerShip);
         playerShips.remove(playerShip);
         cpuShips.add(cpuShip);
@@ -307,9 +310,9 @@ void chooseMode(){
             }
         }
 
-        if (InputManager.isRightMousePressed()) {
-            pauseGame();
 
+        if (InputManager.isRightMousePressed()) {
+            System.out.println("Placeholder");
         }
 
         if (shipSpawnTimeout) {
@@ -372,7 +375,12 @@ void chooseMode(){
         }
 
         if (InputManager.isEscPressed()) {
-            Gdx.app.exit();
+           if (clickTimeout > 100) {
+               pauseGame();
+               clickTimeout=0;
+               pausable=false;
+           }
+           else clickTimeout++;
         }
 
         if (InputManager.isLeftPressed()) {
