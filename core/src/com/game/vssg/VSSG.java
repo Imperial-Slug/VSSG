@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -159,11 +158,6 @@ public class VSSG implements ApplicationListener {
         purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y+viewportHeight);
         purpleShipButton.setPosition((float) viewport.getScreenX() /2, (float) viewport.getScreenY() /2);
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/myfont.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 12;
-        BitmapFont font12 = generator.generateFont(parameter); // font size 12 pixels
-        generator.dispose(); // don't forget to dispose to avoid memory leaks!
 
     }
 
@@ -175,8 +169,7 @@ public class VSSG implements ApplicationListener {
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
 
-        stage.act(deltaTime);
-        stage.draw();
+
         batch.setProjectionMatrix(camera.combined);
         camera.update();
         handleInput();
@@ -192,7 +185,8 @@ public class VSSG implements ApplicationListener {
         checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
         scaleButtons();
         batch.begin();
-
+        stage.act(deltaTime);
+        stage.draw();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
         purpleShipButton.draw(batch);
         purpleShipButton.setPosition(stage.getWidth()/2, stage.getHeight()/2);
