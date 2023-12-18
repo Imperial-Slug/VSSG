@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -72,6 +74,7 @@ public class VSSG implements ApplicationListener {
     private Sprite purpleShipButton;
     private Texture purpleShipButtonTexture;
     private Texture tealShipButtonTexture;
+    private Label label;
     private static enum CursorMode {
         SELECTION_MODE,
         PLAY_MODE
@@ -161,9 +164,18 @@ public class VSSG implements ApplicationListener {
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 12;
-        BitmapFont font12 = generator.generateFont(parameter); // font size 12 pixels
+        parameter.size = 120;
+        parameter.color = Color.RED;
+        BitmapFont font = generator.generateFont(parameter); // font size 12 pixels
         generator.dispose(); // don't forget to dispose to avoid memory leaks!
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+
+        label = new Label("Your text here", labelStyle);
+        label.setPosition(100, 100);
+        label.setSize(500, 500);
+// Optionally, set label position, size, etc.
+        stage.addActor(label);
 
     }
 
@@ -174,28 +186,31 @@ public class VSSG implements ApplicationListener {
 
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+        label.setPosition(camera.position.x, camera.position.y);
 
-        stage.act(deltaTime);
-        stage.draw();
+
+
         batch.setProjectionMatrix(camera.combined);
         camera.update();
         handleInput();
 
-        //System.out.println("x = "+purpleShipButton.getX()+" y = "+purpleShipButton.getY()+" Zoom = "+camera.zoom+" camera.position = "+ camera.position.x);
+       // System.out.println("x = "+purpleShipButton.getX()+" y = "+purpleShipButton.getY()+" Zoom = "+camera.zoom+" camera.position = "+ camera.position.x);
+
 
         Iterator<PlayerShip> playerIter = playerShips.iterator();
         Iterator<CpuShip> cpuIter = cpuShips.iterator();
         Iterator<Explosion> explosionIter = explosions.iterator();
         Iterator<Laser> laserIter = lasers.iterator();
         Iterator<CpuShip> copyIter = copiedSet.iterator();
+        stage.act(deltaTime);
+
+        stage.draw();
 
         checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
         scaleButtons();
         batch.begin();
-
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
-        purpleShipButton.draw(batch);
-        purpleShipButton.setPosition(stage.getWidth()/2, stage.getHeight()/2);
+        stage.draw();
         checkObjects(deltaTime);
         batch.end();
 
