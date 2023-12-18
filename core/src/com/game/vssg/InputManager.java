@@ -57,7 +57,7 @@ public final class InputManager  {
 
     public static boolean isEPressed() {return Gdx.input.isKeyPressed(Input.Keys.E); }
 
-
+    public static boolean isCPressed() {return Gdx.input.isKeyPressed(Input.Keys.C); }
 
 
 

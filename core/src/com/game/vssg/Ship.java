@@ -1,11 +1,11 @@
 package com.game.vssg;
 
 import static com.game.vssg.VSSG.WORLD_CONSTANT;
+import static com.game.vssg.VSSG.isPaused;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -57,7 +57,6 @@ public class Ship extends Sprite {
         IDLE,
         STOP,
         ATTACK
-
     }
 
     public Ship(UUID uuid, Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Faction faction, ObjectSet<Ship> targets) {
@@ -80,41 +79,36 @@ public class Ship extends Sprite {
 
     // Determining the next position of the ship every frame.
     public void update(float delta, Ship ship, long WORLD_WIDTH, long WORLD_HEIGHT) {
+if (!isPaused) {
+    if (active) {
+        Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
+        position.add(velocity.x * delta, velocity.y * delta);
 
-        if (active) {
-            Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
-            position.add(velocity.x * delta, velocity.y * delta);
-
-            // Check if the ship is out of screen bounds and deactivate it if necessary
-            if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
-                active = false;
-            }
-            // Update the sprite's position
-            setPosition(position.x, position.y);
-            updateHitBox(ship);
-
-
-
+        // Check if the ship is out of screen bounds and deactivate it if necessary
+        if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
+            active = false;
         }
+        // Update the sprite's position
+        setPosition(position.x, position.y);
+        updateHitBox(ship);
 
 
+    }
 
+    if (ship.position.x >= WORLD_CONSTANT - 500 || ship.position.y >= WORLD_CONSTANT - 500) {
+        if (!this.flag) {
 
-        if (ship.position.x >= WORLD_CONSTANT - 500 || ship.position.y >= WORLD_CONSTANT - 500) {
-            if (!this.flag) {
-
-                ship.setActionState(ActionState.LEFT_U_TURN, ship.previousActionState);
-                this.flag = true;
-                //System.out.println("Obstacle avoidance engaged");
-            } else {
-                ship.setActionState(ActionState.CRUISE, ship.previousActionState);
-               // System.out.println("Obstacle avoidance engaged2222");
-
-                this.flag = false;
-            }
+            ship.setActionState(ActionState.LEFT_U_TURN, ship.previousActionState);
+            this.flag = true;
+            //System.out.println("Obstacle avoidance engaged");
+        } else {
+            ship.setActionState(ActionState.CRUISE, ship.previousActionState);
+            // System.out.println("Obstacle avoidance engaged2");
+            this.flag = false;
         }
+    }
 
-
+}
     }
 
 public UUID getUuid(){
@@ -165,7 +159,7 @@ public UUID getUuid(){
         float offsetY = -2.25f;
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);
-        Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 2048, hitbox, 0, ship);
+        Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 2048, 0, ship);
         laser.setOrigin(0, laser.getOriginY() / 2);
         return laser;
     }
@@ -173,6 +167,8 @@ public UUID getUuid(){
 
     // Update the bounding box based on the scaled sprite's position and size
     private void updateHitBox(Ship ship) {
+
+        if (!isPaused) {
         float shipScale = VSSG.shipScale;
         float scaledWidth = ship.getWidth() * shipScale;
         float scaledHeight = ship.getHeight() * shipScale;
@@ -180,10 +176,12 @@ public UUID getUuid(){
         // Update the bounding box's position and size to match the scaled sprite
         float hitboxOffset = 0;
         hitbox.set(ship.getX() + hitboxOffset, ship.getY() + hitboxOffset, scaledWidth, scaledHeight);
-    }
+    }}
 
     void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTexture, Texture blueLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
-        ship.handleIdle(ship);
+        if (!isPaused) {
+
+            ship.handleIdle(ship);
         ship.handleLeftUTurn(ship);
         ship.handleRightUTurn(ship);
         ship.handleCircle(ship);
@@ -194,10 +192,12 @@ public UUID getUuid(){
         ship.handleFire(ship, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
         ship.handleAttack(ship);
 
-    }
+    }}
 
     public void handleCruise(Ship ship) {
-        if (ship.getActionState() == Ship.ActionState.CRUISE) {
+        if (!isPaused) {
+
+            if (ship.getActionState() == Ship.ActionState.CRUISE) {
 
 
             if (ship.getActionCounter() <= 2048) {
@@ -212,28 +212,34 @@ public UUID getUuid(){
                 }
             }
         }
-    }
+    }}
 
     public void handleLeftUTurn(Ship ship) {
-        if (ship.getActionState() == Ship.ActionState.LEFT_U_TURN) {
-            if (ship.getActionCounter() <= angleCalc) {
-                ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(half);
-            } else if (ship.getActionCounter() > angleCalc) {
-                if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE, ActionState.LEFT_U_TURN);
-                    ship.setActionCounter(0);
-                } else {
-                    ship.setActionState(Ship.ActionState.IDLE, ActionState.LEFT_U_TURN);
-                    ship.setActionCounter(0);
-                }
-            }
+        if (!isPaused) {
 
+            if (ship.getActionState() == Ship.ActionState.LEFT_U_TURN) {
+                if (ship.getActionCounter() <= angleCalc) {
+                    ship.setActionCounter(ship.getActionCounter() + 1);
+                    ship.rotate(half);
+                } else if (ship.getActionCounter() > angleCalc) {
+                    if (ship.isIdle) {
+                        ship.setActionState(ActionState.IDLE, ActionState.LEFT_U_TURN);
+                        ship.setActionCounter(0);
+                    } else {
+                        ship.setActionState(Ship.ActionState.IDLE, ActionState.LEFT_U_TURN);
+                        ship.setActionCounter(0);
+                    }
+                }
+
+            }
         }
     }
 
     public void handleRightUTurn(Ship ship) {
-        if (ship.getActionState() == Ship.ActionState.RIGHT_U_TURN) {
+
+        if (!isPaused) {
+
+            if (ship.getActionState() == Ship.ActionState.RIGHT_U_TURN) {
             if (ship.getActionCounter() <= angleCalc) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(-half);
@@ -247,10 +253,12 @@ public UUID getUuid(){
                 }
             }
         }
-    }
+    }}
 
     public void handleCircle(Ship ship) {
-        if (ship.getActionState() == ActionState.CIRCLE) {
+        if (!isPaused) {
+
+            if (ship.getActionState() == ActionState.CIRCLE) {
             if (ship.getActionCounter() <= angleCalc * 4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(0.125f);
@@ -264,27 +272,32 @@ public UUID getUuid(){
                 }
             }
         }
-    }
+    }}
 
     public void handleQuarterLeftTurn(Ship ship) {
-        if (ship.getActionState() == ActionState.QUARTER_LEFT_TURN) {
-            if (ship.getActionCounter() <= 180 * 4) {
-                ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.rotate(0.25f);
-            } else if (ship.getActionCounter() > 180 * 4) {
-                if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE, ActionState.QUARTER_LEFT_TURN);
-                    ship.setActionCounter(0);
-                } else {
-                    ship.setActionState(Ship.ActionState.IDLE, ActionState.QUARTER_LEFT_TURN);
-                    ship.setActionCounter(0);
+        if (!isPaused) {
+
+            if (ship.getActionState() == ActionState.QUARTER_LEFT_TURN) {
+                if (ship.getActionCounter() <= 180 * 4) {
+                    ship.setActionCounter(ship.getActionCounter() + 1);
+                    ship.rotate(0.25f);
+                } else if (ship.getActionCounter() > 180 * 4) {
+                    if (ship.isIdle) {
+                        ship.setActionState(ActionState.IDLE, ActionState.QUARTER_LEFT_TURN);
+                        ship.setActionCounter(0);
+                    } else {
+                        ship.setActionState(Ship.ActionState.IDLE, ActionState.QUARTER_LEFT_TURN);
+                        ship.setActionCounter(0);
+                    }
                 }
             }
         }
     }
 
     public void handleQuarterRightTurn(Ship ship) {
-        if (ship.getActionState() == ActionState.QUARTER_RIGHT_TURN) {
+        if (!isPaused) {
+
+            if (ship.getActionState() == ActionState.QUARTER_RIGHT_TURN) {
             if (ship.getActionCounter() <= 180 * 4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(-0.25f);
@@ -298,21 +311,23 @@ public UUID getUuid(){
                 }
             }
         }
-    }
+    }}
 
 
     public void handleStop(Ship ship) {
-        if (ship.getActionState() == ActionState.STOP) {
-            if (ship.getActionCounter() <= angleCalc) {
-                ship.setActionCounter(ship.getActionCounter() + 1);
-                ship.setSpeed(0);
-            } else if (ship.getActionCounter() > angleCalc) {
-                ship.setActionState(ship.previousActionState, ActionState.STOP);
-                ship.setActionCounter(0);
+        if (!isPaused) {
+
+            if (ship.getActionState() == ActionState.STOP) {
+                if (ship.getActionCounter() <= angleCalc) {
+                    ship.setActionCounter(ship.getActionCounter() + 1);
+                    ship.setSpeed(0);
+                } else if (ship.getActionCounter() > angleCalc) {
+                    ship.setActionState(ship.previousActionState, ActionState.STOP);
+                    ship.setActionCounter(0);
+                }
             }
         }
     }
-
 
     public float getRandomSpeed() {
         Random rand = new Random();
@@ -340,6 +355,7 @@ public UUID getUuid(){
 
 
     public void handleIdle(Ship ship) {
+        if (!isPaused) {
 
         if (ship.getActionState() == ActionState.IDLE) {
             ship.isIdle = true;
@@ -376,7 +392,7 @@ public UUID getUuid(){
             }
 
         }
-    }
+    }}
 
     public int getFireCounter() {
         return this.fireCounter;
@@ -390,7 +406,9 @@ public UUID getUuid(){
 
     public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
       // Laser texture used is dependent on ship faction.
-        Texture texture = null;
+        if (!isPaused) {
+
+            Texture texture = null;
         if (ship.actionState == ActionState.FIRE) {
             if (ship.fireCounter <= 100) {
 
@@ -418,7 +436,7 @@ public UUID getUuid(){
 
             }
         }
-    }
+    }}
 
 
     // ANGLE CALCULATIONS //
@@ -437,7 +455,9 @@ public UUID getUuid(){
 
 
     public void rotateTowardTarget(Ship sourceShip, Ship targetShip, float rotationSpeed, float deltaTime) {
-        // Get the positions of the source and target ships and calculate the angle between the source and target ships.
+        if (!isPaused) {
+
+            // Get the positions of the source and target ships and calculate the angle between the source and target ships.
         float targetAngle = getTargetAngle(sourceShip, targetShip);
 
         // Get the current rotation of the source ship.
@@ -461,7 +481,7 @@ public UUID getUuid(){
             }
         } else {
             sourceShip.setRotation(targetAngle);
-        }
+        }}
     }
 
     Vector2 getPosition(){
@@ -500,11 +520,6 @@ public UUID getUuid(){
         shapeRenderer.end();
     }
 
-    // Dispose of the ShapeRenderer when it's no longer needed
-    public void dispose() {
-        shapeRenderer.dispose();
-    }
-
 
     public ShapeRenderer getShapeRenderer() {
 
@@ -540,6 +555,7 @@ public UUID getUuid(){
     }
 
     public boolean detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
+
         boolean flag = false;
         if (targetShip.faction != this.faction) {
             float detectionRadius = 2000;
@@ -565,6 +581,7 @@ public UUID getUuid(){
 
 
     void handleAttack(Ship ship) {
+        if (!isPaused) {
 
         if (ship.getActionState() == ActionState.ATTACK) {
             //System.out.println("Engaging target");
@@ -575,10 +592,12 @@ public UUID getUuid(){
 
         }
 
-    }
+    }}
 
 
     boolean seekDestroy(Ship ship) {
+        if (!isPaused) {
+
         boolean alive = false;
         if (ship.targets.size > 0) {
             //offset = range of how far off center ship will fire.
@@ -602,6 +621,8 @@ public UUID getUuid(){
             alive = target.active;
         }
         return alive;
+    }
+        return false;
     }
 
     public ObjectSet<Ship> getTargets() {

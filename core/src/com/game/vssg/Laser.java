@@ -1,5 +1,7 @@
 package com.game.vssg;
 
+import static com.game.vssg.VSSG.isPaused;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
@@ -15,7 +17,7 @@ public class Laser extends Sprite {
     private Ship ship;
 
 
-    public Laser(Texture texture, float x, float y, float shipRotation, float speed, Rectangle hitbox, int despawnCounter, Ship ship) {
+    public Laser(Texture texture, float x, float y, float shipRotation, float speed, int despawnCounter, Ship ship) {
         super(texture);
         this.position = new Vector2(x, y);
         this.speed = speed;
@@ -26,9 +28,10 @@ public class Laser extends Sprite {
         active = true;
     }
 
-    public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT, int despawnCounter, Ship ship) {
+    public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT, Ship ship) {
+        if (!isPaused){
+
         if (active) {
-            despawnCounter = this.getDespawnCounter();
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
             this.setDespawnCounter(this.getDespawnCounter() + 1);
@@ -39,7 +42,7 @@ public class Laser extends Sprite {
 
             setPosition(position.x, position.y);
         }
-    }
+    }}
 
 
     void updateHitBox(Laser laser) {
