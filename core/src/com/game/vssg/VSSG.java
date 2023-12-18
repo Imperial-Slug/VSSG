@@ -9,8 +9,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -86,7 +88,6 @@ public class VSSG implements ApplicationListener {
     Stage stage;
 
     ////////////////////////////////
-    InputProcessor inputManager;
 
     @Override
     public void create() {
@@ -128,7 +129,7 @@ public class VSSG implements ApplicationListener {
          stage = new Stage(viewport);
         //viewport.apply();
 
-        Gdx.input.setInputProcessor(inputManager);
+        Gdx.input.setInputProcessor(stage);
 
         // Prepare SpriteBatch and lists for keeping track of/accessing game objects.
         batch = new SpriteBatch();
@@ -156,6 +157,13 @@ public class VSSG implements ApplicationListener {
         tealShipButton = new Sprite(tealShipButtonTexture);
 
         purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y+viewportHeight);
+        purpleShipButton.setPosition((float) viewport.getScreenX() /2, (float) viewport.getScreenY() /2);
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/myfont.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 12;
+        BitmapFont font12 = generator.generateFont(parameter); // font size 12 pixels
+        generator.dispose(); // don't forget to dispose to avoid memory leaks!
 
     }
 
@@ -184,8 +192,10 @@ public class VSSG implements ApplicationListener {
         checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
         scaleButtons();
         batch.begin();
-        batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
 
+        batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
+        purpleShipButton.draw(batch);
+        purpleShipButton.setPosition(stage.getWidth()/2, stage.getHeight()/2);
         checkObjects(deltaTime);
         batch.end();
 
