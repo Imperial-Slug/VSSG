@@ -30,3 +30,4 @@ CURRENT: MAKE MENU IN GAME
 
 
 center of camera - half screenwidth + half y height
+- make camera zoomable but no select menu when playercontrol is true

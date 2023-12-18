@@ -171,22 +171,24 @@ public class VSSG implements ApplicationListener {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
 
-        label = new Label("Your text here", labelStyle);
-        label.setPosition(100, 100);
+        label = new Label("*** IN DEVELOPMENT ***", labelStyle);
         label.setSize(500, 500);
+        label.setPosition(-100, 500);
+
 // Optionally, set label position, size, etc.
         stage.addActor(label);
 
     }
-
+private boolean paused = false;
     @Override
     public void render() {
+
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-        label.setPosition(camera.position.x, camera.position.y);
+        label.setPosition(-100, -500);
 
         if (!playerShips.isEmpty()) {
             cursorMode=CursorMode.PLAY_MODE;
@@ -200,19 +202,17 @@ public class VSSG implements ApplicationListener {
         handleInput();
 
        // System.out.println("x = "+purpleShipButton.getX()+" y = "+purpleShipButton.getY()+" Zoom = "+camera.zoom+" camera.position = "+ camera.position.x);
-
-
         Iterator<PlayerShip> playerIter = playerShips.iterator();
         Iterator<CpuShip> cpuIter = cpuShips.iterator();
         Iterator<Explosion> explosionIter = explosions.iterator();
         Iterator<Laser> laserIter = lasers.iterator();
         Iterator<CpuShip> copyIter = copiedSet.iterator();
+
         stage.act(deltaTime);
-
         stage.draw();
-
         checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
         scaleButtons();
+
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
         stage.draw();
@@ -222,7 +222,7 @@ public class VSSG implements ApplicationListener {
     }
 
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        stage.getViewport().update(width, height, false);
     }
 
     public void pause() {
@@ -235,6 +235,18 @@ void scaleButtons(){
 
     purpleShipButton.setScale(camera.zoom/2);
     tealShipButton.setScale(camera.zoom/2);
+
+}
+
+
+void relinquishControl(PlayerShip playerShip){
+
+        CpuShip cpuShip = new CpuShip(playerShip.getUuid(), playerShip.getTexture(), playerShip.getPosition(), playerShip.getSpeed(), Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getHitbox(), playerShip.getActionCounter(), playerShip.getFaction(), playerShip.getTargets());
+        playerShip.setInactive(playerShip);
+        playerShips.remove(playerShip);
+        cpuShips.add(cpuShip);
+        copiedSet.add(cpuShip);
+        System.out.println("CURSOR_MODE = "+cursorMode);
 
 }
 
@@ -276,14 +288,15 @@ void scaleButtons(){
                 }
             }
         }
-//attack player
+
+
+
+
         if (InputManager.isRightMousePressed()) {
-            for (CpuShip cpuShip : cpuShips) {
 
-                cpuShip.setActionState(Ship.ActionState.ATTACK, cpuShip.getActionState());
-
+            if (!playerShips.isEmpty()) {
+                relinquishControl(playerShips.first());
             }
-
         }
 
         if (shipSpawnTimeout) {
@@ -386,7 +399,7 @@ void scaleButtons(){
         if (InputManager.isDownPressed()) {
             camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
 
-           spawnShip(otherShipTexture);
+           spawnShip(purpleShipTexture);
 
         }
 
@@ -582,7 +595,6 @@ void scaleButtons(){
             shipSpawnTimeout = true;
         }
     }
-
 
     @Override
     public void dispose() {

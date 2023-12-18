@@ -365,6 +365,7 @@ public UUID getUuid(){
     }
 
     public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
+      // Laser texture used is dependent on ship faction.
         Texture texture = null;
         if (ship.actionState == ActionState.FIRE) {
             if (ship.fireCounter <= 100) {
@@ -439,6 +440,10 @@ public UUID getUuid(){
         }
     }
 
+    Vector2 getPosition(){
+
+        return this.position;
+}
 
     public Rectangle getHitbox() {
 
@@ -553,7 +558,7 @@ public UUID getUuid(){
         boolean alive = false;
         if (ship.targets.size > 0) {
             //offset = range of how far off center ship will fire.
-            float offset = 4;
+            float offset = 3;
             Ship target = ship.targets.first();
             float targetAngle = getTargetAngle(ship, target);
             if (ship.getActionCounter() != targetAngle) {
