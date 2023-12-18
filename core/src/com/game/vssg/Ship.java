@@ -28,7 +28,9 @@ public class Ship extends Sprite {
     private boolean flag = false;
     private ActionState previousActionState;
     private ObjectSet<Ship> targets;
-    private UUID uuid;
+    private final UUID uuid;
+    private boolean laserSpawnTimeout;
+    private int laserSpawnCounter;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -71,7 +73,8 @@ public class Ship extends Sprite {
         this.targets = targets;
         this.active = true;
         this.uuid = uuid;
-
+        this.laserSpawnTimeout = false;
+        this.laserSpawnCounter = 0;
 
     }
 
@@ -94,6 +97,9 @@ public class Ship extends Sprite {
 
         }
 
+
+
+
         if (ship.position.x >= WORLD_CONSTANT - 500 || ship.position.y >= WORLD_CONSTANT - 500) {
             if (!this.flag) {
 
@@ -115,6 +121,24 @@ public UUID getUuid(){
        return this.uuid;
 
 }
+
+    boolean getLaserSpawnTimeout(){
+        return laserSpawnTimeout;
+
+    }
+    int getLaserSpawnCounter(){
+        return laserSpawnCounter;
+
+    }
+
+    void setLaserSpawnTimeout(boolean laserSpawnTimeout){
+
+        this.laserSpawnTimeout = laserSpawnTimeout;
+    }
+    void setLaserSpawnCounter(int laserSpawnCounter){
+
+        this.laserSpawnCounter = laserSpawnCounter;
+    }
     public void setFaction(Faction faction) {
 
         this.faction = faction;

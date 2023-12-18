@@ -85,9 +85,7 @@ public class VSSG implements ApplicationListener {
     private Viewport viewport;
     private boolean shipSpawnTimeout = false;
     private int shipSpawnCounter = 0;
-    private boolean laserSpawnTimeout = false;
-    public static boolean playerActive = false;
-    private int laserSpawnCounter = 0;
+
     Stage stage;
 
     ////////////////////////////////
@@ -273,17 +271,16 @@ void relinquishControl(PlayerShip playerShip){
 
         // Shoot lasers
         if (InputManager.isSpacePressed()) {
-            if (!laserSpawnTimeout) {
-                for (Ship ship : playerShips) {
 
+                for (Ship ship : playerShips) {
+                    if (!ship.getLaserSpawnTimeout()) {
                     Laser laser = ship.fireLaser(blueLaserTexture, ship);
                     laser.setShip(ship);
                     lasers.add(laser);
 
                     laserBlast2.play(2.0f);
-                    laserSpawnTimeout = true;
-                    laserSpawnCounter = 0;
-
+                    ship.setLaserSpawnTimeout(true);
+                    ship.setLaserSpawnCounter(0);
 
                 }
             }
@@ -308,15 +305,16 @@ void relinquishControl(PlayerShip playerShip){
             }
         }
 // For player ship only during runtime. CpuShip laser timing is handled differently.
-        if (laserSpawnTimeout) {
-            if (laserSpawnCounter >= 200) {
+       if (!playerShips.isEmpty()) {
+           if (playerShips.first().getLaserSpawnTimeout()) {
+               if (playerShips.first().getLaserSpawnCounter() >= 175) {
 
-                laserSpawnTimeout = false;
-            } else {
-                laserSpawnCounter++;
-            }
-        }
-
+                   playerShips.first().setLaserSpawnTimeout(false);
+               } else {
+                   playerShips.first().setLaserSpawnCounter(playerShips.first().getLaserSpawnCounter()+1);
+               }
+           }
+       }
         int actionCounter = 0;
 
         if (InputManager.isLeftMousePressed()) {
