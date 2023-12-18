@@ -103,11 +103,82 @@ public class VSSG implements ApplicationListener {
         cursorMode = CursorMode.MENU_MODE;
         float viewportWidth = Gdx.graphics.getWidth();
         float viewportHeight = Gdx.graphics.getHeight();
-        // Get number of processors for future multithreading purposes.
         int processors = Runtime.getRuntime().availableProcessors();
-        System.out.println("Get number of processor cores: " + processors);
+        loadResources();
+        backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-        // Load assets.
+        initObjects(viewportWidth, viewportHeight);
+        // Initial ship's details.
+        Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
+        Rectangle hitBox = new Rectangle();
+        ObjectSet<Ship> targets = new ObjectSet<>();
+        int playerActionCounter = 0;
+        UUID uuid = UUID.randomUUID();
+        String uuidAsString = uuid.toString();
+        System.out.println("New ship UUID is: " + uuidAsString);
+        PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
+        playerShip.setScale(shipScale);
+        playerShip.setRotation(0);
+        playerShips.add(playerShip);
+
+        purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y+viewportHeight);
+        purpleShipButton.setPosition((float) viewport.getScreenX() /2, (float) viewport.getScreenY() /2);
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 120;
+        parameter.color = Color.GREEN;
+         font = generator.generateFont(parameter);
+        generator.dispose();
+
+        skin = new Skin();
+        skin.add("default-font", font);
+        NinePatchDrawable buttonUp = new NinePatchDrawable(new NinePatch(new Texture("purple_ship_button.png"), 100, 100, 100, 100));
+        skin.add("button_up", buttonUp);
+        NinePatchDrawable buttonDown = new NinePatchDrawable(new NinePatch(new Texture("teal_ship_button.png"), 100, 100, 100, 100));
+        skin.add("button_down", buttonDown);
+
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = skin.getFont("default-font"); // Set the font
+        buttonStyle.fontColor = Color.WHITE; // Set the font color
+        button = new TextButton("VSSG\nVery Simple Ship Game\nPress any key to begin.", buttonStyle);
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Perform actions when the button is clicked
+                System.out.println("Button clicked!");
+            }
+        });
+
+        // Add the button to the stage
+        stage.addActor(button);
+
+    }
+
+    void initObjects(float viewportWidth, float viewportHeight) {
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, (float) WORLD_WIDTH /2, (float) WORLD_HEIGHT /2);
+        camera.zoom = DEFAULT_ZOOM;
+        viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
+        stage = new Stage(viewport);
+        Gdx.input.setInputProcessor(stage);
+        // Prepare SpriteBatch and lists for keeping track of/accessing game objects.
+        batch = new SpriteBatch();
+        cpuShips = new ObjectSet<>();
+        copiedSet = new ObjectSet<>(cpuShips);
+        playerShips = new ObjectSet<>();
+        explosions = new ObjectSet<>();
+        lasers = new ObjectSet<>();
+        purpleShipButton = new Sprite(purpleShipButtonTexture);
+        tealShipButton = new Sprite(tealShipButtonTexture);
+
+
+    }
+
+
+    void loadResources() {
+
         purpleShipTexture = new Texture("purple_ship.png");
         otherShipTexture = new Texture("N1.png");
         greenShipTexture = new Texture("teal_ship.png");
@@ -126,85 +197,6 @@ public class VSSG implements ApplicationListener {
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
         laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
 
-        // Covers the playable map in the specified texture.  To be modularized for customization.
-        backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-
-        // Setup camera, viewport, controls input.
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, (float) WORLD_WIDTH /2, (float) WORLD_HEIGHT /2);
-        camera.zoom = DEFAULT_ZOOM;
-
-        viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
-         stage = new Stage(viewport);
-
-        Gdx.input.setInputProcessor(stage);
-
-        // Prepare SpriteBatch and lists for keeping track of/accessing game objects.
-        batch = new SpriteBatch();
-        cpuShips = new ObjectSet<>();
-        copiedSet = new ObjectSet<>(cpuShips);
-        playerShips = new ObjectSet<>();
-        explosions = new ObjectSet<>();
-        lasers = new ObjectSet<>();
-
-        // Initial ship's details.
-        Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
-        Rectangle hitBox = new Rectangle();
-        ObjectSet<Ship> targets = new ObjectSet<>();
-        int playerActionCounter = 0;
-        UUID uuid = UUID.randomUUID();
-        String uuidAsString = uuid.toString();
-        System.out.println("New ship UUID is: " + uuidAsString);
-
-        PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
-        playerShip.setScale(shipScale);
-        playerShip.setRotation(0);
-        playerShips.add(playerShip);
-
-        purpleShipButton = new Sprite(purpleShipButtonTexture);
-        tealShipButton = new Sprite(tealShipButtonTexture);
-
-        purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y+viewportHeight);
-        purpleShipButton.setPosition((float) viewport.getScreenX() /2, (float) viewport.getScreenY() /2);
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 120;
-        parameter.color = Color.GREEN;
-         font = generator.generateFont(parameter); // font size 12 pixels
-        generator.dispose(); // don't forget to dispose to avoid memory leaks!
-       // Label.LabelStyle labelStyle = new Label.LabelStyle();
-        //labelStyle.font = font;
-        //label = new Label("*** IN DEVELOPMENT ***", labelStyle);
-        //label.setSize(500, 500);
-        //label.setPosition(-100, 500);
-
-// Optionally, set label position, size, etc.
-
-        skin = new Skin();
-        skin.add("default-font", font);
-        NinePatchDrawable buttonUp = new NinePatchDrawable(new NinePatch(new Texture("purple_ship_button.png"), 100, 100, 100, 100));
-        skin.add("button_up", buttonUp);
-        NinePatchDrawable buttonDown = new NinePatchDrawable(new NinePatch(new Texture("teal_ship_button.png"), 100, 100, 100, 100));
-        skin.add("button_down", buttonDown);
-
-
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-
-        buttonStyle.font = skin.getFont("default-font"); // Set the font
-        buttonStyle.fontColor = Color.WHITE; // Set the font color
-        button = new TextButton("VSSG\nVery Simple Ship Game\nPress any key to begin.", buttonStyle);
-        button.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Perform actions when the button is clicked
-                System.out.println("Button clicked!");
-                // Add your custom logic here
-            }
-        });
-
-        // Add the button to the stage
-        stage.addActor(button);
 
     }
 
@@ -607,7 +599,7 @@ return faction;
             System.out.println("New ship UUID is: " + uuidAsString);
             ObjectSet<Ship> targets = new ObjectSet<>();
 
-           CpuShip.Faction faction = assignFactionByTexture(shipTexture);
+            CpuShip.Faction faction = assignFactionByTexture(shipTexture);
 
             CpuShip cpuShip = new CpuShip(uuid, shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets);
             cpuShip.setPosition(position.x, position.y);
