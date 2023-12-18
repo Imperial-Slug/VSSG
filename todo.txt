@@ -27,3 +27,6 @@ CHANGE:  IDLE will mean more like stopped, barely moving, and there will be anot
 - make vsync editable
 CURRENT: MAKE MENU IN GAME
 - make smaller laser explosion, different explosions by rand
+
+
+center of camera - half screenwidth + half y height

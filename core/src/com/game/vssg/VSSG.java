@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,13 +14,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.Iterator;
 import java.util.UUID;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class VSSG implements ApplicationListener {
 
@@ -61,6 +70,10 @@ public class VSSG implements ApplicationListener {
     private Sprite purpleShipButton;
     private Texture purpleShipButtonTexture;
     private Texture tealShipButtonTexture;
+    private static enum CursorMode {
+        SELECTION_MODE,
+        PLAY_MODE
+    }
 
 
     private OrthographicCamera camera;
@@ -70,6 +83,7 @@ public class VSSG implements ApplicationListener {
     private boolean laserSpawnTimeout = false;
     public static boolean playerActive = false;
     private int laserSpawnCounter = 0;
+    Stage stage;
 
     ////////////////////////////////
     InputProcessor inputManager;
@@ -77,6 +91,8 @@ public class VSSG implements ApplicationListener {
     @Override
     public void create() {
 
+        float viewportWidth = Gdx.graphics.getWidth();
+        float viewportHeight = Gdx.graphics.getHeight();
         // Get number of processors for future multithreading purposes.
         int processors = Runtime.getRuntime().availableProcessors();
         System.out.println("Get number of processor cores: " + processors);
@@ -105,13 +121,13 @@ public class VSSG implements ApplicationListener {
 
         // Setup camera, viewport, controls input.
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
-
+        camera.setToOrtho(false, (float) WORLD_WIDTH /2, (float) WORLD_HEIGHT /2);
         camera.zoom = DEFAULT_ZOOM;
-        float viewportWidth = Gdx.graphics.getWidth();
-        float viewportHeight = Gdx.graphics.getHeight();
+
         viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
-        viewport.apply();
+         stage = new Stage(viewport);
+        //viewport.apply();
+
         Gdx.input.setInputProcessor(inputManager);
 
         // Prepare SpriteBatch and lists for keeping track of/accessing game objects.
@@ -134,41 +150,30 @@ public class VSSG implements ApplicationListener {
         PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
-        //playerShip.setOriginCenter();
-        // Add the new ship to the Ship list.
         playerShips.add(playerShip);
 
-        float position1x = camera.position.x - (viewport.getScreenWidth())*camera.zoom / 2;
-        float position1y = camera.position.y-viewport.getScreenHeight()*camera.zoom/2;
+        purpleShipButton = new Sprite(purpleShipButtonTexture);
+        tealShipButton = new Sprite(tealShipButtonTexture);
 
-        float position2x = camera.position.x - (viewport.getScreenWidth())*camera.zoom / 2;
-        float position2y = camera.position.y-viewport.getScreenHeight()*camera.zoom/2;
-
-        purpleShipButton.setPosition(position1x, position1y);
-        tealShipButton.setPosition(position2x, position2y);
+        purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y+viewportHeight);
 
     }
 
     @Override
     public void render() {
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
-
         float deltaTime = Gdx.graphics.getDeltaTime();
+
         ScreenUtils.clear(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+
+        stage.act(deltaTime);
+        stage.draw();
         batch.setProjectionMatrix(camera.combined);
         camera.update();
         handleInput();
 
-
-        float position1x = camera.position.x - (viewport.getScreenWidth())*camera.zoom / 2;
-        float position1y = camera.position.y-viewport.getScreenHeight()*camera.zoom/2;
-
-        float position2x = camera.position.x - (viewport.getScreenWidth())*camera.zoom / 2;
-        float position2y = camera.position.y-viewport.getScreenHeight()*camera.zoom/2;
-
-        purpleShipButton.setPosition(position1x, position1y);
-        tealShipButton.setPosition(position2x, position2y);
+        //System.out.println("x = "+purpleShipButton.getX()+" y = "+purpleShipButton.getY()+" Zoom = "+camera.zoom+" camera.position = "+ camera.position.x);
 
         Iterator<PlayerShip> playerIter = playerShips.iterator();
         Iterator<CpuShip> cpuIter = cpuShips.iterator();
@@ -178,13 +183,8 @@ public class VSSG implements ApplicationListener {
 
         checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
         scaleButtons();
-
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
-
-        purpleShipButton.draw(batch);
-        tealShipButton.draw(batch);
-
 
         checkObjects(deltaTime);
         batch.end();
@@ -192,7 +192,7 @@ public class VSSG implements ApplicationListener {
     }
 
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        stage.getViewport().update(width, height, true);
     }
 
     public void pause() {
@@ -207,6 +207,8 @@ void scaleButtons(){
     tealShipButton.setScale(camera.zoom/2);
 
 }
+
+
 
 
     private void handleInput() {
@@ -567,6 +569,7 @@ void scaleButtons(){
         explosionTexture1.dispose();
         otherShipTexture.dispose();
         exhaustTexture.dispose();
+        stage.dispose();
 
     }
 
