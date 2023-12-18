@@ -80,7 +80,7 @@ public class VSSG implements ApplicationListener {
         PLAY_MODE
     }
 
-
+    private CursorMode cursorMode;
     private OrthographicCamera camera;
     private Viewport viewport;
     private boolean shipSpawnTimeout = false;
@@ -94,7 +94,7 @@ public class VSSG implements ApplicationListener {
 
     @Override
     public void create() {
-
+        cursorMode=CursorMode.PLAY_MODE;
         float viewportWidth = Gdx.graphics.getWidth();
         float viewportHeight = Gdx.graphics.getHeight();
         // Get number of processors for future multithreading purposes.
@@ -188,7 +188,12 @@ public class VSSG implements ApplicationListener {
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
         label.setPosition(camera.position.x, camera.position.y);
 
-
+        if (!playerShips.isEmpty()) {
+            cursorMode=CursorMode.PLAY_MODE;
+        }
+        else {
+            cursorMode = CursorMode.SELECTION_MODE;
+        }
 
         batch.setProjectionMatrix(camera.combined);
         camera.update();
@@ -386,13 +391,15 @@ void scaleButtons(){
         }
 
         if (InputManager.isQPressed()) {
-            zoomIn();
-
+           if (cursorMode == CursorMode.SELECTION_MODE) {
+                zoomIn();
+            }
         }
 
         if (InputManager.isEPressed()) {
-            zoomOut();
-
+            if (cursorMode == CursorMode.SELECTION_MODE) {
+                zoomOut();
+            }
         }
 
     }
