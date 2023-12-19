@@ -30,7 +30,6 @@ public class Explosion extends Sprite {
         this.active = true;
     }
 
-
     float speedCounter = 0;
     int durationCounter = 0;
 
@@ -67,7 +66,7 @@ public class Explosion extends Sprite {
     }
 
     public void spawnExplosion(Explosion explosion, ObjectSet<Explosion> explosions) {
-
+if(!isPaused){
         explosion.magnitude = magnitude;
         explosion.position = position;
         explosion.duration = duration;
@@ -76,6 +75,7 @@ public class Explosion extends Sprite {
         explosion.setOrigin(0, explosion.getHeight() / 2f);
 
         explosions.add(explosion);
+}
     }
 
     public void setSpeed(float speed) {

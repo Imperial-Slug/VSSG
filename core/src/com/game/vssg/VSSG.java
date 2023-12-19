@@ -286,7 +286,7 @@ public class VSSG implements ApplicationListener {
                     Laser laser = ship.fireLaser(greenLaserTexture, ship);
                     laser.setShip(ship);
                     lasers.add(laser);
-                    laserBlast2.play(3.0f);
+                    laserBlast2.play(1f);
                     ship.setLaserSpawnTimeout(true);
                     ship.setLaserSpawnCounter(0);
                 }
@@ -319,22 +319,18 @@ public class VSSG implements ApplicationListener {
         }
 
         if (InputManager.isLeftMousePressed()) {
-
-            int mouseX = Gdx.input.getX();
-            int mouseY = Gdx.input.getY();
-
-            //  System.out.println("Mouse coordinates: ("+mouseX+", "+mouseY+")" );
-
-            if ((mouseX <= 64 && mouseX >= 0) && (mouseY <= 1400 && mouseY >= 1340)) {
+            if(!isPaused) {
+             int mouseX = Gdx.input.getX();
+             int mouseY = Gdx.input.getY();
+             //  System.out.println("Mouse coordinates: ("+mouseX+", "+mouseY+")" );
+             if ((mouseX <= 64 && mouseX >= 0) && (mouseY <= 1400 && mouseY >= 1340)) {
                 System.out.println("Purple button CLICKED");
+             }
+             if ((mouseX <= 128 && mouseX > 64) && (mouseY <= 1400 && mouseY >= 1340)) {
+                 System.out.println("Teal button CLICKED");
             }
-
-            if ((mouseX <= 128 && mouseX > 64) && (mouseY <= 1400 && mouseY >= 1340)) {
-                System.out.println("Teal button CLICKED");
-            }
-
             spawnShip(greenShipTexture);
-
+            }
         }
 
         float speedLimit = 600f;
@@ -345,7 +341,6 @@ public class VSSG implements ApplicationListener {
                     if (playerShip.getSpeed() < speedLimit && playerShip.getSpeed() >= 0) {
                         playerShip.setSpeed(playerShip.getSpeed() + 1);
                     }
-
                 }
             }
         }
@@ -401,14 +396,7 @@ public class VSSG implements ApplicationListener {
                 relinquishControl(playerShips.first());
             }
         }
-
-        // if (InputManager.isForwardPressed()){
-        //    System.out.println("FORWARD PRESSED");
-
-        //  }
-
     }
-
 
     void pauseGame() {
         isPaused = !isPaused;
@@ -433,7 +421,7 @@ public class VSSG implements ApplicationListener {
             PlayerShip playerShip = playerIter.next();
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
 
-            if (!playerShip.isActive()) {
+            if (playerShip.isActive()) {
                 playerIter.remove();
             }
         }
@@ -443,7 +431,7 @@ public class VSSG implements ApplicationListener {
             CpuShip cpuShip = cpuIter.next();
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
 
-            if (!cpuShip.isActive()) {
+            if (cpuShip.isActive()) {
                 cpuIter.remove();
             }
         }
@@ -453,7 +441,7 @@ public class VSSG implements ApplicationListener {
             CpuShip cpuShip = copyIter.next();
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
 
-            if (!cpuShip.isActive()) {
+            if (cpuShip.isActive()) {
                 copyIter.remove();
 
             }
@@ -532,12 +520,13 @@ public class VSSG implements ApplicationListener {
             cpuShip.draw(batch);
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.handleActionState(cpuShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
+            System.out.println("Action State: "+cpuShip.getActionState());
 
             for (Ship target : cpuShip.getTargets()) {
                 if (target != null) {
-                    if (!target.isActive()) {
+                    if (target.isActive()) {
                         cpuShip.getTargets().remove(target);
-                        System.out.println("TARGET " + target.getUuid() + " REMOVED");
+                        //System.out.println("TARGET " + target.getUuid() + " REMOVED");
 
                     }
                 }
