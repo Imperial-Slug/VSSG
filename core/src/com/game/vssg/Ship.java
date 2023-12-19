@@ -430,7 +430,7 @@ public UUID getUuid(){
                 Laser laser = ship.fireLaser(texture, ship);
                 laser.setShip(ship);
                 lasers.add(laser);
-                laserBlast.play(2f);
+                laserBlast.play(3f);
 
                 ship.setActionState(ship.previousActionState, ship.actionState);
 

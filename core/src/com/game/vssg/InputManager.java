@@ -2,10 +2,6 @@ package com.game.vssg;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.utils.viewport.Viewport;
-
-import javax.swing.text.View;
 
 public final class InputManager  {
 

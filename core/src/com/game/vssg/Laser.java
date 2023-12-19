@@ -29,20 +29,21 @@ public class Laser extends Sprite {
     }
 
     public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT, Ship ship) {
-        if (!isPaused){
+        if (!isPaused) {
 
-        if (active) {
-            Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
-            position.add(velocity.x * delta, velocity.y * delta);
-            this.setDespawnCounter(this.getDespawnCounter() + 1);
-            // Check if the laser is out of screen bounds and deactivate it if necessary
-            if (position.x >= WORLD_WIDTH || position.y >= WORLD_HEIGHT || this.despawnCounter > 600) {
-                active = false;
+            if (active) {
+                Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
+                position.add(velocity.x * delta, velocity.y * delta);
+                this.setDespawnCounter(this.getDespawnCounter() + 1);
+                // Check if the laser is out of screen bounds and deactivate it if necessary
+                if (position.x >= WORLD_WIDTH || position.y >= WORLD_HEIGHT || this.despawnCounter > 600) {
+                    active = false;
+                }
+
+                setPosition(position.x, position.y);
             }
-
-            setPosition(position.x, position.y);
         }
-    }}
+    }
 
 
     void updateHitBox(Laser laser) {
