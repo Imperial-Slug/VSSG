@@ -15,22 +15,15 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 public class Explosion extends Sprite {
     private Vector2 position;
-    private ShapeRenderer shapeRenderer;
-    private Texture texture2;
-    private Texture texture3;
     private float magnitude;
     private boolean active;
     private float speed;
     private float duration;
 
-    private final Texture texture1;
-
-    ///// Constructors ////////
 
     public Explosion(Texture texture1, float magnitude, Vector2 position, float speed, float duration) {
         super(texture1);
         this.magnitude = magnitude;
-        this.texture1 = texture1;
         this.duration = duration;
         this.position = position;
         this.speed = speed;
@@ -38,7 +31,6 @@ public class Explosion extends Sprite {
     }
 
 
-    /////////////////
     float speedCounter = 0;
     int durationCounter = 0;
 
