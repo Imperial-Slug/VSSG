@@ -2,6 +2,7 @@ package com.game.vssg;
 
 import static com.game.vssg.VSSG.WORLD_HEIGHT;
 import static com.game.vssg.VSSG.WORLD_WIDTH;
+import static com.game.vssg.VSSG.isPaused;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -45,6 +46,7 @@ public class Explosion extends Sprite {
     int durationCounter = 0;
 
     public void update(float delta) {
+        if (!isPaused) {
         if (active) {
             Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
             position.add(velocity.x * delta, velocity.y * delta);
@@ -66,15 +68,13 @@ public class Explosion extends Sprite {
                 speed = 10;
             }
 
-
-
             if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
                 active = false;
             }
 
             setPosition(position.x, position.y);
         }
-    }
+    }}
 
     public void spawnExplosion(Explosion explosion, ObjectSet<Explosion> explosions) {
 
@@ -96,7 +96,6 @@ public float getSpeed() {
 
         return speed;
 }
-
 
     public boolean isActive() {
         return active;

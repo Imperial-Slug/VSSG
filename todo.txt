@@ -1,3 +1,6 @@
+------------------------------------------
+./gradlew desktop:dist
+------------------------------------------
 - the nature of the game will be one of presenting the player with different modes - waves first, then objectives
 - less space invaders and more gravitar and open battlefields 
 - modularity in each ship's design
@@ -11,7 +14,7 @@
 
 - differentiate between explosions of ships and lasers' hits on ships (small, big)
 - add limit to speed so it doesn't loop back the other way
-- function to make the circle types will take the Ship and 2 aarguments to pass to the inner function that actually makes the movement happen for the enum.
+- function to make the circle types will take the Ship and 2 arguments to pass to the inner function that actually makes the movement happen for the enum.
 
 
 BEHAVIOR:
@@ -31,3 +34,5 @@ CURRENT: MAKE MENU IN GAME
 
 center of camera - half screenwidth + half y height
 - make camera zoomable but no select menu when playercontrol is true
+
+
