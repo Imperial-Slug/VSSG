@@ -5,10 +5,8 @@ import static com.game.vssg.VSSG.WORLD_WIDTH;
 import static com.game.vssg.VSSG.isPaused;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
 
@@ -21,7 +19,7 @@ public class Explosion extends Sprite {
     private float duration;
 
 
-    public Explosion(Texture texture1, float magnitude, Vector2 position, float speed, float duration) {
+    public Explosion(Texture texture1, Vector2 position, float speed, float duration) {
         super(texture1);
         this.magnitude = magnitude;
         this.duration = duration;
@@ -67,7 +65,7 @@ public class Explosion extends Sprite {
 
     public void spawnExplosion(Explosion explosion, ObjectSet<Explosion> explosions) {
 if(!isPaused){
-        explosion.magnitude = magnitude;
+        explosion.magnitude = 0.7f;
         explosion.position = position;
         explosion.duration = duration;
         explosion.setPosition(position.x, position.y);
@@ -92,11 +90,12 @@ if(!isPaused){
         return active;
     }
 
-    public static void explode(OrthographicCamera camera, Texture explosionTexture1, float magnitude, Vector2 position, float speed, ObjectSet<Explosion> explosions, Sound explosionSound, float duration, float rotation) {
+    public static void explode(Texture explosionTexture1, Vector2 position, float speed, ObjectSet<Explosion> explosions, Sound explosionSound, float duration) {
 
-        Explosion explosion = new Explosion(explosionTexture1, magnitude, position, speed, duration);
+        Explosion explosion = new Explosion(explosionTexture1, position, speed, duration);
         explosion.setOrigin(explosion.getWidth() / 2, explosion.getHeight() / 2f);
-        explosion.setRotation(rotation);
+        explosion.setRotation(10);
+        explosion.setSpeed(70);
         explosion.spawnExplosion(explosion, explosions);
         explosionSound.play(0.3f);
     }

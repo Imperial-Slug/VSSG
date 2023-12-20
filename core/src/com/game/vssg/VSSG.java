@@ -364,7 +364,6 @@ public class VSSG implements ApplicationListener {
             if (clickTimeout > 100) {
                 pauseGame();
                 clickTimeout = 0;
-                boolean pausable = false;
             } else clickTimeout++;
         }
 
@@ -491,12 +490,12 @@ public class VSSG implements ApplicationListener {
                 }
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != cpuShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
-                    Explosion.explode(camera, explosionTexture1, 0.7f, position, 40, explosions, explosionSound1, 100, 10);
+                    Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 50);
                     cpuShip.decreaseHp(10);
                     laser.setInactive(laser);
                     if (cpuShip.getHp() <= 0){
                         cpuShip.setInactive(cpuShip);
-                        Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
+                        Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 300);
                     }
                 }
             }
@@ -509,12 +508,12 @@ public class VSSG implements ApplicationListener {
                 }
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != playerShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
-                    Explosion.explode(camera, explosionTexture1, 0.7f, position, 40, explosions, explosionSound1, 100, 10);
+                    Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 50);
                     playerShip.decreaseHp(10);
                     laser.setInactive(laser);
                     if (playerShip.getHp() <= 0){
                         playerShip.setInactive(playerShip);
-                        Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
+                        Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 300);
                     }
                 }
             }
