@@ -473,6 +473,18 @@ public class VSSG implements ApplicationListener {
 
     }
 
+    void checkLaserCollision(Rectangle laserHitBox, Rectangle shipHitBox, Laser laser, Ship ship) {
+        if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
+            Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
+            Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 50, 0.4f);
+            ship.decreaseHp(10);
+            laser.setInactive(laser);
+            if (ship.getHp() <= 0) {
+                ship.setInactive(ship);
+                Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 300, 0.7f);
+            }
+        }
+    }
 
     public void checkObjects(float deltaTime) {
         for (Laser laser : lasers) {
@@ -488,16 +500,8 @@ public class VSSG implements ApplicationListener {
                     cpuShip.getShapeRenderer().setProjectionMatrix(camera.combined);
                     cpuShip.drawBoundingBox();
                 }
-                if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != cpuShip.getFaction()) {
-                    Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
-                    Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 50, 0.4f);
-                    cpuShip.decreaseHp(10);
-                    laser.setInactive(laser);
-                    if (cpuShip.getHp() <= 0){
-                        cpuShip.setInactive(cpuShip);
-                        Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 300, 0.7f);
-                    }
-                }
+                checkLaserCollision(laserHitBox, shipHitBox, laser, cpuShip);
+
             }
 
             for (PlayerShip playerShip : playerShips) {
@@ -506,16 +510,7 @@ public class VSSG implements ApplicationListener {
                     playerShip.getShapeRenderer().setProjectionMatrix(camera.combined);
                     playerShip.drawBoundingBox();
                 }
-                if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != playerShip.getFaction()) {
-                    Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
-                    Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 50, 0.4f);
-                    playerShip.decreaseHp(10);
-                    laser.setInactive(laser);
-                    if (playerShip.getHp() <= 0){
-                        playerShip.setInactive(playerShip);
-                        Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 300, 0.7f);
-                    }
-                }
+                checkLaserCollision(laserHitBox, shipHitBox, laser, playerShip);
             }
         }
 
