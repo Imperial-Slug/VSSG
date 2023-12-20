@@ -189,7 +189,9 @@ public class VSSG implements ApplicationListener {
         UUID uuid = UUID.randomUUID();
         String uuidAsString = uuid.toString();
         // System.out.println("New ship UUID is: " + uuidAsString);
-        PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets);
+        PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
+                hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100);
+
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
         playerShips.add(playerShip);
@@ -241,7 +243,10 @@ public class VSSG implements ApplicationListener {
 
     void relinquishControl(PlayerShip playerShip) {
 
-        CpuShip cpuShip = new CpuShip(playerShip.getUuid(), playerShip.getTexture(), playerShip.getPosition(), playerShip.getSpeed(), Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getHitbox(), playerShip.getActionCounter(), playerShip.getFaction(), playerShip.getTargets());
+        CpuShip cpuShip = new CpuShip(playerShip.getUuid(), playerShip.getTexture(), playerShip.getPosition(), playerShip.getSpeed(),
+                Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getHitbox(), playerShip.getActionCounter(), playerShip.getFaction(),
+                playerShip.getTargets(), 100);
+
         cpuShip.setRotation(playerShip.getRotation());
         cpuShip.setSpeed(playerShip.getSpeed());
         playerShip.setInactive(playerShip);
@@ -309,7 +314,7 @@ public class VSSG implements ApplicationListener {
 // For player ship only during runtime. CpuShip laser timing is handled differently.
         if (!playerShips.isEmpty()) {
             if (playerShips.first().getLaserSpawnTimeout()) {
-                if (playerShips.first().getLaserSpawnCounter() >= 155) {
+                if (playerShips.first().getLaserSpawnCounter() >= 100) {
 
                     playerShips.first().setLaserSpawnTimeout(false);
                 } else {
@@ -486,10 +491,13 @@ public class VSSG implements ApplicationListener {
                 }
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != cpuShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
-                    Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
-                    cpuShip.setInactive(cpuShip);
+                    Explosion.explode(camera, explosionTexture1, 0.7f, position, 40, explosions, explosionSound1, 100, 10);
+                    cpuShip.decreaseHp(10);
                     laser.setInactive(laser);
-
+                    if (cpuShip.getHp() <= 0){
+                        cpuShip.setInactive(cpuShip);
+                        Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
+                    }
                 }
             }
 
@@ -501,9 +509,13 @@ public class VSSG implements ApplicationListener {
                 }
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != playerShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
-                    Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
-                    playerShip.setInactive(playerShip);
+                    Explosion.explode(camera, explosionTexture1, 0.7f, position, 40, explosions, explosionSound1, 100, 10);
+                    playerShip.decreaseHp(10);
                     laser.setInactive(laser);
+                    if (playerShip.getHp() <= 0){
+                        playerShip.setInactive(playerShip);
+                        Explosion.explode(camera, explosionTexture1, 0.7f, position, 30, explosions, explosionSound1, 300, 10);
+                    }
                 }
             }
         }
@@ -527,7 +539,6 @@ public class VSSG implements ApplicationListener {
                     if (target.isActive()) {
                         cpuShip.getTargets().remove(target);
                         //System.out.println("TARGET " + target.getUuid() + " REMOVED");
-
                     }
                 }
             }
@@ -573,7 +584,7 @@ public class VSSG implements ApplicationListener {
 
             CpuShip.Faction faction = assignFactionByTexture(shipTexture);
 
-            CpuShip cpuShip = new CpuShip(uuid, shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets);
+            CpuShip cpuShip = new CpuShip(uuid, shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100);
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
             cpuShips.add(cpuShip);

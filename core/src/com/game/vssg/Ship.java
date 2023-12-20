@@ -31,6 +31,7 @@ public class Ship extends Sprite {
     private final UUID uuid;
     private boolean laserSpawnTimeout;
     private int laserSpawnCounter;
+    private int hp;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -59,7 +60,10 @@ public class Ship extends Sprite {
         ATTACK
     }
 
-    public Ship(UUID uuid, Texture texture, Vector2 position, float speed, ActionState actionState, ActionState previousActionState, Faction faction, ObjectSet<Ship> targets) {
+    public Ship(UUID uuid, Texture texture, Vector2 position, float speed,
+                ActionState actionState, ActionState previousActionState,
+                Faction faction, ObjectSet<Ship> targets, int hp) {
+
         super(texture);
         this.position = position;
         this.speed = speed;
@@ -74,13 +78,16 @@ public class Ship extends Sprite {
         this.uuid = uuid;
         this.laserSpawnTimeout = false;
         this.laserSpawnCounter = 0;
+        this.hp = hp;
 
     }
 
     // Determining the next position of the ship every frame.
     public void update(float delta, Ship ship, long WORLD_WIDTH, long WORLD_HEIGHT) {
-if (!isPaused) {
-    if (active) {
+
+        if (!isPaused) {
+
+            if (active) {
         Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
         position.add(velocity.x * delta, velocity.y * delta);
 
@@ -92,7 +99,8 @@ if (!isPaused) {
         updateHitBox(ship);
 
 
-    }
+
+            }
 // Map-edge avoidance
     if (ship.position.x >= WORLD_CONSTANT - 1000 || ship.position.y >= WORLD_CONSTANT - 1000) {
         if (!this.flag) {
@@ -112,6 +120,19 @@ if (!isPaused) {
     }
 
 }
+    }
+
+    int getHp(){
+        return this.hp;
+
+    }
+
+    void decreaseHp(int amount){
+        this.hp = this.hp-amount;
+    }
+
+    void increaseHp(int amount) {
+        this.hp = this.hp+amount;
     }
 
 public UUID getUuid(){
