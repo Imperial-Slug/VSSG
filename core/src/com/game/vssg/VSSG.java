@@ -490,12 +490,12 @@ public class VSSG implements ApplicationListener {
                 }
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != cpuShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
-                    Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 50);
+                    Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 50, 0.4f);
                     cpuShip.decreaseHp(10);
                     laser.setInactive(laser);
                     if (cpuShip.getHp() <= 0){
                         cpuShip.setInactive(cpuShip);
-                        Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 300);
+                        Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 300, 0.7f);
                     }
                 }
             }
@@ -508,12 +508,12 @@ public class VSSG implements ApplicationListener {
                 }
                 if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != playerShip.getFaction()) {
                     Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
-                    Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 50);
+                    Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 50, 0.4f);
                     playerShip.decreaseHp(10);
                     laser.setInactive(laser);
                     if (playerShip.getHp() <= 0){
                         playerShip.setInactive(playerShip);
-                        Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 300);
+                        Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 300, 0.7f);
                     }
                 }
             }

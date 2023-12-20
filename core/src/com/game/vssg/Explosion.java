@@ -65,11 +65,7 @@ public class Explosion extends Sprite {
 
     public void spawnExplosion(Explosion explosion, ObjectSet<Explosion> explosions) {
 if(!isPaused){
-        explosion.magnitude = 0.7f;
-        explosion.position = position;
-        explosion.duration = duration;
-        explosion.setPosition(position.x, position.y);
-        explosion.setScale(magnitude);
+
         explosion.setOrigin(0, explosion.getHeight() / 2f);
 
         explosions.add(explosion);
@@ -90,14 +86,16 @@ if(!isPaused){
         return active;
     }
 
-    public static void explode(Texture explosionTexture1, Vector2 position, float speed, ObjectSet<Explosion> explosions, Sound explosionSound, float duration) {
+    public static void explode(Texture explosionTexture1, Vector2 position, float speed, ObjectSet<Explosion> explosions, Sound explosionSound, float duration, float magnitude) {
 
         Explosion explosion = new Explosion(explosionTexture1, position, speed, duration);
         explosion.setOrigin(explosion.getWidth() / 2, explosion.getHeight() / 2f);
         explosion.setRotation(10);
         explosion.setSpeed(70);
         explosion.spawnExplosion(explosion, explosions);
-        explosionSound.play(0.3f);
+        explosionSound.play(0.1f);
+        explosion.magnitude = magnitude;
+        explosion.setScale(magnitude);
     }
 
 }
