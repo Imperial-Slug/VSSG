@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -67,7 +68,7 @@ public class VSSG implements ApplicationListener {
     private Sprite purpleShipButton;
     private Texture purpleShipButtonTexture;
     private Texture tealShipButtonTexture;
-    private BitmapFont font;
+    private Texture purpleCorvetteTexture;
 
     private enum CursorMode {
         MENU_MODE,
@@ -104,7 +105,7 @@ public class VSSG implements ApplicationListener {
         purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y + viewportHeight);
         purpleShipButton.setPosition((float) viewport.getScreenX() / 2, (float) viewport.getScreenY() / 2);
 
-         font = new BitmapFont(); // Instantiate the BitmapFont
+        BitmapFont font = new BitmapFont(); // Instantiate the BitmapFont
         font.getData().setScale(10);
         Skin skin = new Skin();
         skin.add("default-font", font);
@@ -186,7 +187,7 @@ public class VSSG implements ApplicationListener {
         UUID uuid = UUID.randomUUID();
         String uuidAsString = uuid.toString();
         // System.out.println("New ship UUID is: " + uuidAsString);
-        PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
+        PlayerShip playerShip = new PlayerShip(uuid, purpleCorvetteTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
                 hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100);
 
         playerShip.setScale(shipScale);
@@ -228,11 +229,13 @@ public class VSSG implements ApplicationListener {
         exhaustTexture = new Texture("ship_exhaust.png");
         purpleShipButtonTexture = new Texture("purple_ship_button.png");
         tealShipButtonTexture = new Texture("teal_ship_button.png");
+        purpleCorvetteTexture = new Texture("bigship.png");
 
         tealShipButton = new Sprite(tealShipButtonTexture);
         purpleShipButton = new Sprite(purpleShipButtonTexture);
 
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
+        laserBlast1 = Gdx.audio.newSound(Gdx.files.internal("laserblast1.wav"));
         laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
 
 
@@ -288,7 +291,7 @@ public class VSSG implements ApplicationListener {
                     Laser laser = ship.fireLaser(greenLaserTexture, ship);
                     laser.setShip(ship);
                     lasers.add(laser);
-                    laserBlast2.play(1f);
+                    laserBlast1.play(1f);
                     ship.setLaserSpawnTimeout(true);
                     ship.setLaserSpawnCounter(0);
                 }
@@ -297,7 +300,10 @@ public class VSSG implements ApplicationListener {
 
 
         if (InputManager.isRightMousePressed()) {
-            System.out.println("Placeholder");
+            float mouseX = Gdx.input.getX();
+            float mouseY = Gdx.input.getY();
+            Vector2 position = new Vector2(mouseX, mouseY);
+            spawnShip(purpleShipTexture, position);
         }
 
         if (shipSpawnTimeout) {
@@ -322,16 +328,17 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isLeftMousePressed()) {
             if(!isPaused) {
-             int mouseX = Gdx.input.getX();
-             int mouseY = Gdx.input.getY();
+             float mouseX = Gdx.input.getX();
+             float mouseY = Gdx.input.getY();
+             Vector2 position = new Vector2(mouseX, mouseY);
              //  System.out.println("Mouse coordinates: ("+mouseX+", "+mouseY+")" );
-             if ((mouseX <= 64 && mouseX >= 0) && (mouseY <= 1400 && mouseY >= 1340)) {
-                System.out.println("Purple button CLICKED");
-             }
-             if ((mouseX <= 128 && mouseX > 64) && (mouseY <= 1400 && mouseY >= 1340)) {
-                 System.out.println("Teal button CLICKED");
-            }
-            spawnShip(greenShipTexture);
+            // if ((mouseX <= 64 && mouseX >= 0) && (mouseY <= 1400 && mouseY >= 1340)) {
+             //   System.out.println("Purple button CLICKED");
+             //}
+             //if ((mouseX <= 128 && mouseX > 64) && (mouseY <= 1400 && mouseY >= 1340)) {
+              //   System.out.println("Teal button CLICKED");
+            //}
+            spawnShip(greenShipTexture, position);
             }
         }
 
@@ -376,7 +383,6 @@ public class VSSG implements ApplicationListener {
         if (InputManager.isDownPressed()) {
             camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
 
-            spawnShip(purpleShipTexture);
 
         }
 
@@ -562,9 +568,12 @@ public class VSSG implements ApplicationListener {
         return faction;
     }
 
-    void spawnShip(Texture shipTexture) {
+    void spawnShip(Texture shipTexture, Vector2 mouseClickPosition) {
         if (!shipSpawnTimeout) {
-            Vector2 position = new Vector2(camera.position.x, camera.position.y);
+
+            Vector3 unprojected = camera.unproject(new Vector3(mouseClickPosition.x, mouseClickPosition.y, 0));
+            Vector2 position = new Vector2(unprojected.x, unprojected.y);
+
             CpuShip.ActionState actionState = Ship.ActionState.IDLE;
             Rectangle hitBox = new Rectangle();
             int actionCounter = 0;
@@ -603,6 +612,7 @@ public class VSSG implements ApplicationListener {
         explosionTexture1.dispose();
         otherShipTexture.dispose();
         exhaustTexture.dispose();
+        purpleCorvetteTexture.dispose();
         stage.dispose();
 
     }
