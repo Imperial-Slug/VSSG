@@ -68,6 +68,7 @@ public class VSSG implements ApplicationListener {
     private Sprite purpleShipButton;
     private Texture purpleShipButtonTexture;
     private Texture tealShipButtonTexture;
+    private BitmapFont font;
 
     private enum CursorMode {
         MENU_MODE,
@@ -104,18 +105,14 @@ public class VSSG implements ApplicationListener {
         purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y + viewportHeight);
         purpleShipButton.setPosition((float) viewport.getScreenX() / 2, (float) viewport.getScreenY() / 2);
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 120;
-        parameter.color = Color.GREEN;
-        BitmapFont font = generator.generateFont(parameter);
-        generator.dispose();
-
+         font = new BitmapFont(); // Instantiate the BitmapFont
+        font.getData().setScale(10);
         Skin skin = new Skin();
         skin.add("default-font", font);
+
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = skin.getFont("default-font"); // Set the font
-        buttonStyle.fontColor = Color.WHITE; // Set the font color
+        buttonStyle.fontColor = Color.GREEN; // Set the font color
         button = new TextButton("PAUSED: CLICK HERE TO QUIT", buttonStyle);
         button.addListener(new ClickListener() {
             @Override
@@ -164,6 +161,7 @@ public class VSSG implements ApplicationListener {
 
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
+        //font.draw(batch, "Your Text Here", buttonPosition.x, buttonPosition.y);
         checkObjects(deltaTime);
         stage.draw();
         batch.end();
