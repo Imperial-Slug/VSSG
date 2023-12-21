@@ -221,8 +221,8 @@ public UUID getUuid(){
         ship.handleQuarterRightTurn(ship);
         ship.handleStop(ship);
         ship.handleCruise(ship);
-        ship.handleFire(ship, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
         ship.handleAttack(ship);
+        ship.handleFire(ship, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
 
     }}
     public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
@@ -236,24 +236,33 @@ public UUID getUuid(){
                     ship.fireCounter++;
 
                 } else {
-                    if (ship.faction == Faction.TEAL) {
+                    if (ship.faction == Ship.Faction.TEAL) {
                         texture = redLaserTexture;
                         ship.fireCounter = 0;
+                        Laser laser = ship.fireLaser(texture, ship);
+                        laser.setShip(ship);
+                        lasers.add(laser);
+                        laserBlast.play(1f);
+                        ship.setActionState(ship.previousActionState, ship.actionState);
+                        System.out.println(ship.faction+"teal");
 
-                    } else if (ship.faction == Faction.PURPLE) {
+                    } else if (ship.faction == Ship.Faction.PURPLE) {
 
                         texture = greenLaserTexture;
                         ship.fireCounter = 0;
+                        Laser laser = ship.fireLaser(texture, ship);
+                        laser.setShip(ship);
+                        lasers.add(laser);
+                        laserBlast.play(1f);
+                        ship.setActionState(ship.previousActionState, ship.actionState);
+                        System.out.println(ship.faction+"purple");
 
                     }
-
                     Laser laser = ship.fireLaser(texture, ship);
                     laser.setShip(ship);
                     lasers.add(laser);
                     laserBlast.play(1f);
-
                     ship.setActionState(ship.previousActionState, ship.actionState);
-
                 }
             }
         }}
@@ -266,7 +275,7 @@ public UUID getUuid(){
             if (ship.getActionCounter() <= 2048) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
             } else if (ship.getActionCounter() > 2048) {
-                ship.setActionState(previousActionState, ActionState.CRUISE);
+                ship.setActionState(ActionState.CRUISE, ActionState.IDLE);
                 ship.setActionCounter(0);
             }
         }
@@ -282,7 +291,7 @@ public UUID getUuid(){
                     ship.setActionCounter(ship.getActionCounter() + 1);
                     ship.rotate(half);
                 } else if (ship.getActionCounter() > angleCalc) {
-                    ship.setActionState(previousActionState, ActionState.LEFT_U_TURN);
+                    ship.setActionState(ActionState.LEFT_U_TURN, previousActionState);
                     ship.setActionCounter(0);
                 }
 
@@ -299,7 +308,7 @@ public UUID getUuid(){
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(-half);
             } else if (ship.getActionCounter() > angleCalc) {
-                ship.setActionState(previousActionState, ActionState.RIGHT_U_TURN);
+                ship.setActionState(ActionState.RIGHT_U_TURN, previousActionState);
                 ship.setActionCounter(0);
             }
         }
@@ -309,12 +318,12 @@ public UUID getUuid(){
         if (!isPaused) {
 
             if (ship.getActionState() == ActionState.CIRCLE) {
-            if (ship.getActionCounter() <= angleCalc * 4) {
+            if (ship.getActionCounter() <= angleCalc * 8) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(0.125f);
-            } else if (ship.getActionCounter() > angleCalc * 4) {
+            } else if (ship.getActionCounter() > angleCalc * 8) {
                 if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE, ActionState.CIRCLE);
+                    ship.setActionState(ActionState.CIRCLE, ActionState.IDLE);
                     ship.setActionCounter(0);
                 } else {
                     ship.setActionState(previousActionState, ActionState.CIRCLE);
@@ -332,7 +341,7 @@ public UUID getUuid(){
                     ship.setActionCounter(ship.getActionCounter() + 1);
                     ship.rotate(0.25f);
                 } else if (ship.getActionCounter() > 180 * 4) {
-                    ship.setActionState(previousActionState, ActionState.QUARTER_LEFT_TURN);
+                    ship.setActionState(ActionState.QUARTER_LEFT_TURN, previousActionState);
                     ship.setActionCounter(0);
                 }
             }
@@ -348,7 +357,7 @@ public UUID getUuid(){
                 ship.rotate(-0.25f);
             } else if (ship.getActionCounter() > 180 * 4) {
                 if (ship.isIdle) {
-                    ship.setActionState(ActionState.IDLE, ActionState.QUARTER_RIGHT_TURN);
+                    ship.setActionState(ActionState.QUARTER_RIGHT_TURN, ActionState.IDLE);
                     ship.setActionCounter(0);
                 } else {
                     ship.setActionState(previousActionState, ActionState.QUARTER_RIGHT_TURN);
@@ -367,7 +376,7 @@ public UUID getUuid(){
                     ship.setActionCounter(ship.getActionCounter() + 1);
                     ship.setSpeed(0);
                 } else if (ship.getActionCounter() > angleCalc) {
-                    ship.setActionState(previousActionState, ActionState.STOP);
+                    ship.setActionState(ActionState.STOP, previousActionState);
                     ship.setActionCounter(0);
                 }
             }
@@ -404,7 +413,7 @@ public UUID getUuid(){
         if (!isPaused) {
 
         if (ship.getActionState() == ActionState.IDLE) {
-           // ship.isIdle = true;
+           ship.isIdle = true;
             ship.setSpeed(ship.getRandomSpeed());
             if (ship.actionCounter <= 0) {
                 Random rand = new Random();
@@ -438,7 +447,9 @@ public UUID getUuid(){
             }
 
         }
-    }}
+    }
+    if (ship.targets.notEmpty()) {ship.setAttackMode();}
+    }
 
     public int getFireCounter() {
         return this.fireCounter;
@@ -595,12 +606,13 @@ public UUID getUuid(){
         if (!isPaused) {
 
         if (ship.getActionState() == ActionState.ATTACK) {
-            this.isIdle = false;
+            //this.isIdle = false;
 
             //System.out.println("Engaging target");
-// Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
-            seekDestroy(ship);
-
+            // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
+            if(!seekDestroy(ship)) {
+                ship.setActionState(ActionState.ATTACK, previousActionState);
+            }
 
         }
 

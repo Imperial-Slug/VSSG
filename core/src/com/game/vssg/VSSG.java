@@ -402,6 +402,12 @@ public class VSSG implements ApplicationListener {
             if (!playerShips.isEmpty()) {
                 relinquishControl(playerShips.first());
             }
+
+            for (CpuShip cpuShip : cpuShips) {
+                System.out.println(cpuShip.getUuid()+" = "+cpuShip.getActionState());
+
+            }
+
         }
     }
 
@@ -518,6 +524,8 @@ public class VSSG implements ApplicationListener {
             }
         }
 
+//////////////////
+
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
@@ -525,6 +533,7 @@ public class VSSG implements ApplicationListener {
             camera.position.x = playerShip.getX() + playerShip.getWidth() / 2;
             camera.position.y = playerShip.getY() + playerShip.getHeight() / 2;
         }
+        ///////////////////
 
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.draw(batch);
@@ -552,11 +561,16 @@ public class VSSG implements ApplicationListener {
 
         }
 
+////////////////////////////////////////////////////
+
         for (Explosion explosion : explosions) {
-            explosion.draw(batch);
             explosion.update(deltaTime);
+
+            explosion.draw(batch);
         }
     }
+
+    //////////////////////////////////////////
 
     CpuShip.Faction assignFactionByTexture(Texture shipTexture) {
         CpuShip.Faction faction = null;
