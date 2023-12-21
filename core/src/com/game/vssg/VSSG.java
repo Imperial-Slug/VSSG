@@ -64,6 +64,8 @@ public class VSSG implements ApplicationListener {
     private Texture greenShipTexture;
     private Texture backgroundTexture;
     private Texture exhaustTexture;
+    private Texture laser2Texture;
+    private Texture explosionTexture2;
     private Sprite tealShipButton;
     private Sprite purpleShipButton;
     private Texture purpleShipButtonTexture;
@@ -224,8 +226,10 @@ public class VSSG implements ApplicationListener {
         greenLaserTexture = new Texture("laser_green.png");
         redLaserTexture = new Texture("laser_red.png");
         blueLaserTexture = new Texture("laser_blue.png");
+        laser2Texture = new Texture("laser2.png");
         backgroundTexture = new Texture("background.png");
         explosionTexture1 = new Texture("explosion_orange.png");
+        explosionTexture2 = new Texture("explosion2.png");
         exhaustTexture = new Texture("ship_exhaust.png");
         purpleShipButtonTexture = new Texture("purple_ship_button.png");
         tealShipButtonTexture = new Texture("teal_ship_button.png");
@@ -288,7 +292,7 @@ public class VSSG implements ApplicationListener {
 
             for (Ship ship : playerShips) {
                 if (!ship.getLaserSpawnTimeout()) {
-                    Laser laser = ship.fireLaser(greenLaserTexture, ship);
+                    Laser laser = ship.fireLaser(laser2Texture, ship);
                     laser.setShip(ship);
                     lasers.add(laser);
                     laserBlast1.play(1f);
@@ -498,7 +502,14 @@ public class VSSG implements ApplicationListener {
 
     public void checkObjects(float deltaTime) {
         for (Laser laser : lasers) {
-            laser.setScale(3);
+
+            // Determine laser's scale based on its texture.
+            if(laser.getTexture()==laser2Texture) {
+                laser.setScale(0.8f);
+            }
+            else {laser.setScale(3);}
+            //
+
             laser.draw(batch);
             Rectangle laserHitBox = laser.getHitbox();
             laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getShip());
@@ -511,7 +522,6 @@ public class VSSG implements ApplicationListener {
                     cpuShip.drawBoundingBox();
                 }
                 checkLaserCollision(laserHitBox, shipHitBox, laser, cpuShip);
-
             }
 
             for (PlayerShip playerShip : playerShips) {
@@ -621,6 +631,7 @@ public class VSSG implements ApplicationListener {
         greenLaserTexture.dispose();
         blueLaserTexture.dispose();
         redLaserTexture.dispose();
+        laser2Texture.dispose();
         greenShipTexture.dispose();
         explosionSound1.dispose();
         laserBlast2.dispose();
@@ -629,6 +640,7 @@ public class VSSG implements ApplicationListener {
         otherShipTexture.dispose();
         exhaustTexture.dispose();
         purpleCorvetteTexture.dispose();
+        explosionTexture2.dispose();
         stage.dispose();
 
     }
