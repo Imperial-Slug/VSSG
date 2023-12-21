@@ -32,6 +32,7 @@ public class Ship extends Sprite {
     private boolean laserSpawnTimeout;
     private int laserSpawnCounter;
     private int hp;
+    private Type type;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -39,6 +40,12 @@ public class Ship extends Sprite {
     private final float half = 0.5f;
     private final float angleCalc = 360;
 
+
+    enum Type {
+        FIGHTER,
+        CORVETTE,
+        CAPITAL
+    }
 
     enum Faction {
         PURPLE,
@@ -100,31 +107,17 @@ int exhaustTimer = 0;
         updateHitBox(ship);
 
             }
-
-// Map-edge avoidance
-    if (ship.position.x >= WORLD_CONSTANT - 1000 || ship.position.y >= WORLD_CONSTANT - 1000) {
-        if (!this.flag) {
-
-            ship.setActionState(ActionState.LEFT_U_TURN, ship.actionState);
-            this.flag = true;
-            //System.out.println("Obstacle avoidance engaged");
-        } else {
-            ship.setActionState(ActionState.RIGHT_U_TURN, ship.actionState);
-            // System.out.println("Obstacle avoidance engaged2");
-            this.flag = false;
-        }
-        if(ship.previousActionState == ActionState.PLAYER_CONTROL){
-            ship.setActionState(PlayerShip.ActionState.PLAYER_CONTROL, actionState);
-
-        }
+}
     }
 
+    Type getType(){
 
+        return this.type;
+    }
 
+    void setType(Type type){
+        this.type = type;
 
-
-
-}
     }
 
     int getHp(){
@@ -184,16 +177,26 @@ public UUID getUuid(){
 
 
     public Laser fireLaser(Texture texture, Ship ship) {
-
-        //float offsetX = -1.5f;
-        //float offsetY = -2.25f;
         float offsetX = 0;
         float offsetY = 0;
 
+        if(ship.type==Type.FIGHTER) {
+            offsetX = -1.5f;
+            offsetY = -2.25f;
+        }
+        else if(ship.type==Type.CORVETTE) {
+
+            offsetY = -32f;
+        }
+
+
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());
-        Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);
+
+        Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX()+offsetX, ship.getY() + ship.getOriginY()+offsetY);
+
         Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 2048, 0, ship);
-        laser.setOrigin(0, laser.getOriginY() / 2);
+        laser.setOrigin(0, laser.getOriginY());
+
         return laser;
     }
 

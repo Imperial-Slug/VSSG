@@ -39,7 +39,6 @@ public class Laser extends Sprite {
                 if (position.x >= WORLD_WIDTH || position.y >= WORLD_HEIGHT || this.despawnCounter > 600) {
                     active = false;
                 }
-
                 setPosition(position.x, position.y);
             }
         }

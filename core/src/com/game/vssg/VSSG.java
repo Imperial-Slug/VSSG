@@ -192,6 +192,7 @@ public class VSSG implements ApplicationListener {
         PlayerShip playerShip = new PlayerShip(uuid, purpleCorvetteTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
                 hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100);
 
+        playerShip.setType(Ship.Type.CORVETTE);
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
         playerShips.add(playerShip);
@@ -504,7 +505,7 @@ public class VSSG implements ApplicationListener {
         for (Laser laser : lasers) {
 
             // Determine laser's scale based on its texture.
-            if(laser.getTexture()==laser2Texture) {
+            if(laser.getTexture() == laser2Texture) {
                 laser.setScale(0.8f);
             }
             else {laser.setScale(3);}
@@ -607,12 +608,11 @@ public class VSSG implements ApplicationListener {
             //String uuidAsString = uuid.toString();
             //System.out.println("New ship UUID is: " + uuidAsString);
             ObjectSet<Ship> targets = new ObjectSet<>();
-
             CpuShip.Faction faction = assignFactionByTexture(shipTexture);
-
             CpuShip cpuShip = new CpuShip(uuid, shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100);
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
+            cpuShip.setType(Ship.Type.FIGHTER);
             cpuShips.add(cpuShip);
             copiedSet.add(cpuShip);
 

@@ -35,4 +35,5 @@ CURRENT: MAKE MENU IN GAME
 center of camera - half screenwidth + half y height
 - make camera zoomable but no select menu when playercontrol is true
 
+               laser.setPosition( laser.getShip().getX() + (float) laser.getTexture().getWidth() / 2, laser.getShip().getY() + (float) laser.getTexture().getHeight() / 2);  
 
