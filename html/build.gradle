@@ -95,5 +95,5 @@ sourceSets.main.java.srcDirs = ["src/"]
 
 eclipse.project.name = appName + "-html"
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_1_8
 }

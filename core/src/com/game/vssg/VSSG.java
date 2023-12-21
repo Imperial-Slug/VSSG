@@ -610,7 +610,7 @@ public class VSSG implements ApplicationListener {
         greenShipTexture.dispose();
         explosionSound1.dispose();
         laserBlast2.dispose();
-        //   laserBlast1.dispose();
+        laserBlast1.dispose();
         explosionTexture1.dispose();
         otherShipTexture.dispose();
         exhaustTexture.dispose();

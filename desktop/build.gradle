@@ -43,7 +43,7 @@ tasks.register('dist', Jar) {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_1_8
 }
 dist.dependsOn classes
 
