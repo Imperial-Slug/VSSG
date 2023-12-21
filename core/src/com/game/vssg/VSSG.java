@@ -187,7 +187,7 @@ public class VSSG implements ApplicationListener {
         UUID uuid = UUID.randomUUID();
 //        String uuidAsString = uuid.toString();
         // System.out.println("New ship UUID is: " + uuidAsString);
-        PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
+        PlayerShip playerShip = new PlayerShip(uuid, purpleCorvetteTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
                 hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100);
 
         playerShip.setScale(shipScale);
