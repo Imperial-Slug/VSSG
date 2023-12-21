@@ -275,7 +275,7 @@ public UUID getUuid(){
             if (ship.getActionCounter() <= 2048) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
             } else if (ship.getActionCounter() > 2048) {
-                ship.setActionState(ActionState.CRUISE, ActionState.IDLE);
+                ship.setActionState( previousActionState, ActionState.CRUISE);
                 ship.setActionCounter(0);
             }
         }
@@ -291,7 +291,7 @@ public UUID getUuid(){
                     ship.setActionCounter(ship.getActionCounter() + 1);
                     ship.rotate(half);
                 } else if (ship.getActionCounter() > angleCalc) {
-                    ship.setActionState(ActionState.LEFT_U_TURN, previousActionState);
+                    ship.setActionState(previousActionState, ActionState.LEFT_U_TURN);
                     ship.setActionCounter(0);
                 }
 
@@ -308,7 +308,7 @@ public UUID getUuid(){
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(-half);
             } else if (ship.getActionCounter() > angleCalc) {
-                ship.setActionState(ActionState.RIGHT_U_TURN, previousActionState);
+                ship.setActionState(previousActionState, ActionState.RIGHT_U_TURN);
                 ship.setActionCounter(0);
             }
         }
@@ -341,7 +341,7 @@ public UUID getUuid(){
                     ship.setActionCounter(ship.getActionCounter() + 1);
                     ship.rotate(0.25f);
                 } else if (ship.getActionCounter() > 180 * 4) {
-                    ship.setActionState(ActionState.QUARTER_LEFT_TURN, previousActionState);
+                    ship.setActionState(previousActionState, ActionState.QUARTER_LEFT_TURN);
                     ship.setActionCounter(0);
                 }
             }
@@ -376,7 +376,8 @@ public UUID getUuid(){
                     ship.setActionCounter(ship.getActionCounter() + 1);
                     ship.setSpeed(0);
                 } else if (ship.getActionCounter() > angleCalc) {
-                    ship.setActionState(ActionState.STOP, previousActionState);
+                    ship.setActionState(previousActionState, ActionState.STOP);
+                    ship.setSpeed(getRandomSpeed());
                     ship.setActionCounter(0);
                 }
             }
@@ -450,7 +451,8 @@ public UUID getUuid(){
 
         }
             if (ship.targets.notEmpty()) {ship.setAttackMode();}
-            System.out.println(ship.getUuid()+" Targets array: "+ship.targets);
+           // System.out.println(ship.getUuid()+" Targets array: "+ship.targets);
+
         }
     }
 
@@ -610,15 +612,14 @@ public UUID getUuid(){
         if (!isPaused) {
 
         if (ship.getActionState() == ActionState.ATTACK) {
-            //this.isIdle = false;
-
-            //System.out.println("Engaging target");
             // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
-            if(!seekDestroy(ship)) {
-                ship.setActionState(ActionState.ATTACK, previousActionState);
-            }
+            ship.seekDestroy(ship);
+
+
+
             if (ship.targets.isEmpty()){
                 ship.setActionState(ActionState.IDLE, ActionState.ATTACK);
+                ship.isIdle = true;
             }
         }
 
@@ -626,10 +627,9 @@ public UUID getUuid(){
     }
 
     boolean seekDestroy(Ship ship) {
-        ship.isIdle = false;
 
         Ship target;
-        boolean alive = false;
+        boolean alive = true;
         if (!isPaused) {
 
             if (ship.targets.size > 0) {
@@ -645,8 +645,9 @@ public UUID getUuid(){
                     } else if (ship.getRotation() >= getTargetAngle(ship, target) - offset || ship.getRotation() <= getTargetAngle(ship, target) + offset) {
 
                         if (target.active) {
-                            ship.setActionState(ActionState.FIRE, ActionState.ATTACK);
                             ship.setActionCounter(0);
+
+                            ship.setActionState(ActionState.FIRE, ActionState.ATTACK);
                         }
                     }
                 }
