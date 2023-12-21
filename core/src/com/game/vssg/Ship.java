@@ -594,9 +594,8 @@ public UUID getUuid(){
 
             //System.out.println("Engaging target");
 // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
-            if (!seekDestroy(ship)) {
-                ship.setActionState(ActionState.ATTACK, ActionState.ATTACK);
-            }
+            seekDestroy(ship);
+
 
         }
 
@@ -606,7 +605,7 @@ public UUID getUuid(){
     boolean seekDestroy(Ship ship) {
         ship.isIdle = false;
 
-        Ship target = null;
+        Ship target;
         boolean alive = false;
         if (!isPaused) {
 
