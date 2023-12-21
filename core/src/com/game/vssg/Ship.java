@@ -415,6 +415,8 @@ public UUID getUuid(){
         if (ship.getActionState() == ActionState.IDLE) {
            ship.isIdle = true;
             ship.setSpeed(ship.getRandomSpeed());
+            // if the ship has finished the previous action, according to the counter,
+            // then go through the randomized behavior routine.
             if (ship.actionCounter <= 0) {
                 Random rand = new Random();
                 int rand_int = rand.nextInt(10);
@@ -447,9 +449,11 @@ public UUID getUuid(){
             }
 
         }
+            if (ship.targets.notEmpty()) {ship.setAttackMode();}
+            System.out.println(ship.getUuid()+" Targets array: "+ship.targets);
+        }
     }
-    if (ship.targets.notEmpty()) {ship.setAttackMode();}
-    }
+
 
     public int getFireCounter() {
         return this.fireCounter;
@@ -613,7 +617,9 @@ public UUID getUuid(){
             if(!seekDestroy(ship)) {
                 ship.setActionState(ActionState.ATTACK, previousActionState);
             }
-
+            if (ship.targets.isEmpty()){
+                ship.setActionState(ActionState.IDLE, ActionState.ATTACK);
+            }
         }
 
     }
