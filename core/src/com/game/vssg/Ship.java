@@ -81,7 +81,7 @@ public class Ship extends Sprite {
         this.hp = hp;
 
     }
-
+int exhaustTimer = 0;
     // Determining the next position of the ship every frame.
     public void update(float delta, Ship ship, long WORLD_WIDTH, long WORLD_HEIGHT) {
 
@@ -118,6 +118,11 @@ public class Ship extends Sprite {
 
         }
     }
+
+
+
+
+
 
 }
     }
