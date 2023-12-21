@@ -88,6 +88,7 @@ public class Ship extends Sprite {
         if (!isPaused) {
 
             if (active) {
+
         Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
         position.add(velocity.x * delta, velocity.y * delta);
 
@@ -98,9 +99,8 @@ public class Ship extends Sprite {
         setPosition(position.x, position.y);
         updateHitBox(ship);
 
-
-
             }
+
 // Map-edge avoidance
     if (ship.position.x >= WORLD_CONSTANT - 1000 || ship.position.y >= WORLD_CONSTANT - 1000) {
         if (!this.flag) {
@@ -179,8 +179,12 @@ public UUID getUuid(){
 
 
     public Laser fireLaser(Texture texture, Ship ship) {
-        float offsetX = -1.5f;
-        float offsetY = -2.25f;
+
+        //float offsetX = -1.5f;
+        //float offsetY = -2.25f;
+        float offsetX = 0;
+        float offsetY = 0;
+
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);
         Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 2048, 0, ship);
@@ -216,6 +220,38 @@ public UUID getUuid(){
         ship.handleAttack(ship);
 
     }}
+    public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
+        // Laser texture used is dependent on ship faction.
+        if (!isPaused) {
+
+            Texture texture = null;
+            if (ship.actionState == ActionState.FIRE) {
+                if (ship.fireCounter <= 100) {
+
+                    ship.fireCounter++;
+
+                } else {
+                    if (ship.faction == Faction.TEAL) {
+                        texture = redLaserTexture;
+                        ship.fireCounter = 0;
+
+                    } else if (ship.faction == Faction.PURPLE) {
+
+                        texture = greenLaserTexture;
+                        ship.fireCounter = 0;
+
+                    }
+
+                    Laser laser = ship.fireLaser(texture, ship);
+                    laser.setShip(ship);
+                    lasers.add(laser);
+                    laserBlast.play(1f);
+
+                    ship.setActionState(ship.previousActionState, ship.actionState);
+
+                }
+            }
+        }}
 
     public void handleCruise(Ship ship) {
         if (!isPaused) {
@@ -338,58 +374,59 @@ public UUID getUuid(){
         int randInt = rand.nextInt(10);
 
         if (randInt == 1) {
-            this.setSpeed(50);
-        } else if (randInt == 2) {
             this.setSpeed(70);
-        } else if (randInt == 3) {
+        } else if (randInt == 2) {
             this.setSpeed(80);
-        } else if (randInt == 4) {
+        } else if (randInt == 3) {
             this.setSpeed(90);
-        } else if (randInt == 5) {
+        } else if (randInt == 4) {
             this.setSpeed(100);
-        } else if (randInt == 6) {
+        } else if (randInt == 5) {
             this.setSpeed(110);
-        } else {
+        } else if (randInt == 6) {
             this.setSpeed(120);
+        } else {
+            this.setSpeed(130);
         }
 
 
         return this.speed;
     }
 
+// Each ship's action counter keeps track of how long they have been doing each action so there is enough time to execute it before switching behaviors.
 
     public void handleIdle(Ship ship) {
         if (!isPaused) {
 
         if (ship.getActionState() == ActionState.IDLE) {
-            ship.isIdle = true;
+           // ship.isIdle = true;
             ship.setSpeed(ship.getRandomSpeed());
             if (ship.actionCounter <= 0) {
                 Random rand = new Random();
                 int rand_int = rand.nextInt(10);
                 if (rand_int == 1) {
-                    ship.setActionState(ActionState.LEFT_U_TURN, ship.actionState);
+                    ship.setActionState(ActionState.LEFT_U_TURN, ActionState.IDLE);
                 } else if (rand_int == 2) {
-                    ship.setActionState(ActionState.CIRCLE, ship.actionState);
+                    ship.setActionState(ActionState.CIRCLE, ActionState.IDLE);
                     System.out.println(ship.uuid+" DO CIRCLE");
 
                 } else if (rand_int == 3) {
-                    ship.setActionState(ActionState.QUARTER_LEFT_TURN, ship.actionState);
+                    ship.setActionState(ActionState.QUARTER_LEFT_TURN, ActionState.IDLE);
                     System.out.println(ship.uuid+" QUARTER LEFT TURN");
 
                 } else if (rand_int == 4) {
-                    ship.setActionState(ActionState.STOP, ship.actionState);
+                    ship.setActionState(ActionState.STOP, ActionState.IDLE);
                     System.out.println(ship.uuid+" STOPPED");
 
                 } else if (rand_int == 5) {
-                    ship.setActionState(ActionState.QUARTER_RIGHT_TURN, ship.actionState);
+                    ship.setActionState(ActionState.QUARTER_RIGHT_TURN, ActionState.IDLE);
                     System.out.println(ship.uuid+" QUARTER LEFT TURN");
                 } else if (rand_int == 6) {
 
-                    ship.setActionState(ActionState.RIGHT_U_TURN, ship.actionState);
+                    ship.setActionState(ActionState.RIGHT_U_TURN, ActionState.IDLE);
                     System.out.println(ship.uuid+" CRUISING");
                 } else {
-                    ship.setActionState(ActionState.CRUISE, ship.actionState);
+                    ship.setActionState(ActionState.CRUISE, ActionState.IDLE);
                     System.out.println(ship.uuid+" CRUISING");
 
                 }
@@ -408,39 +445,6 @@ public UUID getUuid(){
 
     }
 
-    public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
-      // Laser texture used is dependent on ship faction.
-        if (!isPaused) {
-
-            Texture texture = null;
-        if (ship.actionState == ActionState.FIRE) {
-            if (ship.fireCounter <= 100) {
-
-                ship.fireCounter++;
-
-            } else {
-
-                if (ship.faction == Faction.TEAL) {
-                    texture = redLaserTexture;
-                    ship.fireCounter = 0;
-
-                } else if (ship.faction == Faction.PURPLE) {
-
-                    texture = greenLaserTexture;
-                    ship.fireCounter = 0;
-
-                }
-
-                Laser laser = ship.fireLaser(texture, ship);
-                laser.setShip(ship);
-                lasers.add(laser);
-                laserBlast.play(1f);
-
-                ship.setActionState(ship.previousActionState, ship.actionState);
-
-            }
-        }
-    }}
 
 
     // ANGLE CALCULATIONS //
@@ -577,6 +581,8 @@ public UUID getUuid(){
 
     public void setAttackMode() {
         this.actionState = ActionState.ATTACK;
+        this.isIdle = false;
+
     }
 
 
@@ -584,22 +590,26 @@ public UUID getUuid(){
         if (!isPaused) {
 
         if (ship.getActionState() == ActionState.ATTACK) {
+            this.isIdle = false;
+
             //System.out.println("Engaging target");
 // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
             if (!seekDestroy(ship)) {
-                ship.setActionState(ActionState.IDLE, ship.actionState);
+                ship.setActionState(ActionState.ATTACK, ActionState.ATTACK);
             }
 
         }
 
-    }}
-
+    }
+    }
 
     boolean seekDestroy(Ship ship) {
+        ship.isIdle = false;
+
         Ship target = null;
+        boolean alive = false;
         if (!isPaused) {
 
-            boolean alive = false;
             if (ship.targets.size > 0) {
                 //offset = range of how far off center ship will fire.
                 float offset = 3;
@@ -613,7 +623,7 @@ public UUID getUuid(){
                     } else if (ship.getRotation() >= getTargetAngle(ship, target) - offset || ship.getRotation() <= getTargetAngle(ship, target) + offset) {
 
                         if (target.active) {
-                            ship.setActionState(ActionState.FIRE, ship.actionState);
+                            ship.setActionState(ActionState.FIRE, ActionState.ATTACK);
                             ship.setActionCounter(0);
                         }
                     }
@@ -621,24 +631,14 @@ public UUID getUuid(){
 
                 alive = target.active;
             }
-            return alive;
         }
-        return target.active;
+        return alive;
     }
 
     public ObjectSet<Ship> getTargets() {
 
         return this.targets;
     }
-
-
-
-
-
-
-
-
-
 
 
 }

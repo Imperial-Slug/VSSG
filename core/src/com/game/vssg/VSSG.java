@@ -69,6 +69,7 @@ public class VSSG implements ApplicationListener {
     private Texture purpleShipButtonTexture;
     private Texture tealShipButtonTexture;
     private Texture purpleCorvetteTexture;
+    private BitmapFont font;
 
     private enum CursorMode {
         MENU_MODE,
@@ -105,7 +106,7 @@ public class VSSG implements ApplicationListener {
         purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y + viewportHeight);
         purpleShipButton.setPosition((float) viewport.getScreenX() / 2, (float) viewport.getScreenY() / 2);
 
-        BitmapFont font = new BitmapFont(); // Instantiate the BitmapFont
+        font = new BitmapFont(); // Instantiate the BitmapFont
         font.getData().setScale(10);
         Skin skin = new Skin();
         skin.add("default-font", font);
@@ -143,7 +144,6 @@ public class VSSG implements ApplicationListener {
                 button.setPosition(-524288, -524288);
             }
         }
-
 
         chooseMode();
         batch.setProjectionMatrix(camera.combined);
@@ -185,9 +185,9 @@ public class VSSG implements ApplicationListener {
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
         UUID uuid = UUID.randomUUID();
-        String uuidAsString = uuid.toString();
+//        String uuidAsString = uuid.toString();
         // System.out.println("New ship UUID is: " + uuidAsString);
-        PlayerShip playerShip = new PlayerShip(uuid, purpleCorvetteTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
+        PlayerShip playerShip = new PlayerShip(uuid, purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
                 hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100);
 
         playerShip.setScale(shipScale);
@@ -484,6 +484,7 @@ public class VSSG implements ApplicationListener {
             laser.setInactive(laser);
             if (ship.getHp() <= 0) {
                 ship.setInactive(ship);
+
                 Explosion.explode(explosionTexture1, position, 70, explosions, explosionSound1, 300, 0.7f);
             }
         }
@@ -529,14 +530,15 @@ public class VSSG implements ApplicationListener {
             cpuShip.draw(batch);
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.handleActionState(cpuShip, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
-            System.out.println("Action State: "+cpuShip.getActionState());
-
+           // System.out.println("Action State: "+cpuShip.getActionState());
             for (Ship target : cpuShip.getTargets()) {
+
                 if (target != null) {
                     if (target.isActive()) {
                         cpuShip.getTargets().remove(target);
-                        //System.out.println("TARGET " + target.getUuid() + " REMOVED");
+                        System.out.println("TARGET " + target.getUuid() + " REMOVED");
                     }
+
                 }
             }
 
@@ -578,8 +580,8 @@ public class VSSG implements ApplicationListener {
             Rectangle hitBox = new Rectangle();
             int actionCounter = 0;
             UUID uuid = UUID.randomUUID();
-            String uuidAsString = uuid.toString();
-            System.out.println("New ship UUID is: " + uuidAsString);
+            //String uuidAsString = uuid.toString();
+            //System.out.println("New ship UUID is: " + uuidAsString);
             ObjectSet<Ship> targets = new ObjectSet<>();
 
             CpuShip.Faction faction = assignFactionByTexture(shipTexture);
