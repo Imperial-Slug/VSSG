@@ -184,7 +184,7 @@ public UUID getUuid(){
         }
         else if(ship.type==Type.CORVETTE) {
 
-            offsetY = -32f;
+            offsetY = -35f;
         }
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX()+offsetX, ship.getY() + ship.getOriginY()+offsetY);
