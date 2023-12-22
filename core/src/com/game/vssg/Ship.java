@@ -340,7 +340,7 @@ public UUID getUuid(){
                 ship.rotate(-0.25f);
             } else if (ship.getActionCounter() > angleCalc * 2) {
 
-                    ship.setActionState(ActionState.QUARTER_RIGHT_TURN, ActionState.IDLE);
+                    ship.setActionState(previousActionState, ActionState.QUARTER_RIGHT_TURN);
                     ship.setActionCounter(0);
 
             }
