@@ -109,13 +109,15 @@ public class VSSG implements ApplicationListener {
         purpleShipButton.setPosition((float) viewport.getScreenX() / 2, (float) viewport.getScreenY() / 2);
 
         font = new BitmapFont(); // Instantiate the BitmapFont
-        font.getData().setScale(10);
+        font.getData().setScale((viewportHeight/100)*camera.zoom/2);
+
         Skin skin = new Skin();
         skin.add("default-font", font);
 
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = skin.getFont("default-font"); // Set the font
         buttonStyle.fontColor = Color.GREEN; // Set the font color
+
         button = new TextButton("PAUSED: CLICK HERE TO QUIT", buttonStyle);
         button.addListener(new ClickListener() {
             @Override
