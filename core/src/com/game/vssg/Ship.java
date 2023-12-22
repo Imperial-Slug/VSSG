@@ -14,7 +14,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
 
 import java.util.Random;
-import java.util.UUID;
 
 public class Ship extends Sprite {
 
@@ -26,7 +25,6 @@ public class Ship extends Sprite {
     private int fireCounter;
     private ActionState previousActionState;
     private final ObjectSet<Ship> targets;
-    private final UUID uuid;
     private boolean laserSpawnTimeout;
     private int laserSpawnCounter;
     private int hp;
@@ -65,7 +63,7 @@ public class Ship extends Sprite {
         ATTACK
     }
 
-    public Ship(UUID uuid, Texture texture, Vector2 position, float speed,
+    public Ship(Texture texture, Vector2 position, float speed,
                 ActionState actionState, ActionState previousActionState,
                 Faction faction, ObjectSet<Ship> targets, int hp) {
 
@@ -80,7 +78,6 @@ public class Ship extends Sprite {
         this.faction = faction;
         this.targets = targets;
         this.active = true;
-        this.uuid = uuid;
         this.laserSpawnTimeout = false;
         this.laserSpawnCounter = 0;
         this.hp = hp;
@@ -131,10 +128,7 @@ int exhaustTimer = 0;
         this.hp = this.hp+amount;
     }
 
-public UUID getUuid(){
-       return this.uuid;
 
-}
 
     boolean getLaserSpawnTimeout(){
         return laserSpawnTimeout;
@@ -404,33 +398,26 @@ public UUID getUuid(){
                     ship.setActionState(ActionState.LEFT_U_TURN, actionState);
                 } else if (rand_int == 2) {
                     ship.setActionState(ActionState.CIRCLE, actionState);
-                    System.out.println(ship.uuid+" DO CIRCLE");
 
                 } else if (rand_int == 3) {
                     ship.setActionState(ActionState.QUARTER_LEFT_TURN, actionState);
-                    System.out.println(ship.uuid+" QUARTER LEFT TURN");
 
                 } else if (rand_int == 4) {
                     ship.setActionState(ActionState.STOP, actionState);
-                    System.out.println(ship.uuid+" STOPPED");
 
                 } else if (rand_int == 5) {
                     ship.setActionState(ActionState.QUARTER_RIGHT_TURN, actionState);
-                    System.out.println(ship.uuid+" QUARTER LEFT TURN");
                 } else if (rand_int == 6) {
 
                     ship.setActionState(ActionState.RIGHT_U_TURN, actionState);
-                    System.out.println(ship.uuid+" CRUISING");
                 } else {
                     ship.setActionState(ActionState.CRUISE, actionState);
-                    System.out.println(ship.uuid+" CRUISING");
 
                 }
             }
 
         }
             if (ship.targets.notEmpty()) {ship.setAttackMode();}
-           // System.out.println(ship.getUuid()+" Targets array: "+ship.targets);
 
         }
     }
@@ -571,7 +558,6 @@ public UUID getUuid(){
             if ((getDifference(targetShip.getX(), this.getX())) <= detectionRadius || (getDifference(targetShip.getY(), this.getY())) <= detectionRadius) {
                 if (!targets.contains(targetShip)) {
                     targets.add(targetShip);
-                    System.out.println("Target Acquired! Targeting "+targetShip.uuid);
                     this.setAttackMode();
                 }
 

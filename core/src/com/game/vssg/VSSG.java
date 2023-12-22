@@ -24,7 +24,6 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Iterator;
-import java.util.UUID;
 
 public class VSSG implements ApplicationListener {
 
@@ -97,7 +96,7 @@ public class VSSG implements ApplicationListener {
         cursorMode = CursorMode.MENU_MODE;
         float viewportWidth = Gdx.graphics.getWidth();
         float viewportHeight = Gdx.graphics.getHeight();
-        int processors = Runtime.getRuntime().availableProcessors();
+        //int processors = Runtime.getRuntime().availableProcessors();
         loadResources();
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
@@ -188,10 +187,9 @@ public class VSSG implements ApplicationListener {
         Rectangle hitBox = new Rectangle();
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
-        UUID uuid = UUID.randomUUID();
 //        String uuidAsString = uuid.toString();
         // System.out.println("New ship UUID is: " + uuidAsString);
-        PlayerShip playerShip = new PlayerShip(uuid, purpleCorvetteTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
+        PlayerShip playerShip = new PlayerShip(purpleCorvetteTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
                 hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100);
 
         playerShip.setType(Ship.Type.CORVETTE);
@@ -250,7 +248,7 @@ public class VSSG implements ApplicationListener {
 
     void relinquishControl(PlayerShip playerShip) {
 
-        CpuShip cpuShip = new CpuShip(playerShip.getUuid(), playerShip.getTexture(), playerShip.getPosition(), playerShip.getSpeed(),
+        CpuShip cpuShip = new CpuShip(playerShip.getTexture(), playerShip.getPosition(), playerShip.getSpeed(),
                 Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getHitbox(), playerShip.getActionCounter(), playerShip.getFaction(),
                 playerShip.getTargets(), 100);
 
@@ -411,7 +409,6 @@ public class VSSG implements ApplicationListener {
             }
 
             for (CpuShip cpuShip : cpuShips) {
-                System.out.println(cpuShip.getUuid()+" = "+cpuShip.getActionState());
 
             }
 
@@ -558,7 +555,6 @@ public class VSSG implements ApplicationListener {
                 if (target != null) {
                     if (target.isActive()) {
                         cpuShip.getTargets().remove(target);
-                        System.out.println("TARGET " + target.getUuid() + " REMOVED");
                     }
 
                 }
@@ -606,12 +602,11 @@ public class VSSG implements ApplicationListener {
             CpuShip.ActionState actionState = Ship.ActionState.IDLE;
             Rectangle hitBox = new Rectangle();
             int actionCounter = 0;
-            UUID uuid = UUID.randomUUID();
             //String uuidAsString = uuid.toString();
             //System.out.println("New ship UUID is: " + uuidAsString);
             ObjectSet<Ship> targets = new ObjectSet<>();
             CpuShip.Faction faction = assignFactionByTexture(shipTexture);
-            CpuShip cpuShip = new CpuShip(uuid, shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100);
+            CpuShip cpuShip = new CpuShip(shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100);
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
             cpuShip.setType(Ship.Type.FIGHTER);
