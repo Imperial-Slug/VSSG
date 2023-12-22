@@ -615,7 +615,7 @@ public UUID getUuid(){
 
                     if (ship.getRotation() < getTargetAngle(ship, target) - offset || ship.getRotation() > getTargetAngle(ship, target) + offset) {
                         actionCounter++;
-                        ship.rotateTowardTarget(ship, target, 100, Gdx.graphics.getDeltaTime());
+                        ship.rotateTowardTarget(ship, target, 177, Gdx.graphics.getDeltaTime());
                     } else if (ship.getRotation() >= getTargetAngle(ship, target) - offset || ship.getRotation() <= getTargetAngle(ship, target) + offset) {
 
                         if (target.active) {
@@ -625,6 +625,7 @@ public UUID getUuid(){
                         }
                     }
                 }
+                // If the ships are too close together, stop.
 if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
 
     ship.setSpeed(0);
