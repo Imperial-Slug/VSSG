@@ -96,7 +96,6 @@ public class VSSG implements ApplicationListener {
         cursorMode = CursorMode.MENU_MODE;
         float viewportWidth = Gdx.graphics.getWidth();
         float viewportHeight = Gdx.graphics.getHeight();
-        //int processors = Runtime.getRuntime().availableProcessors();
         loadResources();
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
@@ -108,7 +107,7 @@ public class VSSG implements ApplicationListener {
         purpleShipButton.setPosition((float) viewport.getScreenX() / 2, (float) viewport.getScreenY() / 2);
 
         font = new BitmapFont(); // Instantiate the BitmapFont
-        font.getData().setScale((viewportHeight/100)*camera.zoom/2);
+        font.getData().setScale((viewportHeight/111)*camera.zoom/2);
 
         Skin skin = new Skin();
         skin.add("default-font", font);

@@ -12,28 +12,4 @@
 
 - grey bar
 
-- differentiate between explosions of ships and lasers' hits on ships (small, big)
-- add limit to speed so it doesn't loop back the other way
-- function to make the circle types will take the Ship and 2 arguments to pass to the inner function that actually makes the movement happen for the enum.
-
-
-BEHAVIOR:
-
-While ship is is IDLE action state, it is trying to decide what to do next, mostly random behavior and avoiding the edges of the map, or maybe staying in a  certain locality.  From IDLE it can move to a number of random sub movements determined by a random number everytime the counter reaches 0 again. An enemy or other prompt will wakeup the ship to do something else.
-
-CHANGE:  IDLE will mean more like stopped, barely moving, and there will be another status called READY that will act as a neutral in between state while determining next behavior.  Ready will search for next targets or movements needed. 
-
-
-- remove little guns from ship sprites
-- add more sprites: med and capital ships, purple and teal
-- change colors, mskr modular with color wheel
-- make vsync editable
-CURRENT: MAKE MENU IN GAME
-- make smaller laser explosion, different explosions by rand
-
-
-center of camera - half screenwidth + half y height
-- make camera zoomable but no select menu when playercontrol is true
-
-               laser.setPosition( laser.getShip().getX() + (float) laser.getTexture().getWidth() / 2, laser.getShip().getY() + (float) laser.getTexture().getHeight() / 2);  
-
+- vssg/html/webapp/index.html
