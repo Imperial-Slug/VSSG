@@ -176,7 +176,7 @@ int exhaustTimer = 0;
             offsetY = -2.25f;
         }
         else if(ship.type==Type.CORVETTE) {
-
+            offsetX = -3f;
             offsetY = -35f;
         }
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());
@@ -612,13 +612,9 @@ int exhaustTimer = 0;
                 }
                 // If the ships are too close together, stop.
 if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
-
-
-
     ship.setSpeed(0);
 }
 else {
-
     ship.setSpeed(getRandomSpeed());
 }
             }

@@ -129,6 +129,7 @@ public class VSSG implements ApplicationListener {
 
     @Override
     public void render() {
+        
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
@@ -391,13 +392,15 @@ public class VSSG implements ApplicationListener {
         }
 
         if (InputManager.isQPressed()) {
-            if (cursorMode == CursorMode.SELECTION_MODE) {
+           System.out.println(camera.zoom);
+            if (camera.zoom > 0.2f) {
                 zoomIn();
+
             }
         }
 
         if (InputManager.isEPressed()) {
-            if (cursorMode == CursorMode.SELECTION_MODE) {
+            if (camera.zoom < 23) {
                 zoomOut();
             }
         }
