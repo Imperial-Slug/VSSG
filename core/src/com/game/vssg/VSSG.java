@@ -335,14 +335,14 @@ public class VSSG implements ApplicationListener {
              float mouseX = Gdx.input.getX();
              float mouseY = Gdx.input.getY();
              Vector2 position = new Vector2(mouseX, mouseY);
-             //  System.out.println("Mouse coordinates: ("+mouseX+", "+mouseY+")" );
+                spawnShip(greenShipTexture, position);
+                //  System.out.println("Mouse coordinates: ("+mouseX+", "+mouseY+")" );
             // if ((mouseX <= 64 && mouseX >= 0) && (mouseY <= 1400 && mouseY >= 1340)) {
              //   System.out.println("Purple button CLICKED");
              //}
              //if ((mouseX <= 128 && mouseX > 64) && (mouseY <= 1400 && mouseY >= 1340)) {
               //   System.out.println("Teal button CLICKED");
             //}
-            spawnShip(greenShipTexture, position);
             }
         }
 

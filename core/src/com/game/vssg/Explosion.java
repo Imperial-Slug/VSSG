@@ -12,16 +12,14 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 
 public class Explosion extends Sprite {
-    private Vector2 position;
-    private float magnitude;
+    private final Vector2 position;
     private boolean active;
     private float speed;
-    private float duration;
+    private final float duration;
 
 
     public Explosion(Texture texture1, Vector2 position, float speed, float duration) {
         super(texture1);
-        this.magnitude = magnitude;
         this.duration = duration;
         this.position = position;
         this.speed = speed;
@@ -94,7 +92,6 @@ if(!isPaused){
         explosion.setSpeed(70);
         explosion.spawnExplosion(explosion, explosions);
         explosionSound.play(0.1f);
-        explosion.magnitude = magnitude;
         explosion.setScale(magnitude);
     }
 

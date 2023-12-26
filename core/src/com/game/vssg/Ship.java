@@ -1,6 +1,5 @@
 package com.game.vssg;
 
-import static com.game.vssg.VSSG.WORLD_CONSTANT;
 import static com.game.vssg.VSSG.isPaused;
 
 import com.badlogic.gdx.Gdx;
@@ -219,7 +218,7 @@ int exhaustTimer = 0;
         // Laser texture used is dependent on ship faction.
         if (!isPaused) {
 
-            Texture texture = null;
+            Texture texture;
             if (ship.actionState == ActionState.FIRE) {
                 if (ship.fireCounter <= 100) {
                     ship.fireCounter++;
@@ -614,7 +613,13 @@ int exhaustTimer = 0;
                 // If the ships are too close together, stop.
 if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
 
+
+
     ship.setSpeed(0);
+}
+else {
+
+    ship.setSpeed(getRandomSpeed());
 }
             }
         }
