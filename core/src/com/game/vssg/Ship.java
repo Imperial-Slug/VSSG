@@ -200,7 +200,7 @@ int exhaustTimer = 0;
         hitbox.set(ship.getX() + hitboxOffset, ship.getY() + hitboxOffset, scaledWidth, scaledHeight);
     }}
 
-    void handleActionState(Ship ship, Texture greenLaserTexture, Texture redLaserTexture, Texture blueLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
+    void handleActionState(Ship ship, Texture laser2Texture, Texture greenLaserTexture, Texture redLaserTexture, Texture blueLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
         if (!isPaused) {
             ship.handleIdle(ship);
         ship.handleLeftUTurn(ship);
@@ -211,39 +211,44 @@ int exhaustTimer = 0;
         ship.handleStop(ship);
         ship.handleCruise(ship);
         ship.handleAttack(ship);
-        ship.handleFire(ship, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
+        ship.handleFire(ship, laser2Texture, greenLaserTexture, redLaserTexture, blueLaserTexture, lasers, laserBlast);
 
     }}
-    public void handleFire(Ship ship, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
+
+    public void handleFire(Ship ship, Texture laser2Texture,Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
         // Laser texture used is dependent on ship faction.
         if (!isPaused) {
-
-            Texture texture;
             if (ship.actionState == ActionState.FIRE) {
+                Texture texture2 = laser2Texture;
+
                 if (ship.fireCounter <= 100) {
                     ship.fireCounter++;
-                } else {
+                }
+
+                else {
+
                     if (ship.faction == Ship.Faction.TEAL) {
-                        texture = redLaserTexture;
-                        ship.fireCounter = 0;
-                        Laser laser = ship.fireLaser(texture, ship);
-                        laser.setShip(ship);
-                        lasers.add(laser);
-                        laserBlast.play(1f);
-                        ship.setActionState(ship.previousActionState, ship.actionState);
+                      
+                         texture2 = redLaserTexture;
 
                     } else if (ship.faction == Ship.Faction.PURPLE) {
+                        if(ship.type == Type.CORVETTE) {
+                             texture2 = laser2Texture;
+                        }
+                        else if(ship.type == Type.FIGHTER) {
+                          
+                             texture2 = greenLaserTexture;
+                        }
 
-                        texture = greenLaserTexture;
-                        ship.fireCounter = 0;
-                        Laser laser = ship.fireLaser(texture, ship);
-                        laser.setShip(ship);
-                        lasers.add(laser);
-                        laserBlast.play(1f);
-                        ship.setActionState(ship.previousActionState, ship.actionState);
+
 
                     }
-
+                    ship.fireCounter = 0;
+                    Laser laser = ship.fireLaser(texture2, ship);
+                    laser.setShip(ship);
+                    lasers.add(laser);
+                    laserBlast.play(1f);
+                    ship.setActionState(ship.previousActionState, ship.actionState);
                 }
             }
         }}
@@ -593,7 +598,7 @@ int exhaustTimer = 0;
 
             if (ship.targets.size > 0) {
                 //offset = range of how far off center ship will fire.
-                float offset = 3;
+                float offset = 1;
                 target = ship.targets.first();
                 float targetAngle = getTargetAngle(ship, target);
                 if (ship.getActionCounter() != targetAngle) {
@@ -605,7 +610,6 @@ int exhaustTimer = 0;
 
                         if (target.active) {
                             ship.setActionCounter(0);
-
                             ship.setActionState(ActionState.FIRE, ActionState.ATTACK);
                         }
                     }

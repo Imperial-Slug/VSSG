@@ -1,8 +1,12 @@
 package com.game.vssg;
 
+import com.badlogic.gdx.utils.ObjectSet;
+
 public class World {
-int length;
-int height;
+
+ObjectSet<CpuShip> cpuShips;
+ObjectSet<PlayerShip> playerShips;
+
 
 
 }
