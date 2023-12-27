@@ -176,7 +176,7 @@ int exhaustTimer = 0;
             offsetY = -2.25f;
         }
         else if(ship.type==Type.CORVETTE) {
-            offsetX = -3f;
+            offsetX = 0f;
             offsetY = -35f;
         }
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());

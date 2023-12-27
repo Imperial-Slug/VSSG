@@ -136,10 +136,10 @@ public class VSSG implements ApplicationListener {
         handleclickTimeout();
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        Vector2 buttonPosition = new Vector2(camera.position.x - (float) viewport.getScreenX() - button.getWidth() / 2, camera.position.y - (float) viewport.getScreenY() + (float) viewport.getScreenHeight() / 2);
+        Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y );
 
         if (cursorMode == CursorMode.MENU_MODE && button != null) {
-            button.setPosition(buttonPosition.x, buttonPosition.y);
+            button.setPosition(buttonPosition.x - button.getWidth()/2, buttonPosition.y);
         }
         // Move button off screen until it is needed.
         else {
