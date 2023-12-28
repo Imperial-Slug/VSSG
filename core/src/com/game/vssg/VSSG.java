@@ -188,9 +188,8 @@ public class VSSG implements ApplicationListener {
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
         PlayerShip playerShip = new PlayerShip(purpleCorvetteTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
-                hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100);
+                hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.CORVETTE);
 
-        playerShip.setType(Ship.Type.CORVETTE);
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
         playerShips.add(playerShip);
@@ -248,7 +247,7 @@ public class VSSG implements ApplicationListener {
 
         CpuShip cpuShip = new CpuShip(playerShip.getTexture(), playerShip.getPosition(), playerShip.getSpeed(),
                 Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getHitbox(), playerShip.getActionCounter(), playerShip.getFaction(),
-                playerShip.getTargets(), 100);
+                playerShip.getTargets(), playerShip.getHp(), playerShip.getType());
 
         cpuShip.setRotation(playerShip.getRotation());
         cpuShip.setSpeed(playerShip.getSpeed());
@@ -334,9 +333,18 @@ public class VSSG implements ApplicationListener {
              float mouseX = Gdx.input.getX();
              float mouseY = Gdx.input.getY();
 
-            Vector2 position = new Vector2(mouseX, mouseY);
-            spawnShip(greenShipTexture, position);
+           // Vector2 position = new Vector2(mouseX, mouseY);
+         //   spawnShip(greenShipTexture, position);
+                Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
 
+                if(playerShips.isEmpty()){
+                for (CpuShip cpuShip : cpuShips) {
+
+                    if(cpuShip.getHitbox().contains(unprojected.x, unprojected.y)) {
+                       PlayerShip playerShip = makePlayerShip(cpuShip);
+                       playerShips.add(playerShip);
+                }
+                }}
 
             }
         }
@@ -587,7 +595,7 @@ public class VSSG implements ApplicationListener {
             int actionCounter = 0;
             ObjectSet<Ship> targets = new ObjectSet<>();
             CpuShip.Faction faction = assignFactionByTexture(shipTexture);
-            CpuShip cpuShip = new CpuShip(shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100);
+            CpuShip cpuShip = new CpuShip(shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100, Ship.Type.FIGHTER);
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
             cpuShip.setType(Ship.Type.FIGHTER);
@@ -625,10 +633,10 @@ public class VSSG implements ApplicationListener {
 
     PlayerShip makePlayerShip(CpuShip cpuShip) {
        if(playerShips.isEmpty()){
-           System.out.println("1111111111111111111111");
+           System.out.println("makePlayerShip");
         cpuShip.setInactive(cpuShip);
         return new PlayerShip(cpuShip.getTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
-                cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), null, cpuShip.getHp());
+                cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(), cpuShip.getHp(), cpuShip.getType());
     }
     else    { System.out.println("null");
     return null;}

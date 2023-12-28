@@ -64,7 +64,7 @@ public class Ship extends Sprite {
 
     public Ship(Texture texture, Vector2 position, float speed,
                 ActionState actionState, ActionState previousActionState,
-                Faction faction, ObjectSet<Ship> targets, int hp) {
+                Faction faction, ObjectSet<Ship> targets, int hp, Type type) {
 
         super(texture);
         this.position = position;
@@ -80,6 +80,7 @@ public class Ship extends Sprite {
         this.laserSpawnTimeout = false;
         this.laserSpawnCounter = 0;
         this.hp = hp;
+        this.type = type;
 
     }
 int exhaustTimer = 0;
