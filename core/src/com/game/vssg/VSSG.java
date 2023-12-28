@@ -1,10 +1,14 @@
 package com.game.vssg;
 
+import static com.badlogic.gdx.graphics.g3d.particles.ParticleShader.AlignMode.Screen;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL32;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -87,7 +91,11 @@ public class VSSG implements ApplicationListener {
     private int clickTimeout = 0;
 
     Stage stage;
+    enum Screen{
+        TITLE, MAIN_GAME, GAME_OVER;
+    }
 
+    Screen currentScreen = VSSG.Screen.TITLE;
     ////////////////////////////////
 
     @Override
@@ -129,10 +137,27 @@ public class VSSG implements ApplicationListener {
 
     @Override
     public void render() {
-        
+
+        if(currentScreen == VSSG.Screen.TITLE){
+
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+            batch.begin();
+            font.draw(batch, "Title Screen!", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .75f);
+            font.draw(batch, "Watch ships fight.", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .5f);
+            font.draw(batch, "Press space to play.", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .25f);
+            batch.end();
+            mainMenuInput();
+
+        }
+        else if(currentScreen == VSSG.Screen.MAIN_GAME) {
+
+
+
+
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
         ScreenUtils.clear(0, 0, 0, 1);
-        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
         handleclickTimeout();
         float deltaTime = Gdx.graphics.getDeltaTime();
 
@@ -169,7 +194,7 @@ public class VSSG implements ApplicationListener {
         stage.draw();
         batch.end();
 
-    }
+    }}
 
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, false);
@@ -269,6 +294,15 @@ public class VSSG implements ApplicationListener {
             cursorMode = CursorMode.SELECTION_MODE;
         }
     }
+
+
+    private void mainMenuInput(){
+        if (InputManager.isSpacePressed()) {
+            currentScreen= VSSG.Screen.MAIN_GAME;
+        }
+
+    }
+
 
     private void handleInput() {
 
