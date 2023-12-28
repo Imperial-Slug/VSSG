@@ -36,7 +36,7 @@ public class Laser extends Sprite {
                 position.add(velocity.x * delta, velocity.y * delta);
                 this.setDespawnCounter(this.getDespawnCounter() + 1);
                 // Check if the laser is out of screen bounds and deactivate it if necessary
-                if (position.x >= WORLD_WIDTH || position.y >= WORLD_HEIGHT || this.despawnCounter > 600) {
+                if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT || this.despawnCounter > 1024) {
                     active = false;
                 }
                 setPosition(position.x, position.y);

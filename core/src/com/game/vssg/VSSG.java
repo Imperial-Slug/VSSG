@@ -143,9 +143,9 @@ public class VSSG implements ApplicationListener {
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
             batch.begin();
-            font.draw(batch, "Title Screen!", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .75f);
-            font.draw(batch, "Watch ships fight.", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .5f);
-            font.draw(batch, "Press space to play.", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .25f);
+            font.draw(batch, "VSSG", Gdx.graphics.getWidth()*.4f, Gdx.graphics.getHeight() * .8f);
+            font.draw(batch, "Watch ships fight.", Gdx.graphics.getWidth()*.22f, Gdx.graphics.getHeight() * .5f);
+            font.draw(batch, "Press space to play.", Gdx.graphics.getWidth()*.2f, Gdx.graphics.getHeight() * .25f);
             batch.end();
             mainMenuInput();
 
