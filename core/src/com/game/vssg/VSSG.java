@@ -313,10 +313,34 @@ public class VSSG implements ApplicationListener {
                 }
             }
         }
+        if (InputManager.isPPressed()) {
+            float mouseX = Gdx.input.getX();
+            float mouseY = Gdx.input.getY();
+
+
+            Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
+
+            if(playerShips.isEmpty()){
+                for (CpuShip cpuShip : cpuShips) {
+
+                    if(cpuShip.getHitbox().contains(unprojected.x, unprojected.y)) {
+                        PlayerShip playerShip = makePlayerShip(cpuShip);
+                        playerShips.add(playerShip);
+                    }
+                }}
+
+        }
+
+        if (InputManager.isTPressed()) {
+
+        }
 
 
         if (InputManager.isRightMousePressed()) {
-
+            float mouseX = Gdx.input.getX();
+            float mouseY = Gdx.input.getY();
+            Vector2 position = new Vector2(mouseX, mouseY);
+            spawnShip(purpleShipTexture, position);
         }
 
         if (shipSpawnTimeout) {
@@ -341,20 +365,11 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isLeftMousePressed()) {
             if(!isPaused) {
-             float mouseX = Gdx.input.getX();
-             float mouseY = Gdx.input.getY();
+                float mouseX = Gdx.input.getX();
+                float mouseY = Gdx.input.getY();
+                Vector2 position = new Vector2(mouseX, mouseY);
+                spawnShip(greenShipTexture, position);
 
-
-                Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
-
-                if(playerShips.isEmpty()){
-                for (CpuShip cpuShip : cpuShips) {
-
-                    if(cpuShip.getHitbox().contains(unprojected.x, unprojected.y)) {
-                       PlayerShip playerShip = makePlayerShip(cpuShip);
-                       playerShips.add(playerShip);
-                }
-                }}
 
             }
         }
@@ -414,19 +429,6 @@ public class VSSG implements ApplicationListener {
             }
         }
 
-        if (InputManager.isPPressed()) {
-            float mouseX = Gdx.input.getX();
-            float mouseY = Gdx.input.getY();
-            Vector2 position = new Vector2(mouseX, mouseY);
-            spawnShip(purpleShipTexture, position);
-        }
-
-        if (InputManager.isTPressed()) {
-            float mouseX = Gdx.input.getX();
-            float mouseY = Gdx.input.getY();
-            Vector2 position = new Vector2(mouseX, mouseY);
-            spawnShip(greenShipTexture, position);
-        }
 
         if (InputManager.isCPressed()) {
             if (!playerShips.isEmpty()) {
