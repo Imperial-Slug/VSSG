@@ -55,8 +55,9 @@ public final class InputManager  {
 
     public static boolean isCPressed() {return Gdx.input.isKeyPressed(Input.Keys.C); }
 
-    //public static boolean isBackPressed() {return Gdx.input.isKeyPressed(Input.Buttons.BACK); }
-    public static boolean isForwardPressed() {return Gdx.input.isKeyPressed(Input.Buttons.FORWARD); }
+    public static boolean isPPressed() {return Gdx.input.isKeyPressed(Input.Keys.P); }
+
+    public static boolean isTPressed() {return Gdx.input.isKeyPressed(Input.Keys.T); }
 
 
 }

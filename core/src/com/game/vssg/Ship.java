@@ -28,6 +28,7 @@ public class Ship extends Sprite {
     private int laserSpawnCounter;
     private int hp;
     private Type type;
+    private float rotation;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -64,7 +65,7 @@ public class Ship extends Sprite {
 
     public Ship(Texture texture, Vector2 position, float speed,
                 ActionState actionState, ActionState previousActionState,
-                Faction faction, ObjectSet<Ship> targets, int hp, Type type) {
+                Faction faction, ObjectSet<Ship> targets, int hp, Type type, float rotation) {
 
         super(texture);
         this.position = position;
@@ -81,6 +82,7 @@ public class Ship extends Sprite {
         this.laserSpawnCounter = 0;
         this.hp = hp;
         this.type = type;
+        this.rotation = getRotation();
 
     }
 int exhaustTimer = 0;

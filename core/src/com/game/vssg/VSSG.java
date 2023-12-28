@@ -188,7 +188,7 @@ public class VSSG implements ApplicationListener {
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
         PlayerShip playerShip = new PlayerShip(purpleCorvetteTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
-                hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.CORVETTE);
+                hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.CORVETTE, 90);
 
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
@@ -247,7 +247,7 @@ public class VSSG implements ApplicationListener {
 
         CpuShip cpuShip = new CpuShip(playerShip.getTexture(), playerShip.getPosition(), playerShip.getSpeed(),
                 Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getHitbox(), playerShip.getActionCounter(), playerShip.getFaction(),
-                playerShip.getTargets(), playerShip.getHp(), playerShip.getType());
+                playerShip.getTargets(), playerShip.getHp(), playerShip.getType(), playerShip.getRotation());
 
         cpuShip.setRotation(playerShip.getRotation());
         cpuShip.setSpeed(playerShip.getSpeed());
@@ -287,10 +287,24 @@ public class VSSG implements ApplicationListener {
         }
 
         if (InputManager.isSpacePressed()) {
-
+            Texture laserTexture = null;
             for (Ship ship : playerShips) {
                 if (!ship.getLaserSpawnTimeout()) {
-                    Laser laser = ship.fireLaser(laser2Texture, ship);
+                    if(ship.getType()== Ship.Type.CORVETTE){
+                      laserTexture = laser2Texture;
+                    }
+                    else if(ship.getType() == Ship.Type.FIGHTER){
+                        if(ship.getFaction()== Ship.Faction.TEAL){
+                            laserTexture = redLaserTexture;
+                        }
+                        else if(ship.getFaction() == Ship.Faction.PURPLE) {
+                            laserTexture = greenLaserTexture;
+                        }
+
+                    }
+
+
+                    Laser laser = ship.fireLaser(laserTexture, ship);
                     laser.setShip(ship);
                     lasers.add(laser);
                     laserBlast1.play(1f);
@@ -302,10 +316,7 @@ public class VSSG implements ApplicationListener {
 
 
         if (InputManager.isRightMousePressed()) {
-            float mouseX = Gdx.input.getX();
-            float mouseY = Gdx.input.getY();
-            Vector2 position = new Vector2(mouseX, mouseY);
-            spawnShip(purpleShipTexture, position);
+
         }
 
         if (shipSpawnTimeout) {
@@ -333,8 +344,7 @@ public class VSSG implements ApplicationListener {
              float mouseX = Gdx.input.getX();
              float mouseY = Gdx.input.getY();
 
-           // Vector2 position = new Vector2(mouseX, mouseY);
-         //   spawnShip(greenShipTexture, position);
+
                 Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
 
                 if(playerShips.isEmpty()){
@@ -402,6 +412,20 @@ public class VSSG implements ApplicationListener {
             if (camera.zoom < 23) {
                 zoomOut();
             }
+        }
+
+        if (InputManager.isPPressed()) {
+            float mouseX = Gdx.input.getX();
+            float mouseY = Gdx.input.getY();
+            Vector2 position = new Vector2(mouseX, mouseY);
+            spawnShip(purpleShipTexture, position);
+        }
+
+        if (InputManager.isTPressed()) {
+            float mouseX = Gdx.input.getX();
+            float mouseY = Gdx.input.getY();
+            Vector2 position = new Vector2(mouseX, mouseY);
+            spawnShip(greenShipTexture, position);
         }
 
         if (InputManager.isCPressed()) {
@@ -595,7 +619,7 @@ public class VSSG implements ApplicationListener {
             int actionCounter = 0;
             ObjectSet<Ship> targets = new ObjectSet<>();
             CpuShip.Faction faction = assignFactionByTexture(shipTexture);
-            CpuShip cpuShip = new CpuShip(shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100, Ship.Type.FIGHTER);
+            CpuShip cpuShip = new CpuShip(shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100, Ship.Type.FIGHTER, 90);
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
             cpuShip.setType(Ship.Type.FIGHTER);
@@ -636,7 +660,8 @@ public class VSSG implements ApplicationListener {
            System.out.println("makePlayerShip");
         cpuShip.setInactive(cpuShip);
         return new PlayerShip(cpuShip.getTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
-                cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(), cpuShip.getHp(), cpuShip.getType());
+                cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
+                cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
     }
     else    { System.out.println("null");
     return null;}
