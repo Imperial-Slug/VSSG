@@ -91,7 +91,7 @@ if(!isPaused){
         explosion.setRotation(10);
         explosion.setSpeed(70);
         explosion.spawnExplosion(explosion, explosions);
-        explosionSound.play(0.1f);
+        explosionSound.play(0.04f);
         explosion.setScale(magnitude);
     }
 

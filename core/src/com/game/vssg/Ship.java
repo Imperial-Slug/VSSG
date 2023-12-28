@@ -221,7 +221,7 @@ int exhaustTimer = 0;
             if (ship.actionState == ActionState.FIRE) {
                 Texture texture2 = laser2Texture;
 
-                if (ship.fireCounter <= 100) {
+                if (ship.fireCounter <= 177) {
                     ship.fireCounter++;
                 }
 

@@ -476,7 +476,7 @@ public class VSSG implements ApplicationListener {
 
     void checkLaserCollision(Rectangle laserHitBox, Rectangle shipHitBox, Laser laser, Ship ship) {
         if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
-            Vector2 position = new Vector2(laser.getX(), laser.getY() - 64);
+            Vector2 position = new Vector2(ship.getX()+ship.getWidth()/2, laser.getY() - ship.getHeight()/2);
             Explosion.explode(explosionTexture1, position, 60, explosions, explosionSound1, 50, 0.33f);
             ship.decreaseHp(10);
             laser.setInactive(laser);
