@@ -325,6 +325,7 @@ public class VSSG implements ApplicationListener {
 
                     if(cpuShip.getHitbox().contains(unprojected.x, unprojected.y)) {
                         PlayerShip playerShip = makePlayerShip(cpuShip);
+                        playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
                         playerShips.add(playerShip);
                     }
                 }}
@@ -661,6 +662,7 @@ public class VSSG implements ApplicationListener {
        if(playerShips.isEmpty()){
            System.out.println("makePlayerShip");
         cpuShip.setInactive(cpuShip);
+        cpuShip.getTargets().clear();
         return new PlayerShip(cpuShip.getTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
                 cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
                 cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
