@@ -58,8 +58,8 @@ public class Laser extends Sprite {
         return this.speed;
     }
 
-    public void setSpeed(float s) {
-        this.speed = s;
+    public void setSpeed(float speed) {
+        this.speed = speed;
 
     }
 
