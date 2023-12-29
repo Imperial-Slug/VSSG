@@ -91,11 +91,11 @@ public class VSSG implements ApplicationListener {
     private int clickTimeout = 0;
 
     Stage stage;
-    enum Screen{
+    enum Shcreen{
         TITLE, MAIN_GAME, GAME_OVER;
     }
 
-    Screen currentScreen = VSSG.Screen.TITLE;
+    Shcreen currentScreen = VSSG.Shcreen.TITLE;
     ////////////////////////////////
 
     @Override
@@ -138,9 +138,9 @@ public class VSSG implements ApplicationListener {
     @Override
     public void render() {
 
-        if(currentScreen == VSSG.Screen.TITLE){
+        if(currentScreen == VSSG.Shcreen.TITLE){
 
-            Gdx.gl.glClearColor(0, 0, 0, 1);
+            ScreenUtils.clear(0, 0, 0, 1);
             Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
             batch.begin();
             font.draw(batch, "VSSG", Gdx.graphics.getWidth()*.4f, Gdx.graphics.getHeight() * .8f);
@@ -150,10 +150,7 @@ public class VSSG implements ApplicationListener {
             mainMenuInput();
 
         }
-        else if(currentScreen == VSSG.Screen.MAIN_GAME) {
-
-
-
+        else if(currentScreen == VSSG.Shcreen.MAIN_GAME) {
 
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
         ScreenUtils.clear(0, 0, 0, 1);
@@ -298,7 +295,7 @@ public class VSSG implements ApplicationListener {
 
     private void mainMenuInput(){
         if (InputManager.isSpacePressed()) {
-            currentScreen= VSSG.Screen.MAIN_GAME;
+            currentScreen= VSSG.Shcreen.MAIN_GAME;
         }
 
     }
@@ -689,6 +686,7 @@ public class VSSG implements ApplicationListener {
         purpleCorvetteTexture.dispose();
         explosionTexture2.dispose();
         stage.dispose();
+        font.dispose();
 
     }
 
