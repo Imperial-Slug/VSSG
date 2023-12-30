@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
 
+import java.util.Random;
+
 
 public class Explosion extends Sprite {
     private final Vector2 position;
@@ -49,7 +51,7 @@ public class Explosion extends Sprite {
                     speedCounter += 1f;
                 } else {
                     speedCounter = 0;
-                    speed = 10;
+                    speed = 20;
                 }
 
                 if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
@@ -88,11 +90,35 @@ if(!isPaused){
 
         Explosion explosion = new Explosion(explosionTexture1, position, speed, duration);
         explosion.setOrigin(explosion.getWidth() / 2, explosion.getHeight() / 2f);
-        explosion.setRotation(10);
-        explosion.setSpeed(70);
+        explosion.setRotation(explosion.getRandomSpeed());
+        explosion.setSpeed(explosion.getRandomSpeed());
         explosion.spawnExplosion(explosion, explosions);
         explosionSound.play(0.04f);
         explosion.setScale(magnitude);
+    }
+
+    public float getRandomSpeed() {
+        Random rand = new Random();
+        int randInt = rand.nextInt(10);
+
+        if (randInt == 1) {
+            this.setSpeed(80);
+        } else if (randInt == 2) {
+            this.setSpeed(90);
+        } else if (randInt == 3) {
+            this.setSpeed(110);
+        } else if (randInt == 4) {
+            this.setSpeed(130);
+        } else if (randInt == 5) {
+            this.setSpeed(150);
+        } else if (randInt == 6) {
+            this.setSpeed(170);
+        } else {
+            this.setSpeed(190);
+        }
+
+
+        return this.speed;
     }
 
 }
