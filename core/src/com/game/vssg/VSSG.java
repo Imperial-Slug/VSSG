@@ -139,7 +139,7 @@ public class VSSG implements ApplicationListener {
     public void render() {
 
         if(currentScreen == VSSG.Shcreen.TITLE){
-
+            mainMenuInput();
             ScreenUtils.clear(0, 0, 0, 1);
             Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
             batch.begin();
@@ -147,7 +147,6 @@ public class VSSG implements ApplicationListener {
             font.draw(batch, "Watch ships fight.", Gdx.graphics.getWidth()*.22f, Gdx.graphics.getHeight() * .5f);
             font.draw(batch, "Press space to play.", Gdx.graphics.getWidth()*.2f, Gdx.graphics.getHeight() * .25f);
             batch.end();
-            mainMenuInput();
 
         }
         else if(currentScreen == VSSG.Shcreen.MAIN_GAME) {
@@ -344,10 +343,10 @@ public class VSSG implements ApplicationListener {
                 }
             }
         }
+
         if (InputManager.isPPressed()) {
             float mouseX = Gdx.input.getX();
             float mouseY = Gdx.input.getY();
-
 
             Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
 
@@ -362,11 +361,6 @@ public class VSSG implements ApplicationListener {
                 }}
 
         }
-
-        if (InputManager.isTPressed()) {
-
-        }
-
 
         if (InputManager.isRightMousePressed()) {
             float mouseX = Gdx.input.getX();
