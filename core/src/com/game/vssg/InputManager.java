@@ -58,6 +58,7 @@ public final class InputManager  {
     public static boolean isPPressed() {return Gdx.input.isKeyPressed(Input.Keys.P); }
 
     public static boolean isTPressed() {return Gdx.input.isKeyPressed(Input.Keys.T); }
+    public static boolean isMiddlePressed() {return Gdx.input.isButtonPressed(Input.Buttons.MIDDLE); }
 
 
 }

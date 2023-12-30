@@ -95,11 +95,12 @@ public class VSSG implements ApplicationListener {
         TITLE, MAIN_GAME, GAME_OVER;
     }
 
-    Shcreen currentScreen = VSSG.Shcreen.TITLE;
+    Shcreen currentScreen;
     ////////////////////////////////
 
     @Override
     public void create() {
+        currentScreen = VSSG.Shcreen.TITLE;
 
         cursorMode = CursorMode.MENU_MODE;
         float viewportWidth = Gdx.graphics.getWidth();
@@ -138,25 +139,14 @@ public class VSSG implements ApplicationListener {
     @Override
     public void render() {
 
-        if(currentScreen == VSSG.Shcreen.TITLE){
-            mainMenuInput();
-            ScreenUtils.clear(0, 0, 0, 1);
-            Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
-            batch.begin();
-            font.draw(batch, "VSSG", Gdx.graphics.getWidth()*.4f, Gdx.graphics.getHeight() * .8f);
-            font.draw(batch, "Watch ships fight.", Gdx.graphics.getWidth()*.22f, Gdx.graphics.getHeight() * .5f);
-            font.draw(batch, "Press space to play.", Gdx.graphics.getWidth()*.2f, Gdx.graphics.getHeight() * .25f);
-            batch.end();
-
-        }
-        else if(currentScreen == VSSG.Shcreen.MAIN_GAME) {
-
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+        batch.setProjectionMatrix(camera.combined);
         handleclickTimeout();
         float deltaTime = Gdx.graphics.getDeltaTime();
-
+        handleInput();
+        chooseMode();
         Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y );
 
         if (cursorMode == CursorMode.MENU_MODE && button != null) {
@@ -169,10 +159,7 @@ public class VSSG implements ApplicationListener {
             }
         }
 
-        chooseMode();
-        batch.setProjectionMatrix(camera.combined);
-        camera.update();
-        handleInput();
+
 
         Iterator<PlayerShip> playerIter = playerShips.iterator();
         Iterator<CpuShip> cpuIter = cpuShips.iterator();
@@ -189,8 +176,9 @@ public class VSSG implements ApplicationListener {
         checkObjects(deltaTime);
         stage.draw();
         batch.end();
+        System.out.println("CURSOR_MODE = " + cursorMode);
 
-    }}
+    }
 
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, false);
@@ -276,7 +264,7 @@ public class VSSG implements ApplicationListener {
         playerShips.remove(playerShip);
         cpuShips.add(cpuShip);
         copiedSet.add(cpuShip);
-        System.out.println("CURSOR_MODE = " + cursorMode);
+        //System.out.println("CURSOR_MODE = " + cursorMode);
 
     }
 
@@ -284,7 +272,7 @@ public class VSSG implements ApplicationListener {
 
         if (isPaused) {
             cursorMode = CursorMode.MENU_MODE;
-        } else if (!playerShips.isEmpty() && !isPaused) {
+        } else if (playerShips.notEmpty() && !isPaused) {
             cursorMode = CursorMode.PLAY_MODE;
         } else if (playerShips.isEmpty() && !isPaused) {
             cursorMode = CursorMode.SELECTION_MODE;
@@ -344,30 +332,39 @@ public class VSSG implements ApplicationListener {
             }
         }
 
-        if (InputManager.isPPressed()) {
-            float mouseX = Gdx.input.getX();
-            float mouseY = Gdx.input.getY();
+if (InputManager.isMiddlePressed()){
+    float mouseX = Gdx.input.getX();
+    float mouseY = Gdx.input.getY();
+    Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
+    Vector2 position = new Vector2(unprojected.x, unprojected.y);
+    for (CpuShip cpuShip : cpuShips) {
+        if (cpuShip.getHitbox().contains(position)) {
 
-            Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
+            if (playerShips.isEmpty()) {
 
-            if(playerShips.isEmpty()){
-                for (CpuShip cpuShip : cpuShips) {
-
-                    if(cpuShip.getHitbox().contains(unprojected.x, unprojected.y)) {
+                    if (cpuShip.getHitbox().contains(position)) {
                         PlayerShip playerShip = makePlayerShip(cpuShip);
-                        playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
-                        playerShips.add(playerShip);
+                        if (playerShip != null) {
+                            playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
+                            playerShips.add(playerShip);
+                        }
                     }
-                }}
 
+            }
         }
+
+    }
+}
+
 
         if (InputManager.isRightMousePressed()) {
             float mouseX = Gdx.input.getX();
             float mouseY = Gdx.input.getY();
             Vector2 position = new Vector2(mouseX, mouseY);
-            spawnShip(purpleShipTexture, position);
+
+        spawnShip(purpleShipTexture, position);
         }
+
 
         if (shipSpawnTimeout) {
             if (shipSpawnCounter >= 90) {
