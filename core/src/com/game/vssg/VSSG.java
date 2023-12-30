@@ -294,13 +294,13 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isAPressed()) {
             for (Ship ship : playerShips) {
-                ship.rotate(+0.3f);
+                ship.rotate(+0.75f);
             }
         }
 
         if (InputManager.isDPressed()) {
             for (Ship ship : playerShips) {
-                ship.rotate(-0.3f);
+                ship.rotate(-0.75f);
             }
         }
 
@@ -335,8 +335,8 @@ public class VSSG implements ApplicationListener {
 if (InputManager.isMiddlePressed()){
     float mouseX = Gdx.input.getX();
     float mouseY = Gdx.input.getY();
-    Vector3 unprojected = stage.getCamera().unproject(new Vector3(mouseX, mouseY, 0));
-    Vector2 position = new Vector2(unprojected.x, unprojected.y);
+  //  Vector3 unprojected = stage.getCamera().unproject(new Vector3(mouseX, mouseY, 0));
+    Vector2 position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
     for (CpuShip cpuShip : cpuShips) {
         if (cpuShip.getHitbox().contains(position)) {
 
@@ -365,7 +365,7 @@ if (InputManager.isMiddlePressed()){
 
 
         if (shipSpawnTimeout) {
-            if (shipSpawnCounter >= 90) {
+            if (shipSpawnCounter >= 30) {
                 shipSpawnTimeout = false;
             } else {
                 shipSpawnCounter++;
@@ -375,7 +375,7 @@ if (InputManager.isMiddlePressed()){
 // For player ship only during runtime. CpuShip laser timing is handled differently.
         if (!playerShips.isEmpty()) {
             if (playerShips.first().getLaserSpawnTimeout()) {
-                if (playerShips.first().getLaserSpawnCounter() >= 100) {
+                if (playerShips.first().getLaserSpawnCounter() >= 50) {
 
                     playerShips.first().setLaserSpawnTimeout(false);
                 } else {
@@ -532,12 +532,12 @@ if (InputManager.isMiddlePressed()){
     void checkLaserCollision(Rectangle laserHitBox, Rectangle shipHitBox, Laser laser, Ship ship) {
         if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
             Vector2 position = new Vector2(ship.getX()+ship.getWidth()/2, laser.getY() - ship.getHeight()/2);
-            Explosion.explode(explosionTexture1, position, 60, explosions, explosionSound1, 50, 0.33f);
+            Explosion.explode(explosionTexture1, position, 300, explosions, explosionSound1, 20, 0.33f);
             ship.decreaseHp(10);
             laser.setInactive(laser);
             if (ship.getHp() <= 0) {
                 ship.setInactive(ship);
-                Explosion.explode(explosionTexture1, position, 60, explosions, explosionSound1, 300, 0.7f);
+                Explosion.explode(explosionTexture1, position, 300, explosions, explosionSound1, 100, 0.7f);
             }
         }
     }

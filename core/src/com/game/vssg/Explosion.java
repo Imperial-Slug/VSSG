@@ -41,9 +41,9 @@ public class Explosion extends Sprite {
                     this.active = false;
                 }
 
-                this.setRotation(this.getRotation() + 20f);
+                this.setRotation(this.getRotation() + 40f);
 
-                if (speedCounter <= 44) {
+                if (speedCounter <= 150) {
                     this.setSpeed(this.getSpeed() + speedCounter);
                     // Negative values make it go downwards.
                     speedCounter += 1f;
