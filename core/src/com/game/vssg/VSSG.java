@@ -335,20 +335,18 @@ public class VSSG implements ApplicationListener {
 if (InputManager.isMiddlePressed()){
     float mouseX = Gdx.input.getX();
     float mouseY = Gdx.input.getY();
-    Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
+    Vector3 unprojected = stage.getCamera().unproject(new Vector3(mouseX, mouseY, 0));
     Vector2 position = new Vector2(unprojected.x, unprojected.y);
     for (CpuShip cpuShip : cpuShips) {
         if (cpuShip.getHitbox().contains(position)) {
 
             if (playerShips.isEmpty()) {
-
-                    if (cpuShip.getHitbox().contains(position)) {
                         PlayerShip playerShip = makePlayerShip(cpuShip);
                         if (playerShip != null) {
                             playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
                             playerShips.add(playerShip);
                         }
-                    }
+
 
             }
         }
