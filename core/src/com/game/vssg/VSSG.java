@@ -232,8 +232,8 @@ public class VSSG implements ApplicationListener {
 
     void loadResources() {
 
-        purpleShipTexture = new Texture("N1.png");
-        otherShipTexture = new Texture("purple_ship.png");
+        purpleShipTexture = new Texture("purple_ship.png");
+        otherShipTexture = new Texture("N1.png");
         greenShipTexture = new Texture("teal_ship.png");
         greenLaserTexture = new Texture("laser_green.png");
         redLaserTexture = new Texture("laser_red.png");
@@ -296,7 +296,6 @@ public class VSSG implements ApplicationListener {
 
             Vector2 position = new Vector2(unprojected.x, unprojected.y);
 
-             Explosion.explode(explosionTexture1, position, 60, explosions, explosionSound1, 100, 0.7f);
             for (CpuShip cpuShip : cpuShips) {
                 if (cpuShip.getHitbox().contains(position)) {
 
@@ -405,7 +404,7 @@ public class VSSG implements ApplicationListener {
                 for (PlayerShip playerShip : playerShips) {
 
                     if (playerShip.getSpeed() < speedLimit && playerShip.getSpeed() >= 0) {
-                        playerShip.setSpeed(playerShip.getSpeed() + 1);
+                        playerShip.setSpeed(playerShip.getSpeed() + 2);
                     }
                 }
             }
@@ -415,7 +414,7 @@ public class VSSG implements ApplicationListener {
             if (!isPaused) {
                 for (PlayerShip playerShip : playerShips) {
                     if (playerShip.getSpeed() <= speedLimit && playerShip.getSpeed() > 0) {
-                        playerShip.setSpeed(playerShip.getSpeed() - 1);
+                        playerShip.setSpeed(playerShip.getSpeed() - 2);
                     }
                 }
             }

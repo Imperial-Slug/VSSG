@@ -1,0 +1,16 @@
+{
+    "platform": "linux64",
+    "jdk": "/usr/lib/jvm/openjdk-17",
+    "executable": "myapp",
+    "classpath": [
+        "build/libs/desktop-1.0.jar"
+    ],
+    "mainclass": "com.game.vssg.DesktopLauncher",
+    "vmargs": [
+       "Xmx1G"
+    ],
+    "resources": [
+        "build/resources/main"
+    ],
+    "output": "out-linux"
+}
