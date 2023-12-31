@@ -37,7 +37,6 @@ public class VSSG implements ApplicationListener {
     public static float shipScale = 1f;
     public static float DEFAULT_ZOOM = 2;
 
-
     private ObjectSet<PlayerShip> playerShips;
     private ObjectSet<CpuShip> cpuShips;
     private ObjectSet<CpuShip> copiedSet;
@@ -100,7 +99,6 @@ public class VSSG implements ApplicationListener {
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         initObjects(viewportWidth, viewportHeight);
-        // Initial ship's details.
         initPlayerShip();
 
         purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y + viewportHeight);
