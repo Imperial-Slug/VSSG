@@ -31,11 +31,6 @@ import java.util.Iterator;
 
 public class VSSG implements ApplicationListener {
 
-    // DEBUGGING //
-    public static boolean showHitBoxes = false;
-    public static boolean mute = false;
-    ///////////////
-
     public static int WORLD_CONSTANT = 32768;
     public static int WORLD_WIDTH = WORLD_CONSTANT;
     public static long WORLD_HEIGHT = WORLD_CONSTANT;
@@ -55,7 +50,7 @@ public class VSSG implements ApplicationListener {
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
     private final int wrapDivisor = (WORLD_WIDTH / 4096);
-    private final float zoomSpeed = 0.002f;
+    private final float zoomSpeed = 0.004f;
     public static boolean isPaused = false;
 
     private Texture purpleShipTexture;
@@ -91,16 +86,12 @@ public class VSSG implements ApplicationListener {
     private int clickTimeout = 0;
 
     Stage stage;
-    enum Shcreen{
-        TITLE, MAIN_GAME, GAME_OVER;
-    }
 
-    Shcreen currentScreen;
+
     ////////////////////////////////
 
     @Override
     public void create() {
-        currentScreen = VSSG.Shcreen.TITLE;
 
         cursorMode = CursorMode.MENU_MODE;
         float viewportWidth = Gdx.graphics.getWidth();
@@ -180,8 +171,22 @@ public class VSSG implements ApplicationListener {
 
     }
 
+
+    PlayerShip makePlayerShip(CpuShip cpuShip) {
+        if(playerShips.isEmpty()){
+            System.out.println("makePlayerShip");
+            cpuShip.setInactive(cpuShip);
+            cpuShip.getTargets().clear();
+            return new PlayerShip(cpuShip.getTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
+                    cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
+                    cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
+        }
+        else    { System.out.println("null");
+            return null;}
+    }
+
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, false);
+        stage.getViewport().update(width, height, true);
     }
 
     public void pause() {
@@ -280,27 +285,42 @@ public class VSSG implements ApplicationListener {
     }
 
 
-    private void mainMenuInput(){
-        if (InputManager.isSpacePressed()) {
-            currentScreen= VSSG.Shcreen.MAIN_GAME;
-        }
-
-    }
-
-
     private void handleInput() {
 
         float cameraSpeed = camera.zoom * 2048;
 
+        if (InputManager.isMiddlePressed()){
+            float mouseX = Gdx.input.getX();
+            float mouseY = Gdx.input.getY();
+            Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
+
+            Vector2 position = new Vector2(unprojected.x, unprojected.y);
+
+             Explosion.explode(explosionTexture1, position, 60, explosions, explosionSound1, 100, 0.7f);
+            for (CpuShip cpuShip : cpuShips) {
+                if (cpuShip.getHitbox().contains(position)) {
+
+                    if (playerShips.isEmpty()) {
+                        PlayerShip playerShip = makePlayerShip(cpuShip);
+                        playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
+                        playerShips.add(playerShip);
+
+                    }
+                }
+
+            }
+        }
+
+
         if (InputManager.isAPressed()) {
             for (Ship ship : playerShips) {
-                ship.rotate(+0.75f);
+                ship.rotate(+0.7f);
             }
         }
 
         if (InputManager.isDPressed()) {
             for (Ship ship : playerShips) {
-                ship.rotate(-0.75f);
+                ship.rotate(-0.7f);
             }
         }
 
@@ -321,7 +341,6 @@ public class VSSG implements ApplicationListener {
 
                     }
 
-
                     Laser laser = ship.fireLaser(laserTexture, ship);
                     laser.setShip(ship);
                     lasers.add(laser);
@@ -332,35 +351,11 @@ public class VSSG implements ApplicationListener {
             }
         }
 
-if (InputManager.isMiddlePressed()){
-    float mouseX = Gdx.input.getX();
-    float mouseY = Gdx.input.getY();
-    Vector3 unprojected = stage.getCamera().unproject(new Vector3(mouseX, mouseY, 0));
-    Vector2 position = new Vector2(unprojected.x, unprojected.y);
-
-    for (CpuShip cpuShip : cpuShips) {
-        if (cpuShip.getHitbox().contains(position)) {
-
-            if (playerShips.isEmpty()) {
-                        PlayerShip playerShip = makePlayerShip(cpuShip);
-                            playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
-                            playerShips.add(playerShip);
-
-
-
-            }
-        }
-
-    }
-}
-
-
         if (InputManager.isRightMousePressed()) {
             float mouseX = Gdx.input.getX();
             float mouseY = Gdx.input.getY();
             Vector2 position = new Vector2(mouseX, mouseY);
-
-        spawnShip(purpleShipTexture, position);
+            spawnShip(purpleShipTexture, position);
         }
 
 
@@ -559,19 +554,11 @@ if (InputManager.isMiddlePressed()){
 
             for (CpuShip cpuShip : cpuShips) {
                 Rectangle shipHitBox = cpuShip.getHitbox();
-                if (showHitBoxes) {
-                    cpuShip.getShapeRenderer().setProjectionMatrix(camera.combined);
-                    cpuShip.drawBoundingBox();
-                }
                 checkLaserCollision(laserHitBox, shipHitBox, laser, cpuShip);
             }
 
             for (PlayerShip playerShip : playerShips) {
                 Rectangle shipHitBox = playerShip.getHitbox();
-                if (showHitBoxes) {
-                    playerShip.getShapeRenderer().setProjectionMatrix(camera.combined);
-                    playerShip.drawBoundingBox();
-                }
                 checkLaserCollision(laserHitBox, shipHitBox, laser, playerShip);
             }
         }
@@ -679,18 +666,7 @@ if (InputManager.isMiddlePressed()){
 
     }
 
-    PlayerShip makePlayerShip(CpuShip cpuShip) {
-       if(playerShips.isEmpty()){
-           System.out.println("makePlayerShip");
-        cpuShip.setInactive(cpuShip);
-        cpuShip.getTargets().clear();
-        return new PlayerShip(cpuShip.getTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
-                cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
-                cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
-    }
-    else    { System.out.println("null");
-    return null;}
-    }
+
 
 
     void handleclickTimeout() {

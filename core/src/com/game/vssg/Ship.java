@@ -28,7 +28,6 @@ public class Ship extends Sprite {
     private int laserSpawnCounter;
     private int hp;
     private Type type;
-    private float rotation;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -82,10 +81,8 @@ public class Ship extends Sprite {
         this.laserSpawnCounter = 0;
         this.hp = hp;
         this.type = type;
-        this.rotation = getRotation();
 
     }
-int exhaustTimer = 0;
     // Determining the next position of the ship every frame.
     public void update(float delta, Ship ship, long WORLD_WIDTH, long WORLD_HEIGHT) {
 
@@ -201,6 +198,7 @@ int exhaustTimer = 0;
         // Update the bounding box's position and size to match the scaled sprite
         float hitboxOffset = 0;
         hitbox.set(ship.getX() + hitboxOffset, ship.getY() + hitboxOffset, scaledWidth, scaledHeight);
+
     }}
 
     void handleActionState(Ship ship, Texture laser2Texture, Texture greenLaserTexture, Texture redLaserTexture, Texture blueLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
@@ -506,21 +504,6 @@ int exhaustTimer = 0;
     public void setInactive(Ship ship) {
         ship.active = false;
 
-    }
-
-    public void drawBoundingBox() {
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-
-        float x = hitbox.x;
-        float y = hitbox.y;
-        float width = hitbox.width;
-        float height = hitbox.height;
-
-        shapeRenderer.rect(x, y, width, height);
-        shapeRenderer.end();
-        shapeRenderer.dispose();
     }
 
 
