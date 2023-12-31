@@ -233,7 +233,7 @@ public class VSSG implements ApplicationListener {
     void loadResources() {
 
         purpleShipTexture = new Texture("N1.png");
-        otherShipTexture = new Texture("N1.png");
+        otherShipTexture = new Texture("purple_ship.png");
         greenShipTexture = new Texture("teal_ship.png");
         greenLaserTexture = new Texture("laser_green.png");
         redLaserTexture = new Texture("laser_red.png");
