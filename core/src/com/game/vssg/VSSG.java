@@ -85,7 +85,10 @@ public class VSSG implements ApplicationListener {
     private int clickTimeout = 0;
 
     Stage stage;
-
+    enum Screen{
+        TITLE, MAIN_GAME, GAME_OVER;
+    }
+    VSSG.Screen currentScreen = VSSG.Screen.TITLE;
 
     ////////////////////////////////
 
@@ -128,6 +131,18 @@ public class VSSG implements ApplicationListener {
     @Override
     public void render() {
 
+        if(currentScreen == VSSG.Screen.TITLE){
+
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+            batch.begin();
+            font.draw(batch, "Title Screen!", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .75f);
+            font.draw(batch, "Click the circle to win.", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .5f);
+            font.draw(batch, "Press space to play.", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .25f);
+            batch.end();
+            handleMenuInput();
+        }
+        else if(currentScreen == VSSG.Screen.MAIN_GAME) {
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
@@ -167,7 +182,7 @@ public class VSSG implements ApplicationListener {
         batch.end();
         System.out.println("CURSOR_MODE = " + cursorMode);
 
-    }
+    }}
 
 
     PlayerShip makePlayerShip(CpuShip cpuShip) {
@@ -282,6 +297,14 @@ public class VSSG implements ApplicationListener {
     }
 
 
+    private void handleMenuInput() {
+        if(InputManager.isSpacePressed() || InputManager.isLeftMousePressed()) {
+            currentScreen = VSSG.Screen.MAIN_GAME;
+
+        }
+
+    }
+
     private void handleInput() {
 
         float cameraSpeed = camera.zoom * 2048;
@@ -296,6 +319,8 @@ public class VSSG implements ApplicationListener {
             for (CpuShip cpuShip : cpuShips) {
                 if (cpuShip.getHitbox().contains(position)) {
                      PlayerShip playerShip = makePlayerShip(cpuShip);
+                    playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
+                    playerShip.setRotation(cpuShip.getRotation());
                         playerShips.add(playerShip);
                 }
 
