@@ -82,6 +82,7 @@ public class VSSG implements ApplicationListener {
     private boolean shipSpawnTimeout = false;
     private int shipSpawnCounter = 0;
     private TextButton button;
+    private TextButton button2;
     private int clickTimeout = 0;
 
     Stage stage;
@@ -124,21 +125,39 @@ public class VSSG implements ApplicationListener {
                 Gdx.app.exit();
             }
         });
+
+        button2 = new TextButton("YYYYYYYYYYYYYYYYYYYYY", buttonStyle);
+        button2.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+
         stage.addActor(button);
+        stage.addActor(button2);
+
 
     }
 
     @Override
     public void render() {
+        batch.setProjectionMatrix(camera.combined);
+        float deltaTime = Gdx.graphics.getDeltaTime();
 
-        if(currentScreen == VSSG.Screen.TITLE){
+        if(currentScreen == VSSG.Screen.TITLE && button2 != null){
+            stage.act(deltaTime);
 
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+
             batch.begin();
-            font.draw(batch, "Title Screen!", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .75f);
-            font.draw(batch, "Click the circle to win.", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .5f);
-            font.draw(batch, "Press space to play.", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .25f);
+            stage.draw();
+
+            font.draw(batch, "      VSSG\n", Gdx.graphics.getWidth()*0.25f, Gdx.graphics.getHeight() * 0.75f);
+            Vector2 button2Position = new Vector2(camera.position.x, camera.position.y );
+            button2.setPosition(button2Position.x - button2.getWidth()/2, button2Position.y);
+
             batch.end();
             handleMenuInput();
         }
@@ -146,9 +165,7 @@ public class VSSG implements ApplicationListener {
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
-        batch.setProjectionMatrix(camera.combined);
         handleclickTimeout();
-        float deltaTime = Gdx.graphics.getDeltaTime();
         handleInput();
         chooseMode();
         Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y );
@@ -162,8 +179,6 @@ public class VSSG implements ApplicationListener {
                 button.setPosition(-524288, -524288);
             }
         }
-
-
 
         Iterator<PlayerShip> playerIter = playerShips.iterator();
         Iterator<CpuShip> cpuIter = cpuShips.iterator();
