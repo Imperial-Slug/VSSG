@@ -1,13 +1,9 @@
 package com.game.vssg;
 
-import static com.badlogic.gdx.graphics.g3d.particles.ParticleShader.AlignMode.Screen;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GL32;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -127,7 +123,7 @@ public class VSSG implements ApplicationListener {
         buttonStyle2.font = skin.getFont("default-font");
         buttonStyle2.fontColor = Color.RED;
 
-        button = new TextButton("PAUSED: CLICK HERE TO QUIT", buttonStyle);
+        button = new TextButton("QUIT TO DESKTOP", buttonStyle);
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -136,13 +132,11 @@ public class VSSG implements ApplicationListener {
             }
         });
 
-        quitButton2 = new TextButton("Menu", buttonStyle);
+        quitButton2 = new TextButton("QUIT TO MENU", buttonStyle);
         quitButton2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                quitButton2.setStyle(buttonStyle2);
-        currentScreen = VSSG.Screen.TITLE;
-            quitButton2.setStyle(buttonStyle);
+                currentScreen = VSSG.Screen.TITLE;
                 button.setPosition(-524288, -524288);
                 quitButton2.setPosition(-524288, -524288);
             }
@@ -155,8 +149,6 @@ public class VSSG implements ApplicationListener {
             public void clicked(InputEvent event, float x, float y) {
 
             System.out.println("Arcade");
-                button2.setStyle(buttonStyle2);
-                button2.setStyle(buttonStyle);
                 button.setPosition(-524288, -524288);
                 quitButton2.setPosition(-524288, -524288);
 
@@ -193,8 +185,6 @@ public class VSSG implements ApplicationListener {
         stage.addActor(quitButton);
         stage.addActor(quitButton2);
 
-
-
     }
 
     @Override
@@ -230,7 +220,7 @@ public class VSSG implements ApplicationListener {
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
-        handleclickTimeout();
+        handleClickTimeout();
         handleInput();
         chooseMode();
         Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y );
@@ -774,7 +764,7 @@ public class VSSG implements ApplicationListener {
 
 
 
-    void handleclickTimeout() {
+    void handleClickTimeout() {
         if (clickTimeout < 300) {
 
             clickTimeout++;

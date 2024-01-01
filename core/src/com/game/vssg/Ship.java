@@ -237,11 +237,8 @@ public class Ship extends Sprite {
                              texture2 = laser2Texture;
                         }
                         else if(ship.type == Type.FIGHTER) {
-                          
                              texture2 = greenLaserTexture;
                         }
-
-
 
                     }
                     ship.fireCounter = 0;
@@ -584,7 +581,7 @@ public class Ship extends Sprite {
 
             if (ship.targets.size > 0) {
                 //offset = range of how far off center ship will fire.
-                float offset = 1;
+                float offset = 0.75f;
                 target = ship.targets.first();
                 float targetAngle = getTargetAngle(ship, target);
                 if (ship.getActionCounter() != targetAngle) {
