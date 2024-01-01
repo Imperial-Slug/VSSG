@@ -252,7 +252,6 @@ public class VSSG implements ApplicationListener {
         laserBlast1 = Gdx.audio.newSound(Gdx.files.internal("laserblast1.wav"));
         laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
 
-
     }
 
     void relinquishControl(PlayerShip playerShip) {
