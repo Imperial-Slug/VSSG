@@ -199,8 +199,8 @@ public class VSSG implements ApplicationListener {
         Rectangle hitBox = new Rectangle();
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
-        PlayerShip playerShip = new PlayerShip(purpleCorvetteTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
-                hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.CORVETTE, 90);
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
+                hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.FIGHTER, 90);
 
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
@@ -295,22 +295,8 @@ public class VSSG implements ApplicationListener {
 
             for (CpuShip cpuShip : cpuShips) {
                 if (cpuShip.getHitbox().contains(position)) {
-
-                    if (playerShips.isEmpty()) {
-                        if(playerShips.isEmpty()){
-                            System.out.println("makePlayerShip");
-                            cpuShip.setInactive(cpuShip);
-                            cpuShip.getTargets().clear();
-                            PlayerShip playerShip = new PlayerShip(cpuShip.getTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
-                                    cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
-                                    cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
-                            playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
-                            playerShips.add(playerShip);
-                        }
-
-
-
-                    }
+                     PlayerShip playerShip = makePlayerShip(cpuShip);
+                        playerShips.add(playerShip);
                 }
 
             }
