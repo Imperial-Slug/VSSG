@@ -83,6 +83,7 @@ public class VSSG implements ApplicationListener {
     private int shipSpawnCounter = 0;
     private TextButton button;
     private TextButton button2;
+    private TextButton button3;
     private int clickTimeout = 0;
 
     Stage stage;
@@ -126,17 +127,24 @@ public class VSSG implements ApplicationListener {
             }
         });
 
-        button2 = new TextButton("YYYYYYYYYYYYYYYYYYYYY", buttonStyle);
+        button2 = new TextButton("Arcade", buttonStyle);
+
         button2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-            }
+            System.out.println("Arcade");            }
+        });
+
+        button3 = new TextButton("Sandbox", buttonStyle);
+        button3.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                currentScreen = VSSG.Screen.MAIN_GAME;            }
         });
 
         stage.addActor(button);
         stage.addActor(button2);
-
+        stage.addActor(button3);
 
     }
 
@@ -146,6 +154,8 @@ public class VSSG implements ApplicationListener {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         if(currentScreen == VSSG.Screen.TITLE && button2 != null){
+            button.setPosition(-524288, -524288);
+
             stage.act(deltaTime);
 
             Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -154,12 +164,14 @@ public class VSSG implements ApplicationListener {
             batch.begin();
             stage.draw();
 
-            font.draw(batch, "      VSSG\n", Gdx.graphics.getWidth()*0.25f, Gdx.graphics.getHeight() * 0.75f);
-            Vector2 button2Position = new Vector2(camera.position.x, camera.position.y );
+            font.draw(batch, "         VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, Gdx.graphics.getHeight() * 0.75f);
+            Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 600 );
             button2.setPosition(button2Position.x - button2.getWidth()/2, button2Position.y);
 
+            Vector2 button3Position = new Vector2(camera.position.x, camera.position.y - 900 );
+            button3.setPosition(button3Position.x - button3.getWidth()/2, button3Position.y);
+
             batch.end();
-            handleMenuInput();
         }
         else if(currentScreen == VSSG.Screen.MAIN_GAME) {
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
