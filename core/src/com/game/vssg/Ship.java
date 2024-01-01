@@ -64,7 +64,7 @@ public class Ship extends Sprite {
 
     public Ship(Texture texture, Vector2 position, float speed,
                 ActionState actionState, ActionState previousActionState,
-                Faction faction, ObjectSet<Ship> targets, int hp, Type type, float rotation) {
+                Faction faction, ObjectSet<Ship> targets, int hp, Type type) {
 
         super(texture);
         this.position = position;

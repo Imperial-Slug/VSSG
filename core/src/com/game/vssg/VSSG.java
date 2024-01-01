@@ -85,6 +85,8 @@ public class VSSG implements ApplicationListener {
     private TextButton button2;
     private TextButton button3;
     private TextButton quitButton;
+    private TextButton quitButton2;
+
 
     private int clickTimeout = 0;
 
@@ -118,36 +120,70 @@ public class VSSG implements ApplicationListener {
         skin.add("default-font", font);
 
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = skin.getFont("default-font"); // Set the font
-        buttonStyle.fontColor = Color.GREEN; // Set the font color
+        buttonStyle.font = skin.getFont("default-font");
+        buttonStyle.fontColor = Color.GREEN;
+
+        TextButton.TextButtonStyle buttonStyle2 = new TextButton.TextButtonStyle();
+        buttonStyle2.font = skin.getFont("default-font");
+        buttonStyle2.fontColor = Color.RED;
 
         button = new TextButton("PAUSED: CLICK HERE TO QUIT", buttonStyle);
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                button.setStyle(buttonStyle2);
                 Gdx.app.exit();
             }
         });
 
-        button2 = new TextButton("Arcade", buttonStyle);
+        quitButton2 = new TextButton("Menu", buttonStyle);
+        quitButton2.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                quitButton2.setStyle(buttonStyle2);
+        currentScreen = VSSG.Screen.TITLE;
+            quitButton2.setStyle(buttonStyle);
+                button.setPosition(-524288, -524288);
+                quitButton2.setPosition(-524288, -524288);
+            }
+        });
 
+
+        button2 = new TextButton("Arcade", buttonStyle);
         button2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-            System.out.println("Arcade");            }
+
+            System.out.println("Arcade");
+                button2.setStyle(buttonStyle2);
+                button2.setStyle(buttonStyle);
+                button.setPosition(-524288, -524288);
+                quitButton2.setPosition(-524288, -524288);
+
+            }
         });
 
         button3 = new TextButton("Sandbox", buttonStyle);
         button3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentScreen = VSSG.Screen.MAIN_GAME;            }
+                button3.setStyle(buttonStyle2);
+
+                currentScreen = VSSG.Screen.MAIN_GAME;
+                button3.setStyle(buttonStyle);
+                button3.setPosition(-524288, -524288);
+                button2.setPosition(-524288, -524288);
+                quitButton.setPosition(-524288, -524288);
+                Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+
+            }
         });
 
         quitButton = new TextButton("Quit", buttonStyle);
         quitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                quitButton.setStyle(buttonStyle2);
                 Gdx.app.exit();            }
         });
 
@@ -155,6 +191,8 @@ public class VSSG implements ApplicationListener {
         stage.addActor(button2);
         stage.addActor(button3);
         stage.addActor(quitButton);
+        stage.addActor(quitButton2);
+
 
 
     }
@@ -164,8 +202,9 @@ public class VSSG implements ApplicationListener {
         batch.setProjectionMatrix(camera.combined);
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        if(currentScreen == VSSG.Screen.TITLE && button2 != null){
+        if(currentScreen == VSSG.Screen.TITLE && button != null && button2 != null){
             button.setPosition(-524288, -524288);
+            quitButton2.setPosition(-524288, -524288);
             stage.act(deltaTime);
 
             Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -186,6 +225,8 @@ public class VSSG implements ApplicationListener {
             batch.end();
         }
         else if(currentScreen == VSSG.Screen.MAIN_GAME) {
+            button.setPosition(-524288, -524288);
+            quitButton2.setPosition(-524288, -524288);
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
@@ -193,14 +234,23 @@ public class VSSG implements ApplicationListener {
         handleInput();
         chooseMode();
         Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y );
+            Vector2 quitButton2Position = new Vector2(camera.position.x, camera.position.y );
 
-        if (cursorMode == CursorMode.MENU_MODE && button != null) {
-            button.setPosition(buttonPosition.x - button.getWidth()/2, buttonPosition.y);
-        }
+
+            if (cursorMode == CursorMode.MENU_MODE && button != null) {
+
+
+
+                button.setPosition(buttonPosition.x - button.getWidth()/2, buttonPosition.y);
+                quitButton2.setPosition(quitButton2Position.x - quitButton2.getWidth()/2, quitButton2Position.y + 300);
+
+            }
         // Move button off screen until it is needed.
         else {
             if (button != null) {
                 button.setPosition(-524288, -524288);
+                quitButton2.setPosition(-524288, -524288);
+
             }
         }
 
