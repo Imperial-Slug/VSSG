@@ -1,4 +1,0 @@
-#Tue Jan 02 11:44:51 EST 2024
-base.0=/home/sam/Projects/Java/VSSG/android/build/intermediates/dex/debug/mergeDexDebug/classes.dex
-path.0=classes.dex
-renamed.0=classes.dex

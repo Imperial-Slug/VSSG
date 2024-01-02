@@ -1,8 +1,0 @@
-com.game.vssg.android-pngs-0 /home/sam/Projects/Java/VSSG/android/build/generated/res/pngs/debug
-com.game.vssg.android-resValues-1 /home/sam/Projects/Java/VSSG/android/build/generated/res/resValues/debug
-com.game.vssg.android-rs-2 /home/sam/Projects/Java/VSSG/android/build/generated/res/rs/debug
-com.game.vssg.android-packageDebugResources-3 /home/sam/Projects/Java/VSSG/android/build/intermediates/incremental/debug/packageDebugResources/merged.dir
-com.game.vssg.android-packageDebugResources-4 /home/sam/Projects/Java/VSSG/android/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
-com.game.vssg.android-merged_res-5 /home/sam/Projects/Java/VSSG/android/build/intermediates/merged_res/debug
-com.game.vssg.android-android-6 /home/sam/Projects/Java/VSSG/android/res
-com.game.vssg.android-debug-7 /home/sam/Projects/Java/VSSG/android/src/debug/res
