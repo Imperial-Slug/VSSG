@@ -66,13 +66,6 @@ public class VSSG implements ApplicationListener {
     private Texture tealShipButtonTexture;
     private Texture purpleCorvetteTexture;
     private BitmapFont font;
-
-    private enum CursorMode {
-        MENU_MODE,
-        SELECTION_MODE,
-        PLAY_MODE
-    }
-
     private CursorMode cursorMode;
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -83,14 +76,19 @@ public class VSSG implements ApplicationListener {
     private TextButton button3;
     private TextButton quitButton;
     private TextButton quitButton2;
-
-
     private int clickTimeout = 0;
 
-    Stage stage;
-    enum Screen{
+    private enum CursorMode {
+        MENU_MODE,
+        SELECTION_MODE,
+        PLAY_MODE
+    }
+
+    enum Screen {
         TITLE, MAIN_GAME, GAME_OVER;
     }
+    Stage stage;
+
     VSSG.Screen currentScreen = VSSG.Screen.TITLE;
 
     ////////////////////////////////
@@ -663,7 +661,10 @@ public class VSSG implements ApplicationListener {
 
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
-            playerShip.getExhaustTexture().draw(batch);
+
+            if(playerShip.getExhaustTimer()<4) {
+                playerShip.getExhaustTexture().draw(batch);
+            }
 
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.handleActionState(playerShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
@@ -674,7 +675,11 @@ public class VSSG implements ApplicationListener {
 
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.draw(batch);
-            cpuShip.getExhaustTexture().draw(batch);
+
+            if (cpuShip.getExhaustTimer() < 4) {
+                cpuShip.getExhaustTexture().draw(batch);
+            }
+
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.handleActionState(cpuShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             for (Ship target : cpuShip.getTargets()) {

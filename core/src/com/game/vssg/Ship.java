@@ -29,6 +29,7 @@ public class Ship extends Sprite {
     private int hp;
     private Type type;
     private Sprite exhaustTexture;
+    private int exhaustTimer;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -83,6 +84,7 @@ public class Ship extends Sprite {
         this.hp = hp;
         this.type = type;
         this.exhaustTexture = exhaustTexture;
+        this.exhaustTimer = 0;
 
     }
     // Determining the next position of the ship every frame.
@@ -109,10 +111,18 @@ public class Ship extends Sprite {
                 ship.exhaustTexture.setScale(0.3f);
                 ship.exhaustTexture.setRotation(ship.getRotation());
 
+                if(this.exhaustTimer<4){
+                    exhaustTimer++;
+                }
+                else {exhaustTimer = 0;}
+
             }
 }
     }
 
+int getExhaustTimer(){
+    return this.exhaustTimer;
+}
 
     Type getType(){
 
