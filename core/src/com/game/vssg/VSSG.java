@@ -143,11 +143,18 @@ private enum GameMode {
             public void clicked(InputEvent event, float x, float y) {
                 camera.zoom = DEFAULT_ZOOM;
                 camera.update();
-
                 currentScreen = VSSG.Screen.TITLE;
-
                 button.setPosition(-524288, -524288);
                 quitButton2.setPosition(-524288, -524288);
+
+                for (PlayerShip playerShip : playerShips) {
+                    playerShip.setInactive(playerShip);
+                }
+
+                for (CpuShip cpuShip : cpuShips) {
+                    cpuShip.setInactive(cpuShip);
+                }
+
             }
         });
 
@@ -167,6 +174,15 @@ private enum GameMode {
                 quitButton.setPosition(-524288, -524288);
                 Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
                 gameMode = GameMode.ARCADE;
+
+                if (playerShips.isEmpty()){
+                    initObjects(viewportWidth, viewportHeight);
+                    initPlayerShip();
+                }
+                if(isPaused){
+                    isPaused = false;
+                }
+            create();
             }
         });
 
@@ -182,6 +198,16 @@ private enum GameMode {
                 quitButton.setPosition(-524288, -524288);
                 Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
                 gameMode = GameMode.SANDBOX;
+
+             create();
+
+                if(isPaused){
+                    isPaused = false;
+                }
+
+                Vector2 mousePosition = new Vector2(WORLD_WIDTH/2, WORLD_HEIGHT/2);
+                spawnShip(purpleShipTexture, mousePosition);
+                makePlayerShip(cpuShips.first());
             }
         });
 
