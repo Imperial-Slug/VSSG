@@ -111,7 +111,7 @@ public class Ship extends Sprite {
                 ship.exhaustTexture.setScale((0.3f));
                 ship.exhaustTexture.setRotation(ship.getRotation());
 
-                if(this.exhaustTimer<10){
+                if(this.exhaustTimer<11){
                     exhaustTimer++;
                 }
                 else {exhaustTimer = 0;}
@@ -572,14 +572,19 @@ int getExhaustTimer(){
     public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
 
         if (targetShip.faction != this.faction) {
-            float detectionRadius = 2000;
+            float detectionRadius = 1000;
 
             if ((getDifference(targetShip.getX(), this.getX())) <= detectionRadius || (getDifference(targetShip.getY(), this.getY())) <= detectionRadius) {
                 if (!targets.contains(targetShip)) {
                     targets.add(targetShip);
-                    this.setAttackMode();
                 }
 
+            }
+            else if ((getDifference(targetShip.getX(), this.getX())) > detectionRadius || (getDifference(targetShip.getY(), this.getY())) > detectionRadius) {
+                if (targets.contains(targetShip)){
+
+                    targets.remove(targetShip);
+                }
             }
         }
 
@@ -630,12 +635,15 @@ int getExhaustTimer(){
                     }
                 }
                 // If the ships are too close together, stop.
-if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
-    ship.setSpeed(0);
-}
-else {
-    ship.setSpeed(getRandomSpeed());
-}
+        if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
+        ship.setSpeed(0);
+        }
+        else    {
+        ship.setSpeed(getRandomSpeed());
+        }
+
+
+
             }
         }
     }

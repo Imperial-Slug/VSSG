@@ -135,7 +135,11 @@ public class VSSG implements ApplicationListener {
         quitButton2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                camera.zoom = DEFAULT_ZOOM;
+                camera.update();
+
                 currentScreen = VSSG.Screen.TITLE;
+
                 button.setPosition(-524288, -524288);
                 quitButton2.setPosition(-524288, -524288);
             }
@@ -426,7 +430,7 @@ public class VSSG implements ApplicationListener {
                     Laser laser = ship.fireLaser(laserTexture, ship);
                     laser.setShip(ship);
                     lasers.add(laser);
-                    laserBlast1.play(1f);
+                    laserBlast2.play(1f);
                     ship.setLaserSpawnTimeout(true);
                     ship.setLaserSpawnCounter(0);
                 }
