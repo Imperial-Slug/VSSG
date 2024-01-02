@@ -312,7 +312,7 @@ public class VSSG implements ApplicationListener {
         Rectangle hitBox = new Rectangle();
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
-        Sprite exhaust = new Sprite(exhaustTexture);
+         exhaust = new Sprite(exhaustTexture);
         PlayerShip playerShip = new PlayerShip(purpleShipTexture, exhaust, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
                 hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.FIGHTER, 90);
 
@@ -659,13 +659,13 @@ public class VSSG implements ApplicationListener {
 
 
         for (PlayerShip playerShip : playerShips) {
-            playerShip.draw(batch);
+            playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
 
             if(playerShip.getExhaustTimer()<4) {
                 playerShip.getExhaustTexture().draw(batch);
             }
+            playerShip.draw(batch);
 
-            playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.handleActionState(playerShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             camera.position.x = playerShip.getX() + playerShip.getWidth() / 2;
             camera.position.y = playerShip.getY() + playerShip.getHeight() / 2;
@@ -673,13 +673,12 @@ public class VSSG implements ApplicationListener {
 
 
         for (CpuShip cpuShip : cpuShips) {
-            cpuShip.draw(batch);
+            cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
 
             if (cpuShip.getExhaustTimer() < 4) {
                 cpuShip.getExhaustTexture().draw(batch);
             }
-
-            cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
+            cpuShip.draw(batch);
             cpuShip.handleActionState(cpuShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             for (Ship target : cpuShip.getTargets()) {
 
