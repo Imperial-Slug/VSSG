@@ -657,7 +657,6 @@ public class VSSG implements ApplicationListener {
             }
         }
 
-//////////////////
 
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
@@ -671,7 +670,7 @@ public class VSSG implements ApplicationListener {
             camera.position.x = playerShip.getX() + playerShip.getWidth() / 2;
             camera.position.y = playerShip.getY() + playerShip.getHeight() / 2;
         }
-        ///////////////////
+
 
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.draw(batch);
