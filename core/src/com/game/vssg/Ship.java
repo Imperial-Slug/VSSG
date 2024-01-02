@@ -108,10 +108,10 @@ public class Ship extends Sprite {
 
                 ship.exhaustTexture.setOrigin(333, ship.getHeight() / 2f); // Set the origin to the left-center of the exhaust texture
                 ship.exhaustTexture.setPosition(exhaustX-333, exhaustY);
-                ship.exhaustTexture.setScale(0.3f);
+                ship.exhaustTexture.setScale((0.3f));
                 ship.exhaustTexture.setRotation(ship.getRotation());
 
-                if(this.exhaustTimer<4){
+                if(this.exhaustTimer<10){
                     exhaustTimer++;
                 }
                 else {exhaustTimer = 0;}

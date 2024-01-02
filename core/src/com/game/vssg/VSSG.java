@@ -296,14 +296,11 @@ public class VSSG implements ApplicationListener {
         purpleShipButtonTexture = new Texture("purple_ship_button.png");
         tealShipButtonTexture = new Texture("teal_ship_button.png");
         purpleCorvetteTexture = new Texture("bigship.png");
-
         tealShipButton = new Sprite(tealShipButtonTexture);
         purpleShipButton = new Sprite(purpleShipButtonTexture);
-
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
         laserBlast1 = Gdx.audio.newSound(Gdx.files.internal("laserblast1.wav"));
         laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
-
     }
 
     void initPlayerShip() {
@@ -319,7 +316,6 @@ public class VSSG implements ApplicationListener {
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
         playerShips.add(playerShip);
-
     }
 
     void initObjects(float viewportWidth, float viewportHeight) {
@@ -339,11 +335,7 @@ public class VSSG implements ApplicationListener {
         lasers = new ObjectSet<>();
         purpleShipButton = new Sprite(purpleShipButtonTexture);
         tealShipButton = new Sprite(tealShipButtonTexture);
-
-
     }
-
-
 
     void relinquishControl(PlayerShip playerShip) {
 
@@ -357,8 +349,6 @@ public class VSSG implements ApplicationListener {
         playerShips.remove(playerShip);
         cpuShips.add(cpuShip);
         copiedSet.add(cpuShip);
-        //System.out.println("CURSOR_MODE = " + cursorMode);
-
     }
 
     void chooseMode() {
@@ -661,7 +651,7 @@ public class VSSG implements ApplicationListener {
         for (PlayerShip playerShip : playerShips) {
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
 
-            if(playerShip.getExhaustTimer()<4) {
+            if(playerShip.getExhaustTimer()<5) {
                 playerShip.getExhaustTexture().draw(batch);
             }
             playerShip.draw(batch);
@@ -675,7 +665,7 @@ public class VSSG implements ApplicationListener {
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
 
-            if (cpuShip.getExhaustTimer() < 4) {
+            if (cpuShip.getExhaustTimer() < 5) {
                 cpuShip.getExhaustTexture().draw(batch);
             }
             cpuShip.draw(batch);
@@ -699,14 +689,12 @@ public class VSSG implements ApplicationListener {
             }
         }
 
-
         for (Explosion explosion : explosions) {
             explosion.update(deltaTime);
 
             explosion.draw(batch);
         }
     }
-
 
     CpuShip.Faction assignFactionByTexture(Texture shipTexture) {
         CpuShip.Faction faction = null;
@@ -769,9 +757,6 @@ public class VSSG implements ApplicationListener {
 
     }
 
-
-
-
     void handleClickTimeout() {
         if (clickTimeout < 300) {
 
@@ -780,5 +765,4 @@ public class VSSG implements ApplicationListener {
             clickTimeout = 0;
         }
     }
-
 }
