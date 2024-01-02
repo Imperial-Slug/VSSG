@@ -45,7 +45,7 @@ public class VSSG implements ApplicationListener {
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
     private final int wrapDivisor = (WORLD_WIDTH / 4096);
-    private final float zoomSpeed = 0.004f;
+    private final float zoomSpeed = 0.005f;
     public static boolean isPaused = false;
 
     private Texture purpleShipTexture;
@@ -56,12 +56,13 @@ public class VSSG implements ApplicationListener {
     private Texture redLaserTexture;
     private Texture greenShipTexture;
     private Texture backgroundTexture;
-    private Texture exhaustTexture;
     private Texture laser2Texture;
     private Texture explosionTexture2;
     private Sprite tealShipButton;
+    private Sprite exhaust;
     private Sprite purpleShipButton;
     private Texture purpleShipButtonTexture;
+    private Texture exhaustTexture;
     private Texture tealShipButtonTexture;
     private Texture purpleCorvetteTexture;
     private BitmapFont font;
@@ -226,10 +227,7 @@ public class VSSG implements ApplicationListener {
         Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y );
             Vector2 quitButton2Position = new Vector2(camera.position.x, camera.position.y );
 
-
             if (cursorMode == CursorMode.MENU_MODE && button != null) {
-
-
 
                 button.setPosition(buttonPosition.x - button.getWidth()/2, buttonPosition.y);
                 quitButton2.setPosition(quitButton2Position.x - quitButton2.getWidth()/2, quitButton2Position.y + 300);
@@ -259,8 +257,6 @@ public class VSSG implements ApplicationListener {
         checkObjects(deltaTime);
         stage.draw();
         batch.end();
-        System.out.println("CURSOR_MODE = " + cursorMode);
-
     }}
 
 
@@ -269,7 +265,7 @@ public class VSSG implements ApplicationListener {
             System.out.println("makePlayerShip");
             cpuShip.setInactive(cpuShip);
             cpuShip.getTargets().clear();
-            return new PlayerShip(cpuShip.getTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
+            return new PlayerShip(cpuShip.getTexture(), cpuShip.getExhaustTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
                     cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
                     cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
         }
@@ -286,42 +282,6 @@ public class VSSG implements ApplicationListener {
 
     public void resume() {
     }
-
-    void initPlayerShip() {
-
-        Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
-        Rectangle hitBox = new Rectangle();
-        ObjectSet<Ship> targets = new ObjectSet<>();
-        int playerActionCounter = 0;
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
-                hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.FIGHTER, 90);
-
-        playerShip.setScale(shipScale);
-        playerShip.setRotation(0);
-        playerShips.add(playerShip);
-    }
-
-    void initObjects(float viewportWidth, float viewportHeight) {
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, (float) WORLD_WIDTH / 2, (float) WORLD_HEIGHT / 2);
-        camera.zoom = DEFAULT_ZOOM;
-        viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
-        stage = new Stage(viewport);
-        Gdx.input.setInputProcessor(stage);
-        // Prepare SpriteBatch and lists for keeping track of/accessing game objects.
-        batch = new SpriteBatch();
-        cpuShips = new ObjectSet<>();
-        copiedSet = new ObjectSet<>(cpuShips);
-        playerShips = new ObjectSet<>();
-        explosions = new ObjectSet<>();
-        lasers = new ObjectSet<>();
-        purpleShipButton = new Sprite(purpleShipButtonTexture);
-        tealShipButton = new Sprite(tealShipButtonTexture);
-
-
-    }
-
     void loadResources() {
 
         purpleShipTexture = new Texture("purple_ship.png");
@@ -348,9 +308,48 @@ public class VSSG implements ApplicationListener {
 
     }
 
+    void initPlayerShip() {
+
+        Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
+        Rectangle hitBox = new Rectangle();
+        ObjectSet<Ship> targets = new ObjectSet<>();
+        int playerActionCounter = 0;
+        Sprite exhaust = new Sprite(exhaustTexture);
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, exhaust, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
+                hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.FIGHTER, 90);
+
+        playerShip.setScale(shipScale);
+        playerShip.setRotation(0);
+        playerShips.add(playerShip);
+
+    }
+
+    void initObjects(float viewportWidth, float viewportHeight) {
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, (float) WORLD_WIDTH / 2, (float) WORLD_HEIGHT / 2);
+        camera.zoom = DEFAULT_ZOOM;
+        viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
+        stage = new Stage(viewport);
+        Gdx.input.setInputProcessor(stage);
+        // Prepare SpriteBatch and lists for keeping track of/accessing game objects.
+        batch = new SpriteBatch();
+        cpuShips = new ObjectSet<>();
+        copiedSet = new ObjectSet<>(cpuShips);
+        playerShips = new ObjectSet<>();
+        explosions = new ObjectSet<>();
+        lasers = new ObjectSet<>();
+        purpleShipButton = new Sprite(purpleShipButtonTexture);
+        tealShipButton = new Sprite(tealShipButtonTexture);
+
+
+    }
+
+
+
     void relinquishControl(PlayerShip playerShip) {
 
-        CpuShip cpuShip = new CpuShip(playerShip.getTexture(), playerShip.getPosition(), playerShip.getSpeed(),
+        CpuShip cpuShip = new CpuShip(playerShip.getTexture(), playerShip.getExhaustTexture(), playerShip.getPosition(), playerShip.getSpeed(),
                 Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getHitbox(), playerShip.getActionCounter(), playerShip.getFaction(),
                 playerShip.getTargets(), playerShip.getHp(), playerShip.getType(), playerShip.getRotation());
 
@@ -650,11 +649,13 @@ public class VSSG implements ApplicationListener {
             for (CpuShip cpuShip : cpuShips) {
                 Rectangle shipHitBox = cpuShip.getHitbox();
                 checkLaserCollision(laserHitBox, shipHitBox, laser, cpuShip);
+
             }
 
             for (PlayerShip playerShip : playerShips) {
                 Rectangle shipHitBox = playerShip.getHitbox();
                 checkLaserCollision(laserHitBox, shipHitBox, laser, playerShip);
+
             }
         }
 
@@ -662,6 +663,8 @@ public class VSSG implements ApplicationListener {
 
         for (PlayerShip playerShip : playerShips) {
             playerShip.draw(batch);
+            playerShip.getExhaustTexture().draw(batch);
+
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.handleActionState(playerShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             camera.position.x = playerShip.getX() + playerShip.getWidth() / 2;
@@ -671,6 +674,7 @@ public class VSSG implements ApplicationListener {
 
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.draw(batch);
+            cpuShip.getExhaustTexture().draw(batch);
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.handleActionState(cpuShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             for (Ship target : cpuShip.getTargets()) {
@@ -724,7 +728,8 @@ public class VSSG implements ApplicationListener {
             int actionCounter = 0;
             ObjectSet<Ship> targets = new ObjectSet<>();
             CpuShip.Faction faction = assignFactionByTexture(shipTexture);
-            CpuShip cpuShip = new CpuShip(shipTexture, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100, Ship.Type.FIGHTER, 90);
+            Sprite exhaust = new Sprite(exhaustTexture);
+            CpuShip cpuShip = new CpuShip(shipTexture, exhaust, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100, Ship.Type.FIGHTER, 90);
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
             cpuShip.setType(Ship.Type.FIGHTER);

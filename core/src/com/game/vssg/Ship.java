@@ -28,6 +28,7 @@ public class Ship extends Sprite {
     private int laserSpawnCounter;
     private int hp;
     private Type type;
+    private Sprite exhaustTexture;
 
     private final Vector2 position;
     private final Rectangle hitbox;
@@ -62,7 +63,7 @@ public class Ship extends Sprite {
         ATTACK
     }
 
-    public Ship(Texture texture, Vector2 position, float speed,
+    public Ship(Texture texture, Sprite exhaustTexture, Vector2 position, float speed,
                 ActionState actionState, ActionState previousActionState,
                 Faction faction, ObjectSet<Ship> targets, int hp, Type type) {
 
@@ -81,6 +82,7 @@ public class Ship extends Sprite {
         this.laserSpawnCounter = 0;
         this.hp = hp;
         this.type = type;
+        this.exhaustTexture = exhaustTexture;
 
     }
     // Determining the next position of the ship every frame.
@@ -99,10 +101,18 @@ public class Ship extends Sprite {
         }
         setPosition(position.x, position.y);
         updateHitBox(ship);
+                float exhaustX = ship.getX() + ship.getOriginX() ; // Adjust these offsets as needed
+                float exhaustY = ship.getY() - ship.getOriginY() + 64; // Adjust these offsets as needed
+
+                ship.exhaustTexture.setOrigin(333, ship.getHeight() / 2f); // Set the origin to the left-center of the exhaust texture
+                ship.exhaustTexture.setPosition(exhaustX-333, exhaustY);
+                ship.exhaustTexture.setScale(0.3f);
+                ship.exhaustTexture.setRotation(ship.getRotation());
 
             }
 }
     }
+
 
     Type getType(){
 
@@ -113,6 +123,18 @@ public class Ship extends Sprite {
         this.type = type;
 
     }
+
+
+    Sprite getExhaustTexture(){
+
+        return this.exhaustTexture;
+    }
+
+    void setExhaustTexture(Sprite exhaustTexture){
+        this.exhaustTexture = exhaustTexture;
+
+    }
+
 
     int getHp(){
         return this.hp;
