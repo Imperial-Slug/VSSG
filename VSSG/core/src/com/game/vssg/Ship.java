@@ -103,10 +103,9 @@ public class Ship extends Sprite {
         }
         setPosition(position.x, position.y);
         updateHitBox(ship);
-                float exhaustX = ship.getX() + ship.getOriginX() ; // Adjust these offsets as needed
-                float exhaustY = ship.getY() - ship.getOriginY() + 64; // Adjust these offsets as needed
-
-                ship.exhaustTexture.setOrigin(333, ship.getHeight() / 2f); // Set the origin to the left-center of the exhaust texture
+                float exhaustX = ship.getX() + ship.getOriginX() ;
+                float exhaustY = ship.getY() - ship.getOriginY() + 64;
+                ship.exhaustTexture.setOrigin(333, ship.getHeight() / 2f);
                 ship.exhaustTexture.setPosition(exhaustX-333, exhaustY);
                 ship.exhaustTexture.setScale((0.3f));
                 ship.exhaustTexture.setRotation(ship.getRotation());
@@ -203,11 +202,11 @@ int getExhaustTimer(){
         float offsetX = 0;
         float offsetY = 0;
 
-        if(ship.type==Type.FIGHTER) {
+        if(ship.type == Type.FIGHTER) {
             offsetX = -1.5f;
             offsetY = -2.25f;
         }
-        else if(ship.type==Type.CORVETTE) {
+        else if(ship.type == Type.CORVETTE) {
             offsetX = 0f;
             offsetY = -35f;
         }

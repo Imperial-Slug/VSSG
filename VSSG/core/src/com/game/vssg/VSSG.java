@@ -77,6 +77,8 @@ public class VSSG implements ApplicationListener {
     private TextButton quitButton;
     private TextButton quitButton2;
     private int clickTimeout = 0;
+    private GameMode gameMode;
+
 
     private enum CursorMode {
         MENU_MODE,
@@ -84,7 +86,13 @@ public class VSSG implements ApplicationListener {
         PLAY_MODE
     }
 
-    enum Screen {
+private enum GameMode {
+        ARCADE,
+        SANDBOX
+
+}
+
+    private enum Screen {
         TITLE, MAIN_GAME, GAME_OVER;
     }
     Stage stage;
@@ -150,11 +158,17 @@ public class VSSG implements ApplicationListener {
         button2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
             System.out.println("Arcade");
                 button.setPosition(-524288, -524288);
                 quitButton2.setPosition(-524288, -524288);
-
+                button2.setStyle(buttonStyle2);
+                currentScreen = VSSG.Screen.MAIN_GAME;
+                button2.setStyle(buttonStyle);
+                button3.setPosition(-524288, -524288);
+                button2.setPosition(-524288, -524288);
+                quitButton.setPosition(-524288, -524288);
+                Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+                gameMode = GameMode.ARCADE;
             }
         });
 
@@ -163,14 +177,13 @@ public class VSSG implements ApplicationListener {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 button3.setStyle(buttonStyle2);
-
                 currentScreen = VSSG.Screen.MAIN_GAME;
                 button3.setStyle(buttonStyle);
                 button3.setPosition(-524288, -524288);
                 button2.setPosition(-524288, -524288);
                 quitButton.setPosition(-524288, -524288);
                 Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
-
+                gameMode = GameMode.SANDBOX;
             }
         });
 
@@ -370,9 +383,7 @@ public class VSSG implements ApplicationListener {
     private void handleMenuInput() {
         if(InputManager.isSpacePressed() || InputManager.isLeftMousePressed()) {
             currentScreen = VSSG.Screen.MAIN_GAME;
-
         }
-
     }
 
     private void handleInput() {
@@ -396,7 +407,6 @@ public class VSSG implements ApplicationListener {
 
             }
         }
-
 
         if (InputManager.isAPressed()) {
             for (Ship ship : playerShips) {
@@ -424,7 +434,6 @@ public class VSSG implements ApplicationListener {
                         else if(ship.getFaction() == Ship.Faction.PURPLE) {
                             laserTexture = greenLaserTexture;
                         }
-
                     }
 
                     Laser laser = ship.fireLaser(laserTexture, ship);
@@ -438,13 +447,13 @@ public class VSSG implements ApplicationListener {
         }
 
         if (InputManager.isRightMousePressed()) {
-            float mouseX = Gdx.input.getX();
-            float mouseY = Gdx.input.getY();
-            Vector2 position = new Vector2(mouseX, mouseY);
-            spawnShip(purpleShipTexture, position);
+            if (gameMode == GameMode.SANDBOX) {
+                float mouseX = Gdx.input.getX();
+                float mouseY = Gdx.input.getY();
+                Vector2 position = new Vector2(mouseX, mouseY);
+                spawnShip(purpleShipTexture, position);
+            }
         }
-
-
         if (shipSpawnTimeout) {
             if (shipSpawnCounter >= 30) {
                 shipSpawnTimeout = false;
@@ -466,13 +475,13 @@ public class VSSG implements ApplicationListener {
         }
 
         if (InputManager.isLeftMousePressed()) {
+            if (gameMode == GameMode.SANDBOX){
             if(!isPaused) {
                 float mouseX = Gdx.input.getX();
                 float mouseY = Gdx.input.getY();
                 Vector2 position = new Vector2(mouseX, mouseY);
                 spawnShip(greenShipTexture, position);
-
-
+            }
             }
         }
 
