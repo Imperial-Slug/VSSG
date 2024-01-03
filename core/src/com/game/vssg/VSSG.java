@@ -78,6 +78,7 @@ public class VSSG implements ApplicationListener {
     private TextButton quitButton2;
     private int clickTimeout = 0;
     private GameMode gameMode;
+    private int score = 0;
 
 
     private enum CursorMode {
@@ -154,7 +155,9 @@ private enum GameMode {
                 for (CpuShip cpuShip : cpuShips) {
                     cpuShip.setInactive(cpuShip);
                 }
-
+                batch.begin();
+                font.draw(batch, "         VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f)+512);
+                batch.end();
             }
         });
 
@@ -208,6 +211,7 @@ private enum GameMode {
                 Vector2 mousePosition = new Vector2(WORLD_WIDTH/2, WORLD_HEIGHT/2);
                 spawnShip(purpleShipTexture, mousePosition);
                 makePlayerShip(cpuShips.first());
+
             }
         });
 
@@ -243,14 +247,14 @@ private enum GameMode {
             batch.begin();
             stage.draw();
 
-            font.draw(batch, "         VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f)+512);
-            Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 300 );
+            font.draw(batch, "          VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f)+512);
+            Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 200 );
             button2.setPosition(button2Position.x - button2.getWidth()/2, button2Position.y);
 
-            Vector2 button3Position = new Vector2(camera.position.x, camera.position.y - 600 );
+            Vector2 button3Position = new Vector2(camera.position.x, camera.position.y - 400 );
             button3.setPosition(button3Position.x - button3.getWidth()/2, button3Position.y);
 
-            Vector2 quitbuttonPosition = new Vector2(camera.position.x, camera.position.y - 900 );
+            Vector2 quitbuttonPosition = new Vector2(camera.position.x, camera.position.y - 600 );
             quitButton.setPosition(quitbuttonPosition.x - quitButton.getWidth()/2, quitbuttonPosition.y);
             batch.end();
         }
@@ -292,7 +296,7 @@ private enum GameMode {
 
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
-        //font.draw(batch, "Your Text Here", buttonPosition.x, buttonPosition.y);
+       // font.draw(batch, , buttonPosition.x, buttonPosition.y);
         checkObjects(deltaTime);
         stage.draw();
         batch.end();

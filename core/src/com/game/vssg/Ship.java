@@ -409,8 +409,6 @@ int getExhaustTimer(){
         } else {
             this.setSpeed(130);
         }
-
-
         return this.speed;
     }
 
