@@ -693,9 +693,9 @@ private enum GameMode {
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.draw(batch);
 
-            if(playerShip.getExhaustTimer()<5) {
+
                 playerShip.getExhaustTexture().draw(batch);
-            }
+
 
             playerShip.handleActionState(playerShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             camera.position.x = playerShip.getX() + playerShip.getWidth() / 2;
@@ -707,9 +707,9 @@ private enum GameMode {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.draw(batch);
 
-            if (cpuShip.getExhaustTimer() < 5) {
+
                 cpuShip.getExhaustTexture().draw(batch);
-            }
+
             cpuShip.handleActionState(cpuShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             for (Ship target : cpuShip.getTargets()) {
 

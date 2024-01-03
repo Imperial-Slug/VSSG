@@ -110,12 +110,11 @@ public class Ship extends Sprite {
                 ship.exhaustTexture.setScale((0.3f));
                 ship.exhaustTexture.setRotation(ship.getRotation());
 
-                if(this.exhaustTimer<11){
-                    exhaustTimer++;
-                }
-                else {exhaustTimer = 0;}
-
-            }
+                //if(this.exhaustTimer<11){
+               //     exhaustTimer++;
+              //  }
+             //    else {exhaustTimer = 0;}
+              }
 }
     }
 
