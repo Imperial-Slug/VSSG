@@ -27,7 +27,7 @@ public class Laser extends Sprite {
         active = true;
     }
 
-    public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT, Ship ship) {
+    public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT) {
         if (!isPaused) {
 
             if (active) {

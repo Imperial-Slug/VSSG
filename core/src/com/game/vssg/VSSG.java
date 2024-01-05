@@ -674,7 +674,7 @@ private enum GameMode {
         while (laserIter.hasNext()) {
 
             Laser laser = laserIter.next();
-            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getShip());
+            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT);
 
             if (!laser.isActive()) {
                 laserIter.remove();
@@ -709,7 +709,7 @@ private enum GameMode {
 
             laser.draw(batch);
             Rectangle laserHitBox = laser.getHitbox();
-            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT, laser.getShip());
+            laser.update(deltaTime, WORLD_WIDTH, WORLD_HEIGHT);
             laser.updateHitBox(laser);
 
             for (CpuShip cpuShip : cpuShips) {
