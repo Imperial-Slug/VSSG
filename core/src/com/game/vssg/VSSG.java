@@ -323,12 +323,12 @@ private enum GameMode {
 
                 healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 healthBarShapeRenderer.setColor(Color.RED);
-                healthBarShapeRenderer.rect(camera.position.x+(viewport.getScreenWidth()/2), camera.position.y+(viewport.getScreenHeight()-(viewport.getScreenHeight()/20)), playerShip.getHp()*5 ,50);
+                healthBarShapeRenderer.rect(camera.position.x+(viewport.getScreenWidth()/2)*(camera.zoom / 2), camera.position.y+((viewport.getScreenHeight()-(viewport.getScreenHeight()/20))*(camera.zoom / 2)), playerShip.getHp()*5*camera.zoom/2 ,50*camera.zoom/2);
                 healthBarShapeRenderer.end();
 
                 healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Line);
                 healthBarShapeRenderer.setColor(Color.WHITE);
-                healthBarShapeRenderer.rect(camera.position.x+(viewport.getScreenWidth()/2), camera.position.y+(viewport.getScreenHeight()-(viewport.getScreenHeight()/20)), 500 ,50);
+                healthBarShapeRenderer.rect(camera.position.x+(viewport.getScreenWidth()/2)*(camera.zoom / 2), camera.position.y+((viewport.getScreenHeight()-(viewport.getScreenHeight()/20))*(camera.zoom / 2)), 500*camera.zoom/2 ,50*camera.zoom/2);
                 healthBarShapeRenderer.end();
             }
         }}
