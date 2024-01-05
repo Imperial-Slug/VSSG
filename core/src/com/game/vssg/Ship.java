@@ -23,7 +23,7 @@ public class Ship extends Sprite {
     private int actionCounter;
     private int fireCounter;
     private ActionState previousActionState;
-    private final ObjectSet<Ship> targets;
+    private ObjectSet<Ship> targets;
     private boolean laserSpawnTimeout;
     private int laserSpawnCounter;
     private int hp;
@@ -31,9 +31,8 @@ public class Ship extends Sprite {
     private Sprite exhaustTexture;
     private int exhaustTimer;
 
-    private final Vector2 position;
-    private final Rectangle hitbox;
-    private final ShapeRenderer shapeRenderer;
+    private Vector2 position;
+    private Rectangle hitbox;
     private final float half = 0.5f;
     private final float angleCalc = 360;
 
@@ -74,7 +73,6 @@ public class Ship extends Sprite {
         this.actionState = actionState;
         this.previousActionState = previousActionState;
         this.hitbox = new Rectangle();
-        this.shapeRenderer = new ShapeRenderer();
         this.actionCounter = 0;
         this.faction = faction;
         this.targets = targets;
@@ -106,14 +104,14 @@ public class Ship extends Sprite {
                 float exhaustX = ship.getX() + ship.getOriginX() ;
                 float exhaustY = ship.getY() - ship.getOriginY() + 64;
                 ship.exhaustTexture.setOrigin(333, ship.getHeight() / 2f);
-                ship.exhaustTexture.setPosition(exhaustX-333, exhaustY);
+                ship.exhaustTexture.setPosition(exhaustX - 333, exhaustY);
                 ship.exhaustTexture.setScale((0.3f));
                 ship.exhaustTexture.setRotation(ship.getRotation());
 
-                //if(this.exhaustTimer<11){
-               //     exhaustTimer++;
-              //  }
-             //    else {exhaustTimer = 0;}
+                if(this.exhaustTimer<11){
+                    exhaustTimer++;
+                }
+                 else {exhaustTimer = 0;}
               }
 }
     }
@@ -206,9 +204,9 @@ int getExhaustTimer(){
             offsetY = -2.25f;
         }
         else if(ship.type == Type.CORVETTE) {
-            offsetX = 0f;
             offsetY = -35f;
         }
+
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX()+offsetX, ship.getY() + ship.getOriginY()+offsetY);
         Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 2048, 0, ship);
@@ -217,15 +215,12 @@ int getExhaustTimer(){
     }
 
 
-    // Update the bounding box based on the scaled sprite's position and size
     private void updateHitBox(Ship ship) {
 
         if (!isPaused) {
         float shipScale = VSSG.shipScale;
         float scaledWidth = ship.getWidth() * shipScale;
         float scaledHeight = ship.getHeight() * shipScale;
-
-        // Update the bounding box's position and size to match the scaled sprite
         hitbox.set(ship.getX(), ship.getY(), scaledWidth, scaledHeight);
 
     }}
@@ -251,7 +246,7 @@ int getExhaustTimer(){
             if (ship.actionState == ActionState.FIRE) {
                 Texture texture2 = laser2Texture;
 
-                if (ship.fireCounter <= 177) {
+                if (ship.fireCounter <= 111) {
                     ship.fireCounter++;
                 }
 
@@ -493,8 +488,8 @@ int getExhaustTimer(){
             angleDifference = 360 - angleDifference;
         }
 
-        // Calculate the amount to rotate based on rotationSpeed and deltaTime.
-        float rotateAmount = rotationSpeed * deltaTime;
+        // Calculate the amount to rotate based on rotationSpeed, distance and deltaTime.
+        float rotateAmount = (rotationSpeed * deltaTime)+2;
 
         // Determine the direction of rotation (clockwise or counterclockwise).
         if (angleDifference > rotateAmount) {
@@ -531,10 +526,6 @@ int getExhaustTimer(){
     }
 
 
-    public ShapeRenderer getShapeRenderer() {
-
-        return this.shapeRenderer;
-    }
 
     public ActionState getActionState() {
         return this.actionState;

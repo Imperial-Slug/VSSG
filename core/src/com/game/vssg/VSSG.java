@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -45,7 +46,7 @@ public class VSSG implements ApplicationListener {
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
     private final int wrapDivisor = (WORLD_WIDTH / 4096);
-    private final float zoomSpeed = 0.005f;
+    private float zoomSpeed = 0.005f;
     public static boolean isPaused = false;
 
     private Texture purpleShipTexture;
@@ -79,7 +80,12 @@ public class VSSG implements ApplicationListener {
     private int clickTimeout = 0;
     private GameMode gameMode;
     private int score = 0;
-
+    private ShapeRenderer healthBarShapeRenderer;
+    private Iterator<PlayerShip> playerIter;
+    private Iterator<CpuShip> cpuIter;
+    private Iterator<Explosion> explosionIter;
+    private Iterator<Laser> laserIter;
+    private Iterator<CpuShip> copyIter;
 
     private enum CursorMode {
         MENU_MODE,
@@ -158,9 +164,10 @@ private enum GameMode {
                 batch.begin();
                 font.draw(batch, "         VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f)+512);
                 batch.end();
+
+
             }
         });
-
 
         button2 = new TextButton("Arcade", buttonStyle);
         button2.addListener(new ClickListener() {
@@ -175,6 +182,7 @@ private enum GameMode {
                 button3.setPosition(-524288, -524288);
                 button2.setPosition(-524288, -524288);
                 quitButton.setPosition(-524288, -524288);
+                Gdx.gl.glClearColor(0, 0, 0, 1);
                 Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
                 gameMode = GameMode.ARCADE;
 
@@ -182,6 +190,7 @@ private enum GameMode {
                     initObjects(viewportWidth, viewportHeight);
                     initPlayerShip();
                 }
+
                 if(isPaused){
                     isPaused = false;
                 }
@@ -199,6 +208,7 @@ private enum GameMode {
                 button3.setPosition(-524288, -524288);
                 button2.setPosition(-524288, -524288);
                 quitButton.setPosition(-524288, -524288);
+                ScreenUtils.clear(0, 0, 0, 1);
                 Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
                 gameMode = GameMode.SANDBOX;
 
@@ -223,26 +233,30 @@ private enum GameMode {
                 Gdx.app.exit();            }
         });
 
+
+
         stage.addActor(button);
         stage.addActor(button2);
         stage.addActor(button3);
         stage.addActor(quitButton);
         stage.addActor(quitButton2);
 
+
     }
 
     @Override
     public void render() {
+        camera.update();
         batch.setProjectionMatrix(camera.combined);
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         if(currentScreen == VSSG.Screen.TITLE && button != null && button2 != null){
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+
             button.setPosition(-524288, -524288);
             quitButton2.setPosition(-524288, -524288);
             stage.act(deltaTime);
-
-            Gdx.gl.glClearColor(0, 0, 0, 1);
-            Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
 
             batch.begin();
             stage.draw();
@@ -259,11 +273,12 @@ private enum GameMode {
             batch.end();
         }
         else if(currentScreen == VSSG.Screen.MAIN_GAME) {
+            ScreenUtils.clear(0, 0, 0, 1);
+            Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
             button.setPosition(-524288, -524288);
             quitButton2.setPosition(-524288, -524288);
         // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
-        ScreenUtils.clear(0, 0, 0, 1);
-        Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+
         handleClickTimeout();
         handleInput();
         chooseMode();
@@ -285,11 +300,11 @@ private enum GameMode {
             }
         }
 
-        Iterator<PlayerShip> playerIter = playerShips.iterator();
-        Iterator<CpuShip> cpuIter = cpuShips.iterator();
-        Iterator<Explosion> explosionIter = explosions.iterator();
-        Iterator<Laser> laserIter = lasers.iterator();
-        Iterator<CpuShip> copyIter = copiedSet.iterator();
+         playerIter = playerShips.iterator();
+         cpuIter = cpuShips.iterator();
+         explosionIter = explosions.iterator();
+         laserIter = lasers.iterator();
+         copyIter = copiedSet.iterator();
 
         stage.act(deltaTime);
         checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
@@ -297,16 +312,33 @@ private enum GameMode {
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
        // font.draw(batch, , buttonPosition.x, buttonPosition.y);
-        checkObjects(deltaTime);
-        stage.draw();
-        batch.end();
-    }}
+            checkObjects(deltaTime);
+
+            stage.draw();
+
+            batch.end();
+
+            for (PlayerShip playerShip : playerShips){
+                healthBarShapeRenderer.setProjectionMatrix(camera.combined);
+
+                healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                healthBarShapeRenderer.setColor(Color.RED);
+                healthBarShapeRenderer.rect(camera.position.x+(viewport.getScreenWidth()/2), camera.position.y+(viewport.getScreenHeight()-(viewport.getScreenHeight()/20)), playerShip.getHp()*5 ,50);
+                healthBarShapeRenderer.end();
+
+                healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                healthBarShapeRenderer.setColor(Color.WHITE);
+                healthBarShapeRenderer.rect(camera.position.x+(viewport.getScreenWidth()/2), camera.position.y+(viewport.getScreenHeight()-(viewport.getScreenHeight()/20)), 500 ,50);
+                healthBarShapeRenderer.end();
+            }
+        }}
 
 
     PlayerShip makePlayerShip(CpuShip cpuShip) {
         if(playerShips.isEmpty()){
             System.out.println("makePlayerShip");
             cpuShip.setInactive(cpuShip);
+            copiedSet.remove(cpuShip);
             cpuShip.getTargets().clear();
             return new PlayerShip(cpuShip.getTexture(), cpuShip.getExhaustTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
                     cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
@@ -346,12 +378,15 @@ private enum GameMode {
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
         laserBlast1 = Gdx.audio.newSound(Gdx.files.internal("laserblast1.wav"));
         laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
+        healthBarShapeRenderer = new ShapeRenderer();
+
     }
 
     void initPlayerShip() {
 
         Vector2 vector2 = new Vector2(worldWidthCentre, worldHeightCentre);
         Rectangle hitBox = new Rectangle();
+
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
          exhaust = new Sprite(exhaustTexture);
@@ -371,8 +406,6 @@ private enum GameMode {
         viewport = new ExtendViewport(viewportWidth, viewportHeight, camera);
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
-        // Prepare SpriteBatch and lists for keeping track of/accessing game objects.
-        batch = new SpriteBatch();
         cpuShips = new ObjectSet<>();
         copiedSet = new ObjectSet<>(cpuShips);
         playerShips = new ObjectSet<>();
@@ -380,6 +413,9 @@ private enum GameMode {
         lasers = new ObjectSet<>();
         purpleShipButton = new Sprite(purpleShipButtonTexture);
         tealShipButton = new Sprite(tealShipButtonTexture);
+        batch = new SpriteBatch();
+
+
     }
 
     void relinquishControl(PlayerShip playerShip) {
@@ -660,6 +696,7 @@ private enum GameMode {
         }
     }
 
+
     public void checkObjects(float deltaTime) {
         for (Laser laser : lasers) {
 
@@ -692,9 +729,8 @@ private enum GameMode {
         for (PlayerShip playerShip : playerShips) {
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.draw(batch);
+            playerShip.getExhaustTexture().draw(batch);
 
-
-                playerShip.getExhaustTexture().draw(batch);
 
 
             playerShip.handleActionState(playerShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
@@ -706,9 +742,7 @@ private enum GameMode {
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.draw(batch);
-
-
-                cpuShip.getExhaustTexture().draw(batch);
+            cpuShip.getExhaustTexture().draw(batch);
 
             cpuShip.handleActionState(cpuShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             for (Ship target : cpuShip.getTargets()) {
@@ -735,6 +769,7 @@ private enum GameMode {
 
             explosion.draw(batch);
         }
+
     }
 
     CpuShip.Faction assignFactionByTexture(Texture shipTexture) {
@@ -765,6 +800,8 @@ private enum GameMode {
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
             cpuShip.setType(Ship.Type.FIGHTER);
+            cpuShip.setOrigin(cpuShip.getOriginX(), cpuShip.getOriginY());
+
             cpuShips.add(cpuShip);
             copiedSet.add(cpuShip);
 
@@ -777,13 +814,13 @@ private enum GameMode {
     public void dispose() {
         batch.dispose();
         backgroundTexture.dispose();
-        purpleShipTexture.dispose();
         tealShipButtonTexture.dispose();
         purpleShipButtonTexture.dispose();
         greenLaserTexture.dispose();
         blueLaserTexture.dispose();
         redLaserTexture.dispose();
         laser2Texture.dispose();
+        purpleShipTexture.dispose();
         greenShipTexture.dispose();
         explosionSound1.dispose();
         laserBlast2.dispose();
@@ -793,8 +830,10 @@ private enum GameMode {
         exhaustTexture.dispose();
         purpleCorvetteTexture.dispose();
         explosionTexture2.dispose();
+        healthBarShapeRenderer.dispose();
         stage.dispose();
         font.dispose();
+
 
     }
 

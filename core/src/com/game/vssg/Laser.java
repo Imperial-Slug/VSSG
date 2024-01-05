@@ -16,7 +16,6 @@ public class Laser extends Sprite {
     private int despawnCounter;
     private Ship ship;
 
-
     public Laser(Texture texture, float x, float y, float shipRotation, float speed, int despawnCounter, Ship ship) {
         super(texture);
         this.position = new Vector2(x, y);
@@ -43,7 +42,6 @@ public class Laser extends Sprite {
             }
         }
     }
-
 
     void updateHitBox(Laser laser) {
         float laserScale = 1f;

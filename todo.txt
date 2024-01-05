@@ -1,8 +1,7 @@
 ------------------------------------------
 ./gradlew desktop:dist
 ------------------------------------------
-- the nature of the game will be one of presenting the player with different modes - waves first, then objectives
-- less space invaders and more gravitar and open battlefields 
+- the nature of the game will be one of presenting the player with different modes - waves first will be implemented, then objectives 
 - modularity in each ship's design
 - randomization of design will be possible as well as uniformity for factions
 - human can shoose ship to control 
@@ -13,3 +12,11 @@
 - grey bar
 
 - vssg/html/webapp/index.html
+
+WORKING ON NOW:
+
+Arcade mode 
+- make some UI elements like healthbar for the controlled ship and other indicators
+- make enemy ship deaths increase player's health
+- implement secondary weapons
+- implement fast "wap wap" lasers & sound for it (make new with guitar)
