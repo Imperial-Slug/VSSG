@@ -55,7 +55,7 @@ public class VSSG implements ApplicationListener {
     private Texture otherShipTexture;
     private Texture blueLaserTexture;
     private Texture redLaserTexture;
-    private Texture greenShipTexture;
+    private Texture tealShipTexture;
     private Texture backgroundTexture;
     private Texture laser2Texture;
     private Texture explosionTexture2;
@@ -361,7 +361,7 @@ private enum GameMode {
 
         purpleShipTexture = new Texture("purple_ship.png");
         otherShipTexture = new Texture("N1.png");
-        greenShipTexture = new Texture("teal_ship.png");
+        tealShipTexture = new Texture("teal_ship.png");
         greenLaserTexture = new Texture("laser_green.png");
         redLaserTexture = new Texture("laser_red.png");
         blueLaserTexture = new Texture("laser_blue.png");
@@ -428,6 +428,7 @@ private enum GameMode {
         cpuShip.setSpeed(playerShip.getSpeed());
         playerShip.setInactive(playerShip);
         playerShips.remove(playerShip);
+        playerShip.increaseHp(100-playerShip.getHp());
         cpuShips.add(cpuShip);
         copiedSet.add(cpuShip);
     }
@@ -474,13 +475,13 @@ private enum GameMode {
 
         if (InputManager.isAPressed()) {
             for (Ship ship : playerShips) {
-                ship.rotate(+0.7f);
+                ship.rotate(+1);
             }
         }
 
         if (InputManager.isDPressed()) {
             for (Ship ship : playerShips) {
-                ship.rotate(-0.7f);
+                ship.rotate(-1);
             }
         }
 
@@ -544,12 +545,12 @@ private enum GameMode {
                 float mouseX = Gdx.input.getX();
                 float mouseY = Gdx.input.getY();
                 Vector2 position = new Vector2(mouseX, mouseY);
-                spawnShip(greenShipTexture, position);
+                spawnShip(tealShipTexture, position);
             }
             }
         }
 
-        float speedLimit = 700f;
+        float speedLimit = 600f;
         if (InputManager.isWPressed()) {
             if (!isPaused) {
                 for (PlayerShip playerShip : playerShips) {
@@ -686,12 +687,12 @@ private enum GameMode {
     void checkLaserCollision(Rectangle laserHitBox, Rectangle shipHitBox, Laser laser, Ship ship) {
         if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
             Vector2 position = new Vector2(ship.getX()+ship.getWidth()/2, laser.getY() - ship.getHeight()/2);
-            Explosion.explode(explosionTexture1, position, 300, explosions, explosionSound1, 20, 0.33f);
-            ship.decreaseHp(10);
+            Explosion.explode(explosionTexture1, position, 512, explosions, explosionSound1, 16, 0.33f);
+            ship.decreaseHp(16);
             laser.setInactive(laser);
             if (ship.getHp() <= 0) {
                 ship.setInactive(ship);
-                Explosion.explode(explosionTexture1, position, 300, explosions, explosionSound1, 100, 0.7f);
+                Explosion.explode(explosionTexture1, position, 256, explosions, explosionSound1, 128, 0.7f);
             }
         }
     }
@@ -776,7 +777,7 @@ private enum GameMode {
 
     CpuShip.Faction assignFactionByTexture(Texture shipTexture) {
         CpuShip.Faction faction = null;
-        if (shipTexture == greenShipTexture) {
+        if (shipTexture == tealShipTexture) {
             faction = CpuShip.Faction.TEAL;
         } else if (shipTexture == purpleShipTexture) {
             faction = CpuShip.Faction.PURPLE;
@@ -823,7 +824,7 @@ private enum GameMode {
         redLaserTexture.dispose();
         laser2Texture.dispose();
         purpleShipTexture.dispose();
-        greenShipTexture.dispose();
+        tealShipTexture.dispose();
         explosionSound1.dispose();
         laserBlast2.dispose();
         laserBlast1.dispose();
