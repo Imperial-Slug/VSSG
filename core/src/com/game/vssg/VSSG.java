@@ -729,8 +729,10 @@ private enum GameMode {
         for (PlayerShip playerShip : playerShips) {
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.draw(batch);
-            playerShip.getExhaustTexture().draw(batch);
 
+         //   if (playerShip.getExhaustTimer() == 10) {
+                playerShip.getExhaustTexture().draw(batch);
+          //  }
 
 
             playerShip.handleActionState(playerShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);

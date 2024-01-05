@@ -101,20 +101,23 @@ public class Ship extends Sprite {
         }
         setPosition(position.x, position.y);
         updateHitBox(ship);
-                float exhaustX = ship.getX() + ship.getOriginX() ;
-                float exhaustY = ship.getY() - ship.getOriginY() + 64;
-                ship.exhaustTexture.setOrigin(333, ship.getHeight() / 2f);
-                ship.exhaustTexture.setPosition(exhaustX - 333, exhaustY);
-                ship.exhaustTexture.setScale((0.3f));
-                ship.exhaustTexture.setRotation(ship.getRotation());
 
+
+
+            float exhaustX = ship.getX() + ship.getOriginX();
+            float exhaustY = ship.getY() - ship.getOriginY() + 64;
+            ship.exhaustTexture.setOrigin(333, ship.getHeight() / 2f);
+            ship.exhaustTexture.setPosition(exhaustX - 333, exhaustY);
+            ship.exhaustTexture.setScale((0.3f));
+            ship.exhaustTexture.setRotation(ship.getRotation());
+        }
                 if(this.exhaustTimer<11){
                     exhaustTimer++;
                 }
                  else {exhaustTimer = 0;}
               }
 }
-    }
+
 
 int getExhaustTimer(){
     return this.exhaustTimer;
