@@ -463,7 +463,7 @@ private enum GameMode {
             Vector2 position = new Vector2(unprojected.x, unprojected.y);
 
             for (CpuShip cpuShip : cpuShips) {
-                if (cpuShip.getHitbox().contains(position)) {
+                if (cpuShip.getHitbox().contains(position) && playerShips.isEmpty()) {
                      PlayerShip playerShip = makePlayerShip(cpuShip);
                     playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
                     playerShip.setRotation(cpuShip.getRotation());
@@ -489,11 +489,11 @@ private enum GameMode {
             Texture laserTexture = null;
             for (Ship ship : playerShips) {
                 if (!ship.getLaserSpawnTimeout()) {
-                    if(ship.getType()== Ship.Type.CORVETTE){
+                    if(ship.getType() == Ship.Type.CORVETTE){
                       laserTexture = laser2Texture;
                     }
                     else if(ship.getType() == Ship.Type.FIGHTER){
-                        if(ship.getFaction()== Ship.Faction.TEAL){
+                        if(ship.getFaction() == Ship.Faction.TEAL){
                             laserTexture = redLaserTexture;
                         }
                         else if(ship.getFaction() == Ship.Faction.PURPLE) {
@@ -799,7 +799,7 @@ private enum GameMode {
             ObjectSet<Ship> targets = new ObjectSet<>();
             CpuShip.Faction faction = assignFactionByTexture(shipTexture);
             Sprite exhaust = new Sprite(exhaustTexture);
-            CpuShip cpuShip = new CpuShip(shipTexture, exhaust, position, 400f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100, Ship.Type.FIGHTER, 90);
+            CpuShip cpuShip = new CpuShip(shipTexture, exhaust, position, 200f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100, Ship.Type.FIGHTER, 90);
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
             cpuShip.setType(Ship.Type.FIGHTER);
@@ -836,7 +836,6 @@ private enum GameMode {
         healthBarShapeRenderer.dispose();
         stage.dispose();
         font.dispose();
-
 
     }
 

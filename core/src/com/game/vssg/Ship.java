@@ -34,7 +34,7 @@ public class Ship extends Sprite {
     private Vector2 position;
     private Rectangle hitbox;
     private final float half = 0.5f;
-    private final float angleCalc = 360;
+    private final float threeSixty = 360;
 
 
     enum Type {
@@ -249,7 +249,7 @@ int getExhaustTimer(){
             if (ship.actionState == ActionState.FIRE) {
                 Texture texture2 = laser2Texture;
 
-                if (ship.fireCounter <= 111) {
+                if (ship.fireCounter <= 64) {
                     ship.fireCounter++;
                 }
 
@@ -283,9 +283,9 @@ int getExhaustTimer(){
 
             if (ship.getActionState() == Ship.ActionState.CRUISE) {
 
-            if (ship.getActionCounter() <= 1024) {
+            if (ship.getActionCounter() <= 512) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
-            } else if (ship.getActionCounter() > 1024) {
+            } else if (ship.getActionCounter() > 512) {
                 ship.setActionState( previousActionState, ActionState.IDLE);
                 ship.setActionCounter(0);
             }
@@ -297,10 +297,10 @@ int getExhaustTimer(){
         if (!isPaused) {
 
             if (ship.getActionState() == Ship.ActionState.LEFT_U_TURN) {
-                if (ship.getActionCounter() <= angleCalc) {
+                if (ship.getActionCounter() <= threeSixty) {
                     ship.setActionCounter(ship.getActionCounter() + 1);
                     ship.rotate(half);
-                } else if (ship.getActionCounter() > angleCalc) {
+                } else if (ship.getActionCounter() > threeSixty) {
                     ship.setActionState(previousActionState, ActionState.LEFT_U_TURN);
                     ship.setActionCounter(0);
                 }
@@ -314,10 +314,10 @@ int getExhaustTimer(){
         if (!isPaused) {
 
             if (ship.getActionState() == Ship.ActionState.RIGHT_U_TURN) {
-            if (ship.getActionCounter() <= angleCalc) {
+            if (ship.getActionCounter() <= threeSixty) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(-half);
-            } else if (ship.getActionCounter() > angleCalc) {
+            } else if (ship.getActionCounter() > threeSixty) {
                 ship.setActionState(previousActionState, ActionState.RIGHT_U_TURN);
                 ship.setActionCounter(0);
             }
@@ -328,10 +328,10 @@ int getExhaustTimer(){
         if (!isPaused) {
 
             if (ship.getActionState() == ActionState.CIRCLE) {
-            if (ship.getActionCounter() <= angleCalc * 4) {
+            if (ship.getActionCounter() <= threeSixty * 4) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(0.125f);
-            } else if (ship.getActionCounter() > angleCalc * 4) {
+            } else if (ship.getActionCounter() > threeSixty * 4) {
 
                     ship.setActionState(previousActionState, ActionState.CIRCLE);
                     ship.setActionCounter(0);
@@ -343,10 +343,10 @@ int getExhaustTimer(){
         if (!isPaused) {
 
             if (ship.getActionState() == ActionState.QUARTER_LEFT_TURN) {
-                if (ship.getActionCounter() <= angleCalc * 2) {
+                if (ship.getActionCounter() <= threeSixty * 2) {
                     ship.setActionCounter(ship.getActionCounter() + 1);
                     ship.rotate(0.25f);
-                } else if (ship.getActionCounter() > angleCalc * 2) {
+                } else if (ship.getActionCounter() > threeSixty * 2) {
                     ship.setActionState(previousActionState, ActionState.QUARTER_LEFT_TURN);
                     ship.setActionCounter(0);
                 }
@@ -358,10 +358,10 @@ int getExhaustTimer(){
         if (!isPaused) {
 
             if (ship.getActionState() == ActionState.QUARTER_RIGHT_TURN) {
-            if (ship.getActionCounter() <= angleCalc * 2) {
+            if (ship.getActionCounter() <= threeSixty * 2) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
                 ship.rotate(-0.25f);
-            } else if (ship.getActionCounter() > angleCalc * 2) {
+            } else if (ship.getActionCounter() > threeSixty * 2) {
 
                     ship.setActionState(previousActionState, ActionState.QUARTER_RIGHT_TURN);
                     ship.setActionCounter(0);
@@ -375,10 +375,10 @@ int getExhaustTimer(){
         if (!isPaused) {
 
             if (ship.getActionState() == ActionState.STOP) {
-                if (ship.getActionCounter() <= angleCalc) {
+                if (ship.getActionCounter() <= threeSixty) {
                     ship.setActionCounter(ship.getActionCounter() + 1);
                     ship.setSpeed(0);
-                } else if (ship.getActionCounter() > angleCalc) {
+                } else if (ship.getActionCounter() > threeSixty) {
                     ship.setActionState(previousActionState, ActionState.STOP);
                     ship.setSpeed(getRandomSpeed());
                     ship.setActionCounter(0);
@@ -392,19 +392,19 @@ int getExhaustTimer(){
         int randInt = rand.nextInt(10);
 
         if (randInt == 1) {
-            this.setSpeed(70);
+            this.setSpeed(64);
         } else if (randInt == 2) {
             this.setSpeed(80);
         } else if (randInt == 3) {
             this.setSpeed(90);
         } else if (randInt == 4) {
-            this.setSpeed(100);
+            this.setSpeed(105);
         } else if (randInt == 5) {
-            this.setSpeed(110);
+            this.setSpeed(115);
         } else if (randInt == 6) {
-            this.setSpeed(120);
+            this.setSpeed(128);
         } else {
-            this.setSpeed(130);
+            this.setSpeed(150);
         }
         return this.speed;
     }
@@ -488,15 +488,15 @@ int getExhaustTimer(){
         // Calculate the shortest angle difference between the current and target angles.
         float angleDifference = Math.abs(targetAngle - currentAngle);
         if (angleDifference > 180) {
-            angleDifference = 360 - angleDifference;
+            angleDifference = threeSixty - angleDifference;
         }
 
         // Calculate the amount to rotate based on rotationSpeed, distance and deltaTime.
-        float rotateAmount = (rotationSpeed * deltaTime)+2;
+        float rotateAmount = (rotationSpeed * deltaTime);
 
         // Determine the direction of rotation (clockwise or counterclockwise).
         if (angleDifference > rotateAmount) {
-            if ((targetAngle - currentAngle + 360) % 360 > 180) {
+            if ((targetAngle - currentAngle + threeSixty) % threeSixty > 180) {
                 sourceShip.rotate(-rotateAmount);
             } else {
                 sourceShip.rotate(rotateAmount);
@@ -561,7 +561,7 @@ int getExhaustTimer(){
     public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
 
         if (targetShip.faction != this.faction) {
-            float detectionRadius = 1000;
+            float detectionRadius = 1024;
 
             if ((getDifference(targetShip.getX(), this.getX())) <= detectionRadius || (getDifference(targetShip.getY(), this.getY())) <= detectionRadius) {
                 if (!targets.contains(targetShip)) {
@@ -607,7 +607,7 @@ int getExhaustTimer(){
 
             if (ship.targets.size > 0) {
                 //offset = range of how far off center ship will fire.
-                float offset = 0.99f;
+                float offset = 1;
                 target = ship.targets.first();
                 float targetAngle = getTargetAngle(ship, target);
                 if (ship.getActionCounter() != targetAngle) {
@@ -623,7 +623,7 @@ int getExhaustTimer(){
                         }
                     }
                 }
-                // If the ships are too close together, stop.
+                // If the ships are too close together while attacking, stop.
         if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
         ship.setSpeed(0);
         }
