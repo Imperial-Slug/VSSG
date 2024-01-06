@@ -86,11 +86,13 @@ public class VSSG implements ApplicationListener {
     private Iterator<Explosion> explosionIter;
     private Iterator<Laser> laserIter;
     private Iterator<CpuShip> copyIter;
+    private Wave wave;
+
 
     private enum CursorMode {
         MENU_MODE,
         SELECTION_MODE,
-        PLAY_MODE
+        PLAYER_MODE
     }
 
 private enum GameMode {
@@ -105,7 +107,6 @@ private enum GameMode {
 
     VSSG.Screen currentScreen = VSSG.Screen.TITLE;
 
-
     @Override
     public void create() {
 
@@ -114,6 +115,7 @@ private enum GameMode {
         float viewportHeight = Gdx.graphics.getHeight();
         loadResources();
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        //wave.setWaveNumber(0);
 
         initObjects(viewportWidth, viewportHeight);
         initPlayerShip();
@@ -277,7 +279,8 @@ private enum GameMode {
             Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
             button.setPosition(-524288, -524288);
             quitButton2.setPosition(-524288, -524288);
-        // System.out.println("x = "+camera.position.x+" y = "+camera.position.y);
+
+         //   if(gameMode == GameMode.ARCADE){ arcadeMode(); }
 
         handleClickTimeout();
         handleInput();
@@ -438,7 +441,7 @@ private enum GameMode {
         if (isPaused) {
             cursorMode = CursorMode.MENU_MODE;
         } else if (playerShips.notEmpty() && !isPaused) {
-            cursorMode = CursorMode.PLAY_MODE;
+            cursorMode = CursorMode.PLAYER_MODE;
         } else if (playerShips.isEmpty() && !isPaused) {
             cursorMode = CursorMode.SELECTION_MODE;
         }
@@ -469,7 +472,6 @@ private enum GameMode {
                     playerShip.setRotation(cpuShip.getRotation());
                         playerShips.add(playerShip);
                 }
-
             }
         }
 
@@ -847,4 +849,24 @@ private enum GameMode {
             clickTimeout = 0;
         }
     }
+
+
+
+  //  void arcadeMode(Wave currentWave){
+
+    //    if (cpuShips.isEmpty()) {
+      //      Wave newWave = new Wave(new ObjectSet<>(), currentWave.getWaveNumber() + 1, currentWave.getNumberOfFighters() + 2, currentWave.getWaveNumber());
+
+        //    int i = 0;
+          //  while (i < wave.getNumberOfFighters()) {
+              // CpuShip enemy = new CpuShip(tealShipTexture, );
+            //    newWave.getEnemies().add(enemy);
+
+
+           // }
+        //}
+
+    //}
+
+
 }
