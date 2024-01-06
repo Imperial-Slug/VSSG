@@ -86,7 +86,7 @@ public class VSSG implements ApplicationListener {
     private Iterator<Explosion> explosionIter;
     private Iterator<Laser> laserIter;
     private Iterator<CpuShip> copyIter;
-    private Wave wave;
+    private Wave currentWave;
 
 
     private enum CursorMode {
@@ -115,7 +115,7 @@ private enum GameMode {
         float viewportHeight = Gdx.graphics.getHeight();
         loadResources();
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        //wave.setWaveNumber(0);
+
 
         initObjects(viewportWidth, viewportHeight);
         initPlayerShip();
@@ -166,7 +166,6 @@ private enum GameMode {
                 batch.begin();
                 font.draw(batch, "         VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f)+512);
                 batch.end();
-
 
             }
         });
@@ -280,7 +279,7 @@ private enum GameMode {
             button.setPosition(-524288, -524288);
             quitButton2.setPosition(-524288, -524288);
 
-         //   if(gameMode == GameMode.ARCADE){ arcadeMode(); }
+            if(gameMode == GameMode.ARCADE){ arcadeMode(currentWave); }
 
         handleClickTimeout();
         handleInput();
@@ -382,6 +381,7 @@ private enum GameMode {
         laserBlast1 = Gdx.audio.newSound(Gdx.files.internal("laserblast1.wav"));
         laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
         healthBarShapeRenderer = new ShapeRenderer();
+        currentWave = new Wave(cpuShips, 0, 1, 0);
 
     }
 
@@ -852,21 +852,25 @@ private enum GameMode {
 
 
 
-  //  void arcadeMode(Wave currentWave){
+    void arcadeMode(Wave currentWave) {
 
-    //    if (cpuShips.isEmpty()) {
-      //      Wave newWave = new Wave(new ObjectSet<>(), currentWave.getWaveNumber() + 1, currentWave.getNumberOfFighters() + 2, currentWave.getWaveNumber());
+        if (cpuShips.isEmpty()) {
+            Wave newWave = new Wave(new ObjectSet<>(), currentWave.getWaveNumber() + 1, currentWave.getNumberOfFighters() + 2, currentWave.getWaveNumber());
 
-        //    int i = 0;
-          //  while (i < wave.getNumberOfFighters()) {
-              // CpuShip enemy = new CpuShip(tealShipTexture, );
-            //    newWave.getEnemies().add(enemy);
+            int i = 0;
+            while (i < currentWave.getNumberOfFighters()) {
+                Vector2 position = new Vector2();
+                position.x = worldWidthCentre;
+                position.y = worldHeightCentre;
+                Rectangle hitbox = new Rectangle();
+                ObjectSet<Ship> targets = new ObjectSet<>();
+               CpuShip enemy = new CpuShip(tealShipTexture, exhaust, position, 100, Ship.ActionState.IDLE, Ship.ActionState.IDLE, hitbox, 0, Ship.Faction.TEAL, targets, 100, Ship.Type.FIGHTER, 0);
+               newWave.getEnemies().add(enemy);
 
+            }
+        }
 
-           // }
-        //}
-
-    //}
+    }
 
 
 }
