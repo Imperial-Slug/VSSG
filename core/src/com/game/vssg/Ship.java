@@ -444,7 +444,10 @@ int getExhaustTimer(){
             }
 
         }
-            if (ship.targets.notEmpty()) {ship.setAttackMode();}
+            if (ship.targets.notEmpty()) { ship.setAttackMode(); }
+            if (ship.actionState == ActionState.ATTACK && ship.previousActionState == ActionState.ATTACK ){
+                ship.actionState = ActionState.IDLE;
+            }
 
         }
     }
