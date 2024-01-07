@@ -213,7 +213,7 @@ private enum GameMode {
                 Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
                 gameMode = GameMode.SANDBOX;
 
-             create();
+                 create();
 
                 if(isPaused){
                     isPaused = false;

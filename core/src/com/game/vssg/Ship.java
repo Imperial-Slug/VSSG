@@ -49,7 +49,7 @@ public class Ship extends Sprite {
     }
 
 
-    enum ActionState {
+     enum ActionState {
         PLAYER_CONTROL,
         CRUISE,
         FIRE,
