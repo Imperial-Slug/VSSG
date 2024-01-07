@@ -170,7 +170,7 @@ private enum GameMode {
             }
         });
 
-        button2 = new TextButton("Arcade", buttonStyle);
+        button2 = new TextButton("Arcade (currently unimplemented)", buttonStyle);
         button2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
