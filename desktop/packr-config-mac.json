@@ -1,0 +1,16 @@
+{
+    "platform": "mac",
+    "jdk": "/usr/lib/jvm/openjdk-17",
+    "executable": "VSSG",
+    "classpath": [
+        "build/libs/desktop-0.1-2.jar"
+    ],
+    "mainclass": "com.game.vssg.DesktopLauncher",
+    "vmargs": [
+       "Xmx1G"
+    ],
+    "resources": [
+        "build/resources/main"
+    ],
+    "output": "out-mac"
+}
