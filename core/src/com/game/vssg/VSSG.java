@@ -86,8 +86,6 @@ public class VSSG implements ApplicationListener {
     private Iterator<Explosion> explosionIter;
     private Iterator<Laser> laserIter;
     private Iterator<CpuShip> copyIter;
-    private Wave currentWave;
-
 
     private enum CursorMode {
         MENU_MODE,
@@ -279,7 +277,14 @@ private enum GameMode {
             button.setPosition(-524288, -524288);
             quitButton2.setPosition(-524288, -524288);
 
-            if(gameMode == GameMode.ARCADE){ arcadeMode(currentWave); }
+            if(gameMode == GameMode.ARCADE){
+                if(cpuShips.isEmpty()){
+                 arcadeMode();
+
+            }
+
+
+                }
 
         handleClickTimeout();
         handleInput();
@@ -381,7 +386,6 @@ private enum GameMode {
         laserBlast1 = Gdx.audio.newSound(Gdx.files.internal("laserblast1.wav"));
         laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
         healthBarShapeRenderer = new ShapeRenderer();
-        currentWave = new Wave(cpuShips, 0, 1, 0);
 
     }
 
@@ -431,7 +435,7 @@ private enum GameMode {
         cpuShip.setSpeed(playerShip.getSpeed());
         playerShip.setInactive(playerShip);
         playerShips.remove(playerShip);
-        playerShip.increaseHp(100-playerShip.getHp());
+        playerShip.increaseHp(100 - playerShip.getHp());
         cpuShips.add(cpuShip);
         copiedSet.add(cpuShip);
     }
@@ -852,23 +856,31 @@ private enum GameMode {
 
 
 
-    void arcadeMode(Wave currentWave) {
+    void arcadeMode() {
 
         if (cpuShips.isEmpty()) {
-            Wave newWave = new Wave(new ObjectSet<>(), currentWave.getWaveNumber() + 1, currentWave.getNumberOfFighters() + 2, currentWave.getWaveNumber());
 
             int i = 0;
-            while (i < currentWave.getNumberOfFighters()) {
+            while (i < 2) {
                 Vector2 position = new Vector2();
                 position.x = worldWidthCentre;
                 position.y = worldHeightCentre;
                 Rectangle hitbox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
                CpuShip enemy = new CpuShip(tealShipTexture, exhaust, position, 100, Ship.ActionState.IDLE, Ship.ActionState.IDLE, hitbox, 0, Ship.Faction.TEAL, targets, 100, Ship.Type.FIGHTER, 0);
-               newWave.getEnemies().add(enemy);
+                enemy.setPosition(position.x, position.y);
+                enemy.setScale(shipScale);
+                enemy.setType(Ship.Type.FIGHTER);
+                enemy.setOrigin(enemy.getOriginX(), enemy.getOriginY());
 
+                cpuShips.add(enemy);
+                copiedSet.add(enemy);
+
+                i++;
             }
+           // return newWave;
         }
+      //  else return null;
 
     }
 

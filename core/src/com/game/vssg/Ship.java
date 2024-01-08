@@ -631,10 +631,6 @@ int getExhaustTimer(){
         if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
         ship.setSpeed(0);
         }
-
-
-
-
             }
         }
     }
@@ -643,6 +639,4 @@ int getExhaustTimer(){
 
         return this.targets;
     }
-
-
 }
