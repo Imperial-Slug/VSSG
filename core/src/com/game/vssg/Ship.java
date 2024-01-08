@@ -286,7 +286,7 @@ int getExhaustTimer(){
             if (ship.getActionCounter() <= 512) {
                 ship.setActionCounter(ship.getActionCounter() + 1);
             } else if (ship.getActionCounter() > 512) {
-                ship.setActionState( previousActionState, ActionState.IDLE);
+                ship.setActionState( previousActionState, ship.actionState);
                 ship.setActionCounter(0);
             }
         }
@@ -596,7 +596,7 @@ int getExhaustTimer(){
             ship.seekDestroy(ship);
 
             if (ship.targets.isEmpty()){
-                ship.setActionState(ActionState.IDLE, ActionState.ATTACK);
+                ship.setActionState(ActionState.IDLE, actionState);
             }
         }
 
@@ -622,8 +622,9 @@ int getExhaustTimer(){
 
                         if (target.active) {
                             ship.setActionCounter(0);
-                            ship.setActionState(ActionState.FIRE, ActionState.ATTACK);
+                            ship.setActionState(ActionState.FIRE, previousActionState);
                         }
+                        else { ship.setActionState(ActionState.IDLE, ActionState.FIRE);  }
                     }
                 }
                 // If the ships are too close together while attacking, stop.
