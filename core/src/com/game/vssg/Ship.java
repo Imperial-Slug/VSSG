@@ -564,7 +564,7 @@ int getExhaustTimer(){
     public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
 
         if (targetShip.faction != this.faction) {
-            float detectionRadius = 1024;
+            float detectionRadius = 1500;
 
             if ((getDifference(targetShip.getX(), this.getX())) <= detectionRadius || (getDifference(targetShip.getY(), this.getY())) <= detectionRadius) {
                 if (!targets.contains(targetShip)) {
@@ -595,9 +595,7 @@ int getExhaustTimer(){
             // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
             ship.seekDestroy(ship);
 
-            if (ship.targets.isEmpty()){
-                ship.setActionState(ActionState.IDLE, actionState);
-            }
+
         }
 
     }

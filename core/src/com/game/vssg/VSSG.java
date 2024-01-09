@@ -694,11 +694,19 @@ private enum GameMode {
         if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
             Vector2 position = new Vector2(ship.getX()+ship.getWidth()/2, laser.getY() - ship.getHeight()/2);
             Explosion.explode(explosionTexture1, position, 512, explosions, explosionSound1, 16, 0.33f);
-            ship.decreaseHp(16);
+
+            if(ship.getActionState() == Ship.ActionState.PLAYER_CONTROL){
+            ship.decreaseHp(12);
+
+            }
+
+            else { ship.decreaseHp(25); }
+
+
             laser.setInactive(laser);
             if (ship.getHp() <= 0) {
                 ship.setInactive(ship);
-                Explosion.explode(explosionTexture1, position, 256, explosions, explosionSound1, 128, 0.7f);
+                Explosion.explode(explosionTexture1, position, 400, explosions, explosionSound1, 128, 0.7f);
             }
         }
     }
