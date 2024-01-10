@@ -249,7 +249,7 @@ int getExhaustTimer(){
             if (ship.actionState == ActionState.FIRE) {
                 Texture texture2 = laser2Texture;
 
-                if (ship.fireCounter <= 64) {
+                if (ship.fireCounter <= 100) {
                     ship.fireCounter++;
                 }
 
@@ -595,7 +595,6 @@ int getExhaustTimer(){
             // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
             ship.seekDestroy(ship);
 
-
         }
 
     }
@@ -628,23 +627,19 @@ int getExhaustTimer(){
                 // If the ships are too close together while attacking, stop.
         if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
 
-
-
         ship.setSpeed(0);
         }
 
         for (Ship ship2 : ship.targets) {
-            if (getDifference(getDifference(ship.getX(), ship2.getX()), getDifference(ship.getX(), target.getX()))>900 ||
-                    getDifference(getDifference(ship.getY(), ship2.getY()), getDifference(ship.getY(), target.getY()))>900) {
+            if (getDifference(getDifference(ship.getX(), ship2.getX()), getDifference(ship.getX(), target.getX())) > 500 ||
+                    getDifference(getDifference(ship.getY(), ship2.getY()), getDifference(ship.getY(), target.getY())) > 500) {
 
                 ship.targets.remove(ship.targets.first());
                 ship.targets.remove(target);
                 ship.targets.add(target);
 
-
             }
         }
-
             }
         }
     }
