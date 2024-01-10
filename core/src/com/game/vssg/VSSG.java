@@ -744,23 +744,17 @@ private enum GameMode {
         for (PlayerShip playerShip : playerShips) {
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.draw(batch);
-
-         //   if (playerShip.getExhaustTimer() == 10) {
-                playerShip.getExhaustTexture().draw(batch);
-          //  }
-
-
+            playerShip.getExhaustTexture().draw(batch);
             playerShip.handleActionState(playerShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             camera.position.x = playerShip.getX() + playerShip.getWidth() / 2;
             camera.position.y = playerShip.getY() + playerShip.getHeight() / 2;
         }
 
-
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.draw(batch);
-            cpuShip.getExhaustTexture().draw(batch);
 
+            cpuShip.getExhaustTexture().draw(batch);
             cpuShip.handleActionState(cpuShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             for (Ship target : cpuShip.getTargets()) {
 
@@ -862,8 +856,6 @@ private enum GameMode {
         }
     }
 
-
-
     void arcadeMode() {
 
         if (cpuShips.isEmpty()) {
@@ -875,7 +867,10 @@ private enum GameMode {
                 position.y = worldHeightCentre;
                 Rectangle hitbox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
-               CpuShip enemy = new CpuShip(tealShipTexture, exhaust, position, 100, Ship.ActionState.IDLE, Ship.ActionState.IDLE, hitbox, 0, Ship.Faction.TEAL, targets, 100, Ship.Type.FIGHTER, 0);
+
+                CpuShip enemy = new CpuShip(tealShipTexture, exhaust, position, 100, Ship.ActionState.IDLE, Ship.ActionState.IDLE, hitbox,
+                        0, Ship.Faction.TEAL, targets, 100, Ship.Type.FIGHTER, 0);
+
                 enemy.setPosition(position.x, position.y);
                 enemy.setScale(shipScale);
                 enemy.setType(Ship.Type.FIGHTER);
@@ -883,7 +878,6 @@ private enum GameMode {
 
                 cpuShips.add(enemy);
                 copiedSet.add(enemy);
-
                 i++;
             }
            // return newWave;

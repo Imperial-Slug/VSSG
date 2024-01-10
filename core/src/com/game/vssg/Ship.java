@@ -111,10 +111,10 @@ public class Ship extends Sprite {
             ship.exhaustTexture.setScale((0.3f));
             ship.exhaustTexture.setRotation(ship.getRotation());
         }
-                if(this.exhaustTimer<11){
-                    exhaustTimer++;
+                if(this.exhaustTimer < 11){
+                    this.exhaustTimer++;
                 }
-                 else {exhaustTimer = 0;}
+                 else { this.exhaustTimer = 0; }
               }
 }
 
@@ -627,8 +627,24 @@ int getExhaustTimer(){
                 }
                 // If the ships are too close together while attacking, stop.
         if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
+
+
+
         ship.setSpeed(0);
         }
+
+        for (Ship ship2 : ship.targets) {
+            if (getDifference(getDifference(ship.getX(), ship2.getX()), getDifference(ship.getX(), target.getX()))>900 ||
+                    getDifference(getDifference(ship.getY(), ship2.getY()), getDifference(ship.getY(), target.getY()))>900) {
+
+                ship.targets.remove(ship.targets.first());
+                ship.targets.remove(target);
+                ship.targets.add(target);
+
+
+            }
+        }
+
             }
         }
     }
