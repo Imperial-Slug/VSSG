@@ -880,9 +880,7 @@ private enum GameMode {
                 copiedSet.add(enemy);
                 i++;
             }
-           // return newWave;
         }
-      //  else return null;
 
     }
 

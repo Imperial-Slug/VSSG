@@ -1,0 +1,22 @@
+LMB = spawn teal team ship
+
+RMB = spawn purple team ship
+
+C = relinquish control of current ship
+
+Middle mouse = take control of new ship (when no ships are controlled)
+
+Space = fire
+
+Esc = pause
+
+Q/E = zoom in/out
+
+A, D = left and right turn
+
+W, S = Accelerate/decelerate
+
+Point and click to spawn enemies and friendlies in Sandbox mode.
+Shoot for points against waves of enemies in Arcade mode. (currently unimplemented)
+
+
