@@ -703,7 +703,7 @@ private enum GameMode {
 
             }
 
-            else { ship.decreaseHp(25); }
+            else { ship.decreaseHp(50); }
 
 
             laser.setInactive(laser);
