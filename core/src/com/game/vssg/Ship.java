@@ -198,7 +198,7 @@ int getExhaustTimer(){
     }
 
 
-    public Laser fireLaser(Texture texture, Ship ship) {
+    public Laser fireLaser(Texture laserTexture, Ship ship) {
         float offsetX = 0;
         float offsetY = 0;
 
@@ -212,7 +212,7 @@ int getExhaustTimer(){
 
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX()+offsetX, ship.getY() + ship.getOriginY()+offsetY);
-        Laser laser = new Laser(texture, laserPosition.x, laserPosition.y, ship.getRotation(), 2048, 0, ship);
+        Laser laser = new Laser(laserTexture, laserPosition.x, laserPosition.y, ship.getRotation(), 2500, 0, ship);
         laser.setOrigin(0, laser.getOriginY());
         return laser;
     }
