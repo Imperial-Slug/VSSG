@@ -48,6 +48,7 @@ public class VSSG implements ApplicationListener {
     private final int wrapDivisor = (WORLD_WIDTH / 4096);
     private float zoomSpeed = 0.005f;
     public static boolean isPaused = false;
+    private int waveNumber = 1;
 
     private Texture purpleShipTexture;
     private Texture greenLaserTexture;
@@ -148,6 +149,7 @@ private enum GameMode {
         quitButton2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
                 camera.zoom = DEFAULT_ZOOM;
                 camera.update();
                 currentScreen = VSSG.Screen.TITLE;
@@ -255,12 +257,16 @@ private enum GameMode {
 
             button.setPosition(-524288, -524288);
             quitButton2.setPosition(-524288, -524288);
+            button2.setVisible(true);
+            button3.setVisible(true);
+            quitButton.setVisible(true);
             stage.act(deltaTime);
 
             batch.begin();
-            stage.draw();
 
             font.draw(batch, "          VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f)+512);
+            stage.draw();
+
             Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 200 );
             button2.setPosition(button2Position.x - button2.getWidth()/2, button2Position.y);
 
@@ -274,8 +280,9 @@ private enum GameMode {
         else if(currentScreen == VSSG.Screen.MAIN_GAME) {
             ScreenUtils.clear(0, 0, 0, 1);
             Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
-            button.setPosition(-524288, -524288);
-            quitButton2.setPosition(-524288, -524288);
+            button2.setVisible(false);
+            button3.setVisible(false);
+            quitButton.setVisible(false);
 
             if(gameMode == GameMode.ARCADE){
                 if(cpuShips.isEmpty()){
@@ -297,13 +304,17 @@ private enum GameMode {
 
                 button.setPosition(buttonPosition.x - button.getWidth()/2, buttonPosition.y);
                 quitButton2.setPosition(quitButton2Position.x - quitButton2.getWidth()/2, quitButton2Position.y + 300);
+                button.setVisible(true);
+                quitButton2.setVisible(true);
 
             }
         // Move button off screen until it is needed.
         else {
             if (button != null) {
                 button.setPosition(-524288, -524288);
+                button.setVisible(false);
                 quitButton2.setPosition(-524288, -524288);
+                quitButton2.setVisible(false);
 
             }
         }
@@ -449,13 +460,6 @@ private enum GameMode {
             cursorMode = CursorMode.PLAYER_MODE;
         } else if (playerShips.isEmpty() && !isPaused) {
             cursorMode = CursorMode.SELECTION_MODE;
-        }
-    }
-
-
-    private void handleMenuInput() {
-        if(InputManager.isSpacePressed() || InputManager.isLeftMousePressed()) {
-            currentScreen = VSSG.Screen.MAIN_GAME;
         }
     }
 
@@ -627,19 +631,18 @@ private enum GameMode {
         isPaused = !isPaused;
     }
 
-    /////////////////////////////////
+
     private void zoomIn() {
         camera.zoom -= zoomSpeed * camera.zoom;
         camera.update();
     }
 
-    // Method to zoom out
     private void zoomOut() {
         camera.zoom += zoomSpeed * camera.zoom;
         camera.update();
     }
 
-    /////////////////////////////////
+
     public void checkIterators(Iterator<PlayerShip> playerIter, Iterator<Explosion> explosionIter, Iterator<CpuShip> cpuIter, Iterator<CpuShip> copyIter, Iterator<Laser> laserIter, float deltaTime) {
         while (playerIter.hasNext()) {
 
@@ -862,9 +865,9 @@ private enum GameMode {
     void arcadeModeRefill() {
 
         if (cpuShips.isEmpty()) {
-
+            waveNumber++;
             int i = 1;
-            while (i < 5) {
+            while (i < waveNumber) {
                 Vector2 position = new Vector2();
                 position.x = worldWidthCentre+(i*300);
                 position.y = worldHeightCentre+(i*1000);
