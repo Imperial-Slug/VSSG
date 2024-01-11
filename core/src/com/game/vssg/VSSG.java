@@ -279,7 +279,8 @@ private enum GameMode {
 
             if(gameMode == GameMode.ARCADE){
                 if(cpuShips.isEmpty()){
-                 arcadeMode();
+
+                 arcadeModeRefill();
 
             }
 
@@ -526,7 +527,7 @@ private enum GameMode {
             }
         }
         if (shipSpawnTimeout) {
-            if (shipSpawnCounter >= 30) {
+            if (shipSpawnCounter >= 20) {
                 shipSpawnTimeout = false;
             } else {
                 shipSpawnCounter++;
@@ -536,7 +537,7 @@ private enum GameMode {
 // For player ship only during runtime. CpuShip laser timing is handled differently.
         if (!playerShips.isEmpty()) {
             if (playerShips.first().getLaserSpawnTimeout()) {
-                if (playerShips.first().getLaserSpawnCounter() >= 50) {
+                if (playerShips.first().getLaserSpawnCounter() >= 20) {
 
                     playerShips.first().setLaserSpawnTimeout(false);
                 } else {
@@ -599,23 +600,25 @@ private enum GameMode {
         }
 
         if (InputManager.isQPressed()) {
-           System.out.println(camera.zoom);
+            if(!isPaused){
             if (camera.zoom > 0.2f) {
                 zoomIn();
-            }
+            }}
         }
 
         if (InputManager.isEPressed()) {
+            if(!isPaused){
             if (camera.zoom < 23) {
                 zoomOut();
-            }
+            }}
         }
 
 
         if (InputManager.isCPressed()) {
+            if (!isPaused){
             if (!playerShips.isEmpty()) {
                 relinquishControl(playerShips.first());
-            }
+            }}
 
         }
     }
@@ -856,15 +859,15 @@ private enum GameMode {
         }
     }
 
-    void arcadeMode() {
+    void arcadeModeRefill() {
 
         if (cpuShips.isEmpty()) {
 
-            int i = 0;
-            while (i < 2) {
+            int i = 1;
+            while (i < 5) {
                 Vector2 position = new Vector2();
-                position.x = worldWidthCentre;
-                position.y = worldHeightCentre;
+                position.x = worldWidthCentre+(i*300);
+                position.y = worldHeightCentre+(i*1000);
                 Rectangle hitbox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
 
@@ -880,6 +883,7 @@ private enum GameMode {
                 copiedSet.add(enemy);
                 i++;
             }
+
         }
 
     }
