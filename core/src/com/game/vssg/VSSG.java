@@ -308,7 +308,6 @@ private enum GameMode {
                 quitButton2.setVisible(true);
 
             }
-        // Move button off screen until it is needed.
         else {
             if (button != null) {
                 button.setPosition(-524288, -524288);
@@ -468,6 +467,7 @@ private enum GameMode {
         float cameraSpeed = camera.zoom * 2048;
 
         if (InputManager.isMiddlePressed()){
+            if(gameMode!=GameMode.ARCADE){
             float mouseX = Gdx.input.getX();
             float mouseY = Gdx.input.getY();
             Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
@@ -480,7 +480,7 @@ private enum GameMode {
                     playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
                     playerShip.setRotation(cpuShip.getRotation());
                         playerShips.add(playerShip);
-                }
+                }}
             }
         }
 
@@ -702,7 +702,7 @@ private enum GameMode {
             Explosion.explode(explosionTexture1, position, 512, explosions, explosionSound1, 16, 0.33f);
 
             if(ship.getActionState() == Ship.ActionState.PLAYER_CONTROL){
-            ship.decreaseHp(12);
+            ship.decreaseHp(5);
 
             }
 
@@ -869,7 +869,7 @@ private enum GameMode {
             int i = 1;
             while (i < waveNumber) {
                 Vector2 position = new Vector2();
-                position.x = worldWidthCentre+(i*300);
+                position.x = worldWidthCentre+(i*200);
                 position.y = worldHeightCentre+(i*1000);
                 Rectangle hitbox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
