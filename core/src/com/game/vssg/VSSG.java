@@ -777,8 +777,9 @@ private enum GameMode {
             }
 
             for (CpuShip cpuShip2 : copiedSet) {
+                if(cpuShip2!=null){
                 cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
-            }
+            }}
         }
 
         for (Explosion explosion : explosions) {
@@ -869,8 +870,8 @@ private enum GameMode {
             int i = 1;
             while (i < waveNumber) {
                 Vector2 position = new Vector2();
-                position.x = worldWidthCentre+(i*200);
-                position.y = worldHeightCentre+(i*1000);
+                position.x = worldWidthCentre+(i*1000);
+                position.y = worldHeightCentre+(2000);
                 Rectangle hitbox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
 

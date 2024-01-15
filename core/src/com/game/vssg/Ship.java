@@ -631,6 +631,7 @@ int getExhaustTimer(){
         }
 
         for (Ship ship2 : ship.targets) {
+            if(ship2!=null){
             if (getDifference(getDifference(ship.getX(), ship2.getX()), getDifference(ship.getX(), target.getX())) > 500 ||
                     getDifference(getDifference(ship.getY(), ship2.getY()), getDifference(ship.getY(), target.getY())) > 500) {
 
@@ -638,7 +639,7 @@ int getExhaustTimer(){
                 ship.targets.remove(target);
                 ship.targets.add(target);
 
-            }
+            }}
         }
             }
         }
