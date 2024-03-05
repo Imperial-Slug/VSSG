@@ -11,7 +11,7 @@ public class CpuShip extends Ship {
 
 
     public CpuShip(Texture texture, Sprite exhaustTexture, Vector2 position, float speed, ActionState actionState,
-                   ActionState previousActionState, Rectangle hitbox, int actionCounter, Faction faction,
+                   ActionState previousActionState, Faction faction,
                    ObjectSet<Ship> targets, int hp, Type type, float rotation) {
         super(texture, exhaustTexture, position, speed, actionState, previousActionState, faction, targets, hp, type);
         this.setActionState(actionState, previousActionState);
