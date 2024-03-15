@@ -96,9 +96,16 @@ public class Ship extends Sprite {
         position.add(velocity.x * delta, velocity.y * delta);
 
         // Check if the ship is out of screen bounds and deactivate it if necessary
-        if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
+        /*if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
             active = false;
+        }*/
+        if (position.x > WORLD_WIDTH) {
+            position.x = 0;
         }
+        if (position.y > WORLD_WIDTH) {
+            position.y = 0;
+        }
+
         setPosition(position.x, position.y);
         updateHitBox(ship);
 
@@ -256,7 +263,7 @@ int getExhaustTimer(){
                 else {
 
                     if (ship.faction == Ship.Faction.TEAL) {
-                      
+
                          texture2 = redLaserTexture;
 
                     } else if (ship.faction == Ship.Faction.PURPLE) {
