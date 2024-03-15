@@ -102,6 +102,12 @@ public class Ship extends Sprite {
         if (position.x > WORLD_WIDTH) {
             position.x = 0;
         }
+
+        if (position.x < 0) {
+            position.x = WORLD_WIDTH - 50;
+        }
+
+
         if (position.y > WORLD_WIDTH) {
             position.y = 0;
         }
