@@ -359,7 +359,7 @@ private enum GameMode {
             copiedSet.remove(cpuShip);
             cpuShip.getTargets().clear();
             return new PlayerShip(cpuShip.getTexture(), cpuShip.getExhaustTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
-                    cpuShip.getActionState(), cpuShip.getFaction(), cpuShip.getTargets(),
+                    cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
                     cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
         }
         else    { System.out.println("null");
@@ -408,8 +408,8 @@ private enum GameMode {
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
          exhaust = new Sprite(exhaustTexture);
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, exhaust, vector2, 40, Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL,
-                Ship.Faction.PURPLE, targets, 100, Ship.Type.FIGHTER, 90);
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, exhaust, vector2, 40, Ship.ActionState.PLAYER_CONTROL,
+                Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.FIGHTER, 90);
 
         playerShip.setScale(shipScale);
         playerShip.setRotation(0);
@@ -439,7 +439,7 @@ private enum GameMode {
     void relinquishControl(PlayerShip playerShip) {
 
         CpuShip cpuShip = new CpuShip(playerShip.getTexture(), playerShip.getExhaustTexture(), playerShip.getPosition(), playerShip.getSpeed(),
-                Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getFaction(),
+                Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getHitbox(), playerShip.getActionCounter(), playerShip.getFaction(),
                 playerShip.getTargets(), playerShip.getHp(), playerShip.getType(), playerShip.getRotation());
 
         cpuShip.setRotation(playerShip.getRotation());
@@ -814,7 +814,7 @@ private enum GameMode {
             ObjectSet<Ship> targets = new ObjectSet<>();
             CpuShip.Faction faction = assignFactionByTexture(shipTexture);
             Sprite exhaust = new Sprite(exhaustTexture);
-            CpuShip cpuShip = new CpuShip(shipTexture, exhaust, position, 200f, actionState, Ship.ActionState.IDLE, faction, targets, 100, Ship.Type.FIGHTER, 90);
+            CpuShip cpuShip = new CpuShip(shipTexture, exhaust, position, 200f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100, Ship.Type.FIGHTER, 90);
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
             cpuShip.setType(Ship.Type.FIGHTER);
@@ -875,8 +875,8 @@ private enum GameMode {
                 Rectangle hitbox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
 
-                CpuShip enemy = new CpuShip(tealShipTexture, exhaust, position, 100, Ship.ActionState.IDLE, Ship.ActionState.IDLE,
-                        Ship.Faction.TEAL, targets, 100, Ship.Type.FIGHTER, 0);
+                CpuShip enemy = new CpuShip(tealShipTexture, exhaust, position, 100, Ship.ActionState.IDLE, Ship.ActionState.IDLE, hitbox,
+                        0, Ship.Faction.TEAL, targets, 100, Ship.Type.FIGHTER, 0);
 
                 enemy.setPosition(position.x, position.y);
                 enemy.setScale(shipScale);
