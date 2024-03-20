@@ -40,7 +40,7 @@ public class Explosion extends Sprite {
                 Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
                 position.add(velocity.x * delta, velocity.y * delta);
 
-                // Controls when the explosion dissapears.
+                // Controls when the explosion disappears.
                 if (durationCounter <= duration) {
                     durationCounter++;
                 } else {
@@ -65,22 +65,17 @@ public class Explosion extends Sprite {
             }
         }
     }
-// Adds an explosion to the explosions ObjectSet<Explosion> list.
-    public void spawnExplosion(Explosion explosion, ObjectSet<Explosion> explosions) {
-if(!isPaused){
 
-        explosion.setOrigin(0, explosion.getHeight() / 2f);
 
-        explosions.add(explosion);
-}
-    }
-    public static void explode(Texture explosionTexture1, Vector2 position, float speed, ObjectSet<Explosion> explosions, Sound explosionSound, float duration, float magnitude) {
+    public static void explode(Texture explosionTexture1, Vector2 position, float speed, ObjectSet<Explosion> explosions,
+                               Sound explosionSound, float duration, float magnitude) {
 
         Explosion explosion = new Explosion(explosionTexture1, position, speed, duration);
         explosion.setOrigin(explosion.getWidth() / 2, explosion.getHeight() / 2f);
         explosion.setRotation(explosion.getRandomSpeed());
         explosion.setSpeed(explosion.getRandomSpeed());
-        explosion.spawnExplosion(explosion, explosions);
+        explosion.setOrigin(0, explosion.getHeight() / 2f);
+        explosions.add(explosion);
         explosionSound.play(0.04f);
         explosion.setScale(magnitude);
     }
