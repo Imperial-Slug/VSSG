@@ -259,22 +259,9 @@ private enum GameMode {
         handleClickTimeout();
         handleInput();
         chooseMode();
-        Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y );
-            Vector2 quitButton2Position = new Vector2(camera.position.x, camera.position.y );
+      setButtonPositions();
 
-            if (cursorMode == CursorMode.MENU_MODE && button != null) {
 
-              populateMenu(buttonPosition, quitButton2Position);
-            }
-        else {
-            if (button != null) {
-                button.setPosition(-524288, -524288);
-                button.setVisible(false);
-                quitButton2.setPosition(-524288, -524288);
-                quitButton2.setVisible(false);
-
-            }
-        }
 
          playerIter = playerShips.iterator();
          cpuIter = cpuShips.iterator();
@@ -307,6 +294,23 @@ private enum GameMode {
             }
         }}
 
+    void setButtonPositions() {
+
+        Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y );
+        Vector2 quitButton2Position = new Vector2(camera.position.x, camera.position.y );
+        if (cursorMode == CursorMode.MENU_MODE && button != null) {
+            populateMenu(buttonPosition, quitButton2Position);
+        }
+        else {
+            if (button != null) {
+                button.setPosition(-524288, -524288);
+                button.setVisible(false);
+                quitButton2.setPosition(-524288, -524288);
+                quitButton2.setVisible(false);
+
+            }
+        }
+    }
     void populateMenu(Vector2 buttonPosition, Vector2 quitButton2Position) {
         button.setPosition(buttonPosition.x - button.getWidth()/2, buttonPosition.y);
         quitButton2.setPosition(quitButton2Position.x - quitButton2.getWidth()/2, quitButton2Position.y + 300);
