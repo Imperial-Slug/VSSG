@@ -1,15 +1,11 @@
 package com.game.vssg;
 
-import static com.game.vssg.VSSG.WORLD_HEIGHT;
-import static com.game.vssg.VSSG.WORLD_WIDTH;
 import static com.game.vssg.VSSG.isPaused;
-
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
-
 import java.util.Random;
 
 
@@ -49,12 +45,13 @@ public class Explosion extends Sprite {
                 }
 
                 // Every frame, the explosion sprite rotates 40 degrees.
+                // Part of the explosion "animation."
                 this.setRotation(this.getRotation() + 40f);
 
                 // Causes the explosion sprite to speed up and slow down until it stops.
                 if (speedCounter <= 150) {
                     this.setSpeed(this.getSpeed() + speedCounter);
-                    // FYI Negative values make it go downwards. *taps head*
+                    // FYI Negative values make it go backwards. *taps head*
                     speedCounter += 1f;
                 } else {
                     speedCounter = 0;
@@ -81,6 +78,10 @@ public class Explosion extends Sprite {
         explosion.setScale(magnitude);
     }
 
+
+    // This function is for creating a random speed for the computer-controlled ships to simulate choice of speed.
+    // Useful for other contexts as well.
+    // It ust generates a random number between 1 and 10 to choose an associated speed.
     public float getRandomSpeed() {
         Random rand = new Random();
         int randInt = rand.nextInt(10);

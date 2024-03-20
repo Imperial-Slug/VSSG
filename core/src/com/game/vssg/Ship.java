@@ -534,8 +534,7 @@ public class Ship extends Sprite {
     }
 
 
-    // If the target is far away, stop chasing it.
-
+    // If the target is far away, stop chasing it.  (Remove it from the targets ObjectSet of the associated Ship object.)
     void checkForgetTarget(Ship ship, Ship target) {
         for (Ship ship2 : ship.targets) {
             if(ship2 != null){
@@ -549,7 +548,7 @@ public class Ship extends Sprite {
         }
     }
 
-
+// Tells a computer controlled ship to fire at a target passed as a parameter.
     void fireAtTarget(Ship ship, Ship target, float targetAngle, float offset ){
 
         if (ship.getActionCounter() != targetAngle) {
@@ -579,7 +578,7 @@ public class Ship extends Sprite {
     }
 
 
-    // GETTERS & SETTERS
+    // GETTERS & SETTERS //////////////////////
     public ObjectSet<Ship> getTargets() {
 
         return this.targets;

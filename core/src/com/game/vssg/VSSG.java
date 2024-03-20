@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -33,6 +34,7 @@ public class VSSG implements ApplicationListener {
     public static long WORLD_HEIGHT = WORLD_CONSTANT;
     public static float shipScale = 1f;
     public static float DEFAULT_ZOOM = 2;
+    Stage stage;
 
     private ObjectSet<PlayerShip> playerShips;
     private ObjectSet<CpuShip> cpuShips;
@@ -40,6 +42,8 @@ public class VSSG implements ApplicationListener {
     private ObjectSet<Explosion> explosions;
     private ObjectSet<Laser> lasers;
     private SpriteBatch batch;
+    VSSG.Screen currentScreen = VSSG.Screen.TITLE;
+
     private Sound explosionSound1;
     private Sound laserBlast1;
     private Sound laserBlast2;
@@ -86,25 +90,38 @@ public class VSSG implements ApplicationListener {
     private Iterator<CpuShip> cpuIter;
     private Iterator<Explosion> explosionIter;
     private Iterator<Laser> laserIter;
+
+    // This copyIter is for the copy of the CpuShip ObjectSet list so it can be iterated through recursively.
+    // If there was only one copy, some of the nested for loops in functions in this program would not be possible.
     private Iterator<CpuShip> copyIter;
 
+    // An enumeration that determines what action is taken when the mouse is clicked based on which state it is in.
     private enum CursorMode {
         MENU_MODE,
         SELECTION_MODE,
         PLAYER_MODE
     }
-
+// Enumeration determining which gamemode the game is in.
 private enum GameMode {
         ARCADE,
         SANDBOX
 }
 
+// An enumeration determining which screen is supposed to be shown.
     private enum Screen {
         TITLE, MAIN_GAME, GAME_OVER;
     }
-    Stage stage;
 
-    VSSG.Screen currentScreen = VSSG.Screen.TITLE;
+    void flushShips() {
+
+        for (PlayerShip playerShip : playerShips) {
+            playerShip.setInactive(playerShip);
+        }
+        for (CpuShip cpuShip : cpuShips) {
+            cpuShip.setInactive(cpuShip);
+        }
+
+    }
 
     @Override
     public void create() {
@@ -114,13 +131,13 @@ private enum GameMode {
         float viewportHeight = Gdx.graphics.getHeight();
         loadResources();
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-
-
         initObjects(viewportWidth, viewportHeight);
         initPlayerShip();
-
         purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y + viewportHeight);
         purpleShipButton.setPosition((float) viewport.getScreenX() / 2, (float) viewport.getScreenY() / 2);
+
+        camera.zoom = DEFAULT_ZOOM;
+        camera.update();
 
         font = new BitmapFont(); // Instantiate the BitmapFont
         font.getData().setScale((viewportHeight/111)*camera.zoom/2);
@@ -128,13 +145,11 @@ private enum GameMode {
         Skin skin = new Skin();
         skin.add("default-font", font);
 
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = skin.getFont("default-font");
-        buttonStyle.fontColor = Color.GREEN;
+        // Create green button style
+      TextButton.TextButtonStyle buttonStyle = createGreenTextButton(skin);
 
-        TextButton.TextButtonStyle buttonStyle2 = new TextButton.TextButtonStyle();
-        buttonStyle2.font = skin.getFont("default-font");
-        buttonStyle2.fontColor = Color.RED;
+        // Create red button style.
+     TextButton.TextButtonStyle buttonStyle2 = createRedButtonStyle(skin);
 
         button = new TextButton("QUIT TO DESKTOP", buttonStyle);
         button.addListener(new ClickListener() {
@@ -145,30 +160,7 @@ private enum GameMode {
             }
         });
 
-        quitButton2 = new TextButton("QUIT TO MENU", buttonStyle);
-        quitButton2.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-
-                camera.zoom = DEFAULT_ZOOM;
-                camera.update();
-                currentScreen = VSSG.Screen.TITLE;
-                button.setPosition(-524288, -524288);
-                quitButton2.setPosition(-524288, -524288);
-
-                for (PlayerShip playerShip : playerShips) {
-                    playerShip.setInactive(playerShip);
-                }
-
-                for (CpuShip cpuShip : cpuShips) {
-                    cpuShip.setInactive(cpuShip);
-                }
-                batch.begin();
-                font.draw(batch, "         VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f)+512);
-                batch.end();
-
-            }
-        });
+        quitButton2 = createQuitButton2(buttonStyle);
 
         button2 = new TextButton("Arcade (currently unimplemented)", buttonStyle);
         button2.addListener(new ClickListener() {
@@ -209,8 +201,6 @@ private enum GameMode {
                 button3.setPosition(-524288, -524288);
                 button2.setPosition(-524288, -524288);
                 quitButton.setPosition(-524288, -524288);
-                ScreenUtils.clear(0, 0, 0, 1);
-                Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
                 gameMode = GameMode.SANDBOX;
 
                  create();
@@ -243,6 +233,23 @@ private enum GameMode {
 
     }
 
+    TextButton.TextButtonStyle createRedButtonStyle(Skin skin) {
+
+        TextButton.TextButtonStyle buttonStyle2 = new TextButton.TextButtonStyle();
+        buttonStyle2.font = skin.getFont("default-font");
+        buttonStyle2.fontColor = Color.RED;
+        return buttonStyle2;
+
+    }
+
+    TextButton.TextButtonStyle createGreenTextButton(Skin skin){
+
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = skin.getFont("default-font");
+        buttonStyle.fontColor = Color.GREEN;
+        return buttonStyle;
+    }
+
     // MAIN GAME LOOP: "RENDER LOOP" //////////////////////////////
 
     @Override
@@ -261,8 +268,6 @@ private enum GameMode {
         chooseMode();
       setButtonPositions();
 
-
-
          playerIter = playerShips.iterator();
          cpuIter = cpuShips.iterator();
          explosionIter = explosions.iterator();
@@ -272,27 +277,61 @@ private enum GameMode {
         stage.act(deltaTime);
         checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
 
+        // Draws the sprites to the screen as a batch.
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
-       // font.draw(batch, , buttonPosition.x, buttonPosition.y);
             checkObjects(deltaTime);
             stage.draw();
             batch.end();
+            handlePlayerHealthBar();
 
-            for (PlayerShip playerShip : playerShips){
-                healthBarShapeRenderer.setProjectionMatrix(camera.combined);
-
-                healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                healthBarShapeRenderer.setColor(Color.RED);
-                healthBarShapeRenderer.rect(camera.position.x+((float) viewport.getScreenWidth() /2)*(camera.zoom / 2), camera.position.y+((viewport.getScreenHeight()-((float) viewport.getScreenHeight() /20))*(camera.zoom / 2)), playerShip.getHp()*5*camera.zoom/2 ,50*camera.zoom/2);
-                healthBarShapeRenderer.end();
-
-                healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-                healthBarShapeRenderer.setColor(Color.WHITE);
-                healthBarShapeRenderer.rect(camera.position.x+((float) viewport.getScreenWidth() /2)*(camera.zoom / 2), camera.position.y+((viewport.getScreenHeight()-((float) viewport.getScreenHeight() /20))*(camera.zoom / 2)), 500*camera.zoom/2 ,50*camera.zoom/2);
-                healthBarShapeRenderer.end();
-            }
         }}
+
+void handlePlayerHealthBar() {
+
+    for (PlayerShip playerShip : playerShips){
+
+        healthBarShapeRenderer.setProjectionMatrix(camera.combined);
+
+        healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        healthBarShapeRenderer.setColor(Color.RED);
+        healthBarShapeRenderer.rect(camera.position.x+((float) viewport.getScreenWidth() /2)*(camera.zoom / 2), camera.position.y+((viewport.getScreenHeight()-((float) viewport.getScreenHeight() /20))*(camera.zoom / 2)), playerShip.getHp()*5*camera.zoom/2 ,50*camera.zoom/2);
+        healthBarShapeRenderer.end();
+
+        healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        healthBarShapeRenderer.setColor(Color.WHITE);
+        healthBarShapeRenderer.rect(camera.position.x+((float) viewport.getScreenWidth() /2)*(camera.zoom / 2), camera.position.y+((viewport.getScreenHeight()-((float) viewport.getScreenHeight() /20))*(camera.zoom / 2)), 500*camera.zoom/2 ,50*camera.zoom/2);
+        healthBarShapeRenderer.end();
+    }
+
+}
+    TextButton createQuitButton2(TextButton.TextButtonStyle buttonStyle) {
+
+        quitButton2 = new TextButton("QUIT TO MENU", buttonStyle);
+        quitButton2.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                // When the quit button is clicked, set the screen to the TITLE screen.
+                // Move the other buttons out of view.
+                currentScreen = VSSG.Screen.TITLE;
+                button.setPosition(-524288, -524288);
+                quitButton2.setPosition(-524288, -524288);
+
+                // Eliminate any residual ships that might not  have been removed when the game was exited to the pause screen.
+                flushShips();
+
+                // Signals beginning, execution and the end of this frame's batch being drawn.
+                // This batch is just the font for the opening screen.
+                batch.begin();
+                font.draw(batch, "         VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f)+512);
+                batch.end();
+
+            }
+        });
+
+        return quitButton2;
+    }
 
     void setButtonPositions() {
 
@@ -443,6 +482,7 @@ void placeTitleScreenButtons(float deltaTime) {
 
     }
 
+    // Release control of the currently controlled ship.
     void relinquishControl(PlayerShip playerShip) {
 
         CpuShip cpuShip = new CpuShip(playerShip.getTexture(), playerShip.getExhaustTexture(), playerShip.getPosition(), playerShip.getSpeed(),
@@ -473,6 +513,7 @@ void placeTitleScreenButtons(float deltaTime) {
         }
     }
 
+    // Take control of a ship!
    void takeControlOfShip(){
         if(gameMode!=GameMode.ARCADE){
             float mouseX = Gdx.input.getX();
