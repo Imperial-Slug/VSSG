@@ -61,7 +61,6 @@ public final class InputManager implements InputProcessor {
     public static boolean isTPressed() {return Gdx.input.isKeyPressed(Input.Keys.T); }
     public static boolean isMiddlePressed() {return Gdx.input.isButtonPressed(Input.Buttons.MIDDLE); }
 
-
     @Override
     public boolean keyDown(int keycode) {
         return false;

@@ -36,6 +36,7 @@ public class Ship extends Sprite {
     private final float half = 0.5f;
     private final float threeSixty = 360;
 
+    // Determines which type of ship a ship is.
 
     enum Type {
         FIGHTER,
@@ -43,12 +44,14 @@ public class Ship extends Sprite {
         CAPITAL
     }
 
+
+    // Determines the faction of the ship.
     enum Faction {
         PURPLE,
         TEAL
     }
 
-
+// Controls behavior of the
      enum ActionState {
         PLAYER_CONTROL,
         CRUISE,
@@ -63,6 +66,7 @@ public class Ship extends Sprite {
         ATTACK
     }
 
+    // Ship constructor.
     public Ship(Texture texture, Sprite exhaustTexture, Vector2 position, float speed,
                 ActionState actionState, ActionState previousActionState,
                 Faction faction, ObjectSet<Ship> targets, int hp, Type type) {
@@ -85,6 +89,7 @@ public class Ship extends Sprite {
         this.exhaustTimer = 0;
 
     }
+
     // Determining the next position of the ship every frame.
     public void update(float delta, Ship ship, long WORLD_WIDTH, long WORLD_HEIGHT) {
 
@@ -95,10 +100,7 @@ public class Ship extends Sprite {
         Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
         position.add(velocity.x * delta, velocity.y * delta);
 
-        // Check if the ship is out of screen bounds and deactivate it if necessary
-        /*if (position.x > WORLD_WIDTH || position.y > WORLD_HEIGHT) {
-            active = false;
-        }*/
+        // Ship warps to other side of map.
         if (position.x > WORLD_WIDTH) {
             position.x = 0;
         }
@@ -115,8 +117,6 @@ public class Ship extends Sprite {
         setPosition(position.x, position.y);
         updateHitBox(ship);
 
-
-
             float exhaustX = ship.getX() + ship.getOriginX();
             float exhaustY = ship.getY() - ship.getOriginY() + 64;
             ship.exhaustTexture.setOrigin(333, ship.getHeight() / 2f);
@@ -131,38 +131,6 @@ public class Ship extends Sprite {
               }
 }
 
-
-int getExhaustTimer(){
-    return this.exhaustTimer;
-}
-
-    Type getType(){
-
-        return this.type;
-    }
-
-    void setType(Type type){
-        this.type = type;
-
-    }
-
-
-    Sprite getExhaustTexture(){
-
-        return this.exhaustTexture;
-    }
-
-    void setExhaustTexture(Sprite exhaustTexture){
-        this.exhaustTexture = exhaustTexture;
-
-    }
-
-
-    int getHp(){
-        return this.hp;
-
-    }
-
     void decreaseHp(int amount){
         this.hp = this.hp-amount;
     }
@@ -171,44 +139,6 @@ int getExhaustTimer(){
         this.hp = this.hp+amount;
     }
 
-
-
-    boolean getLaserSpawnTimeout(){
-        return laserSpawnTimeout;
-
-    }
-    int getLaserSpawnCounter(){
-        return laserSpawnCounter;
-
-    }
-
-    void setLaserSpawnTimeout(boolean laserSpawnTimeout){
-
-        this.laserSpawnTimeout = laserSpawnTimeout;
-    }
-    void setLaserSpawnCounter(int laserSpawnCounter){
-
-        this.laserSpawnCounter = laserSpawnCounter;
-    }
-    public void setFaction(Faction faction) {
-
-        this.faction = faction;
-    }
-
-    public Faction getFaction() {
-
-        return this.faction;
-    }
-
-    public float getSpeed() {
-
-        return this.speed;
-    }
-
-    public void setSpeed(float speed) {
-        this.speed = speed;
-
-    }
 
 
     public Laser fireLaser(Texture laserTexture, Ship ship) {
@@ -479,6 +409,7 @@ int getExhaustTimer(){
 
 
     // ANGLE CALCULATIONS //
+    // Finds the relative direction of the target from the subject Ship object.
     float getTargetAngle(Ship sourceShip, Ship targetShip) {
 
         Vector2 sourcePos = new Vector2(sourceShip.getX(), sourceShip.getY());
@@ -492,6 +423,7 @@ int getExhaustTimer(){
 
     }
 
+    // Very cool function that makes the ship rotate towards the target that it is targeting.
     public void rotateTowardTarget(Ship sourceShip, Ship targetShip, float rotationSpeed, float deltaTime) {
         if (!isPaused) {
 
@@ -518,15 +450,202 @@ int getExhaustTimer(){
                 sourceShip.rotate(rotateAmount);
             }
         } else {
+            // TODO: If an unexpected value comes through, just snap it to face the ship.  I will fix this later. O_o
             sourceShip.setRotation(targetAngle);
         }}
     }
 
 
+
+// Check to see if there are any enemy ships nearby not in the subject Ship's list of targets.
+    public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
+
+        if (targetShip.faction != this.faction) {
+            float detectionRadius = 1500;
+
+            if ((getDifference(targetShip.getX(), this.getX())) <= detectionRadius || (getDifference(targetShip.getY(), this.getY())) <= detectionRadius) {
+                if (!targets.contains(targetShip)) {
+                    targets.add(targetShip);
+                }
+            }
+            else if ((getDifference(targetShip.getX(), this.getX())) > detectionRadius || (getDifference(targetShip.getY(), this.getY())) > detectionRadius) {
+                if (targets.contains(targetShip)){
+                    targets.remove(targetShip);
+                }
+            }
+        }
+
+    }
+
+    // Changes the Ship's action state to ATTACK.
+    public void setAttackMode() {
+        this.actionState = ActionState.ATTACK;
+
+    }
+
+
+    // High level function calling the behavior associated with the ATTACK state.
+    void handleAttack(Ship ship) {
+        if (!isPaused) {
+        if (ship.getActionState() == ActionState.ATTACK) {
+            // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
+            ship.seekDestroy(ship);
+        }
+    }
+    }
+
+    // Controls targeting, attacking and chasing an enemy ship.
+    void seekDestroy(Ship ship) {
+
+        Ship target;
+        if (!isPaused) {
+
+            // If the subject ship's targets ObjectSet<Ship> list is empty, then attack.  Otherwise, chill.
+            if (ship.targets.size > 0) {
+                // offset = range of how far off center ship will fire from the target.
+                // For experimental targeting behavior purposes.
+                float offset = 1;
+                target = ship.targets.first();
+                float targetAngle = getTargetAngle(ship, target);
+
+                // Make sure the ships don't just crash through each other.
+                checkDistance(ship);
+                // Tells the subject Ship to fire once it is facing the target Ship.
+                fireAtTarget(ship, target, targetAngle, offset);
+                // If the target is far away, stop chasing it.
+                checkForgetTarget(ship, target);
+
+        // If the distance between the ships is greater then 500 pixels.
+                // forget about the target (remove it from the subject Ship's ObjectSet<Ship>).
+        for (Ship ship2 : ship.targets) {
+            if(ship2 != null){
+            if (getDifference(getDifference(ship.getX(), ship2.getX()), getDifference(ship.getX(), target.getX())) > 500 ||
+                    getDifference(getDifference(ship.getY(), ship2.getY()), getDifference(ship.getY(), target.getY())) > 500) {
+
+                ship.targets.remove(ship.targets.first());
+                ship.targets.remove(target);
+                ship.targets.add(target);
+
+            }}
+        }
+
+            }
+        }
+    }
+
+
+    // If the target is far away, stop chasing it.
+
+    void checkForgetTarget(Ship ship, Ship target) {
+        for (Ship ship2 : ship.targets) {
+            if(ship2 != null){
+                if (getDifference(getDifference(ship.getX(), ship2.getX()), getDifference(ship.getX(), target.getX())) > 500 ||
+                        getDifference(getDifference(ship.getY(), ship2.getY()), getDifference(ship.getY(), target.getY())) > 500) {
+
+                    ship.targets.remove(ship.targets.first());
+                    ship.targets.remove(target);
+                    ship.targets.add(target);
+                }}
+        }
+    }
+
+
+    void fireAtTarget(Ship ship, Ship target, float targetAngle, float offset ){
+
+        if (ship.getActionCounter() != targetAngle) {
+
+            // getTargetingAngle() method just finds the angle the source ship needs to point at to face the target.
+            if (ship.getRotation() < getTargetAngle(ship, target) - offset || ship.getRotation() > getTargetAngle(ship, target) + offset) {
+                actionCounter++;
+                ship.rotateTowardTarget(ship, target, 177, Gdx.graphics.getDeltaTime());
+            } else if (ship.getRotation() >= getTargetAngle(ship, target) - offset || ship.getRotation() <= getTargetAngle(ship, target) + offset) {
+
+                if (target.active) {
+                    ship.setActionCounter(0);
+                    ship.setActionState(ActionState.FIRE, previousActionState);
+                }
+                else { ship.setActionState(ActionState.IDLE, ActionState.FIRE);  }
+            }
+        }
+
+
+    }
+    void checkDistance(Ship ship) {
+         // If the ships are too close together while attacking, stop.
+        if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
+            ship.setSpeed(0);
+        }
+
+    }
+
+
+    // GETTERS & SETTERS
+    public ObjectSet<Ship> getTargets() {
+
+        return this.targets;
+    }
+
+    Type getType(){
+        return this.type;
+    }
+    void setType(Type type){
+        this.type = type;
+
+    }
+
+    Sprite getExhaustTexture(){
+
+        return this.exhaustTexture;
+    }
+
+    int getHp(){
+        return this.hp;
+    }
+
+
+
+
+    boolean getLaserSpawnTimeout(){
+        return laserSpawnTimeout;
+
+    }
+    int getLaserSpawnCounter(){
+        return laserSpawnCounter;
+
+    }
+
+    void setLaserSpawnTimeout(boolean laserSpawnTimeout){
+
+        this.laserSpawnTimeout = laserSpawnTimeout;
+    }
+    void setLaserSpawnCounter(int laserSpawnCounter){
+
+        this.laserSpawnCounter = laserSpawnCounter;
+    }
+    public void setFaction(Faction faction) {
+
+        this.faction = faction;
+    }
+
+    public Faction getFaction() {
+
+        return this.faction;
+    }
+
+    public float getSpeed() {
+
+        return this.speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+
+    }
+
     Vector2 getPosition(){
 
         return this.position;
-}
+    }
 
     public Rectangle getHitbox() {
 
@@ -572,94 +691,5 @@ int getExhaustTimer(){
         float larger = Math.max(a, b);
         float smaller = Math.min(a, b);
         return larger - smaller;
-    }
-
-    public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
-
-        if (targetShip.faction != this.faction) {
-            float detectionRadius = 1500;
-
-            if ((getDifference(targetShip.getX(), this.getX())) <= detectionRadius || (getDifference(targetShip.getY(), this.getY())) <= detectionRadius) {
-                if (!targets.contains(targetShip)) {
-                    targets.add(targetShip);
-                }
-
-            }
-            else if ((getDifference(targetShip.getX(), this.getX())) > detectionRadius || (getDifference(targetShip.getY(), this.getY())) > detectionRadius) {
-                if (targets.contains(targetShip)){
-
-                    targets.remove(targetShip);
-                }
-            }
-        }
-
-    }
-
-    public void setAttackMode() {
-        this.actionState = ActionState.ATTACK;
-
-    }
-
-
-    void handleAttack(Ship ship) {
-        if (!isPaused) {
-
-        if (ship.getActionState() == ActionState.ATTACK) {
-            // Tells the specified ship to pick a target and shoot at it until it is destroyed or out of range.
-            ship.seekDestroy(ship);
-
-        }
-
-    }
-    }
-
-    void seekDestroy(Ship ship) {
-
-        Ship target;
-        if (!isPaused) {
-
-            if (ship.targets.size > 0) {
-                //offset = range of how far off center ship will fire.
-                float offset = 1;
-                target = ship.targets.first();
-                float targetAngle = getTargetAngle(ship, target);
-                if (ship.getActionCounter() != targetAngle) {
-
-                    if (ship.getRotation() < getTargetAngle(ship, target) - offset || ship.getRotation() > getTargetAngle(ship, target) + offset) {
-                        actionCounter++;
-                        ship.rotateTowardTarget(ship, target, 177, Gdx.graphics.getDeltaTime());
-                    } else if (ship.getRotation() >= getTargetAngle(ship, target) - offset || ship.getRotation() <= getTargetAngle(ship, target) + offset) {
-
-                        if (target.active) {
-                            ship.setActionCounter(0);
-                            ship.setActionState(ActionState.FIRE, previousActionState);
-                        }
-                        else { ship.setActionState(ActionState.IDLE, ActionState.FIRE);  }
-                    }
-                }
-                // If the ships are too close together while attacking, stop.
-        if(getDifference(ship.getX(), ship.getTargets().first().getX()) < 400){
-
-        ship.setSpeed(0);
-        }
-
-        for (Ship ship2 : ship.targets) {
-            if(ship2!=null){
-            if (getDifference(getDifference(ship.getX(), ship2.getX()), getDifference(ship.getX(), target.getX())) > 500 ||
-                    getDifference(getDifference(ship.getY(), ship2.getY()), getDifference(ship.getY(), target.getY())) > 500) {
-
-                ship.targets.remove(ship.targets.first());
-                ship.targets.remove(target);
-                ship.targets.add(target);
-
-            }}
-        }
-            }
-        }
-    }
-
-    public ObjectSet<Ship> getTargets() {
-
-        return this.targets;
     }
 }

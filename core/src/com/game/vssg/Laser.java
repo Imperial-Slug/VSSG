@@ -27,6 +27,7 @@ public class Laser extends Sprite {
         active = true;
     }
 
+    // Updates the state of the lasers.
     public void update(float delta, long WORLD_WIDTH, long WORLD_HEIGHT) {
         if (!isPaused) {
 
