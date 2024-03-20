@@ -37,7 +37,8 @@ public class Explosion extends Sprite {
     public void update(float delta) {
         if (!isPaused) {
             if (active) {
-                Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
+
+                Vector2 velocity = new Vector2(this.speed, 0).setAngleDeg(getRotation());
                 position.add(velocity.x * delta, velocity.y * delta);
 
                 // Controls when the explosion disappears.
