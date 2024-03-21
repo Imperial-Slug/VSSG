@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 public class CpuShip extends Ship {
 
-// CpuShip constructor.
+    // CpuShip constructor.
     public CpuShip(Texture texture, Sprite exhaustTexture, Vector2 position, float speed, ActionState actionState,
                    ActionState previousActionState, Rectangle hitbox, int actionCounter, Faction faction,
                    ObjectSet<Ship> targets, int hp, Type type, float rotation) {

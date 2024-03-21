@@ -1,11 +1,13 @@
 package com.game.vssg;
 
 import static com.game.vssg.VSSG.isPaused;
+
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
+
 import java.util.Random;
 
 
@@ -18,7 +20,7 @@ public class Explosion extends Sprite {
     private float speed;
     private final float duration;
 
-// Explosion constructor
+    // Explosion constructor
     public Explosion(Texture texture1, Vector2 position, float speed, float duration) {
         super(texture1);
         this.duration = duration;
@@ -26,7 +28,6 @@ public class Explosion extends Sprite {
         this.speed = speed;
         this.active = true;
     }
-
 
 
     // Updates state of Explosion objects frame by frame.  An abomination to humanity.
@@ -117,9 +118,6 @@ public class Explosion extends Sprite {
     public boolean isActive() {
         return active;
     }
-
-
-
 
 
 }

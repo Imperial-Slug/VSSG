@@ -104,13 +104,13 @@ public class VSSG implements ApplicationListener {
         PLAYER_MODE
     }
 
-// Enumeration determining which gamemode the game is in.
-private enum GameMode {
+    // Enumeration determining which gamemode the game is in.
+    private enum GameMode {
         ARCADE,
         SANDBOX
-}
+    }
 
-// An enumeration determining which screen is supposed to be shown.
+    // An enumeration determining which screen is supposed to be shown.
     private enum Screen {
         TITLE, MAIN_GAME, GAME_OVER;
     }
@@ -144,16 +144,16 @@ private enum GameMode {
         camera.update();
 
         font = new BitmapFont(); // Instantiate the BitmapFont
-        font.getData().setScale((viewportHeight/111)*camera.zoom/2);
+        font.getData().setScale((viewportHeight / 111) * camera.zoom / 2);
 
         Skin skin = new Skin();
         skin.add("default-font", font);
 
         // Create green button style
-      TextButton.TextButtonStyle buttonStyle = createGreenTextButton(skin);
+        TextButton.TextButtonStyle buttonStyle = createGreenTextButton(skin);
 
         // Create red button style.
-     TextButton.TextButtonStyle buttonStyle2 = createRedButtonStyle(skin);
+        TextButton.TextButtonStyle buttonStyle2 = createRedButtonStyle(skin);
 
         button = new TextButton("QUIT TO DESKTOP", buttonStyle);
         button.addListener(new ClickListener() {
@@ -170,7 +170,7 @@ private enum GameMode {
         button2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-            System.out.println("Arcade mode initiated.");
+                System.out.println("Arcade mode initiated.");
                 button.setPosition(-524288, -524288);
                 quitButton2.setPosition(-524288, -524288);
                 button2.setStyle(buttonStyle2);
@@ -182,15 +182,15 @@ private enum GameMode {
 
                 gameMode = GameMode.ARCADE;
 
-                if (playerShips.isEmpty()){
+                if (playerShips.isEmpty()) {
                     initObjects(viewportWidth, viewportHeight);
                     initPlayerShip();
                 }
 
-                if(isPaused){
+                if (isPaused) {
                     isPaused = false;
                 }
-            create();
+                create();
             }
         });
 
@@ -207,13 +207,13 @@ private enum GameMode {
                 gameMode = GameMode.SANDBOX;
 
                 // Starts the game by calling libGDX's overridden create() method.
-                 create();
+                create();
 
-                if(isPaused){
+                if (isPaused) {
                     isPaused = false;
                 }
 
-                Vector2 mousePosition = new Vector2(WORLD_WIDTH/2, WORLD_HEIGHT/2);
+                Vector2 mousePosition = new Vector2(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
                 spawnShip(purpleShipTexture, mousePosition);
                 makePlayerShip(cpuShips.first());
 
@@ -227,7 +227,8 @@ private enum GameMode {
                 quitButton.setStyle(buttonStyle2);
 
                 // Exit the game when this button is pressed.
-                Gdx.app.exit();            }
+                Gdx.app.exit();
+            }
         });
 
         stage.addActor(button);
@@ -238,7 +239,8 @@ private enum GameMode {
 
 
     }
-// Create the TextButtonStyle objects to be used with the TextButtons.
+
+    // Create the TextButtonStyle objects to be used with the TextButtons.
     TextButton.TextButtonStyle createRedButtonStyle(Skin skin) {
 
         // TODO: Get a custom font in here instead of default-font.
@@ -249,7 +251,7 @@ private enum GameMode {
 
     }
 
-    TextButton.TextButtonStyle createGreenTextButton(Skin skin){
+    TextButton.TextButtonStyle createGreenTextButton(Skin skin) {
 
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = skin.getFont("default-font");
@@ -266,28 +268,27 @@ private enum GameMode {
         // Measure change in time from last frame / render loop execution.
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        if(currentScreen == VSSG.Screen.TITLE && button != null && button2 != null){
-           placeTitleScreenButtons(deltaTime);
-        }
-        else if(currentScreen == VSSG.Screen.MAIN_GAME) {
+        if (currentScreen == VSSG.Screen.TITLE && button != null && button2 != null) {
+            placeTitleScreenButtons(deltaTime);
+        } else if (currentScreen == VSSG.Screen.MAIN_GAME) {
             clearScreenForMainGame();
-        handleClickTimeout();
-        handleInput();
-        chooseMode();
-      setButtonPositions();
+            handleClickTimeout();
+            handleInput();
+            chooseMode();
+            setButtonPositions();
 
-         playerIter = playerShips.iterator();
-         cpuIter = cpuShips.iterator();
-         explosionIter = explosions.iterator();
-         laserIter = lasers.iterator();
-         copyIter = copiedSet.iterator();
+            playerIter = playerShips.iterator();
+            cpuIter = cpuShips.iterator();
+            explosionIter = explosions.iterator();
+            laserIter = lasers.iterator();
+            copyIter = copiedSet.iterator();
 
-        stage.act(deltaTime);
-        checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
+            stage.act(deltaTime);
+            checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
 
-        // Draws the sprites to the screen as a batch.
-        batch.begin();
-        batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
+            // Draws the sprites to the screen as a batch.
+            batch.begin();
+            batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, wrapDivisor, wrapDivisor);
             checkObjects(deltaTime);
             stage.draw();
             batch.end();
@@ -297,24 +298,25 @@ private enum GameMode {
     }
 
 
-void handlePlayerHealthBar() {
+    void handlePlayerHealthBar() {
 
-    for (PlayerShip playerShip : playerShips){
+        for (PlayerShip playerShip : playerShips) {
 
-        healthBarShapeRenderer.setProjectionMatrix(camera.combined);
+            healthBarShapeRenderer.setProjectionMatrix(camera.combined);
 
-        healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        healthBarShapeRenderer.setColor(Color.RED);
-        healthBarShapeRenderer.rect(camera.position.x+((float) viewport.getScreenWidth() /2)*(camera.zoom / 2), camera.position.y+((viewport.getScreenHeight()-((float) viewport.getScreenHeight() /20))*(camera.zoom / 2)), playerShip.getHp()*5*camera.zoom/2 ,50*camera.zoom/2);
-        healthBarShapeRenderer.end();
+            healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            healthBarShapeRenderer.setColor(Color.RED);
+            healthBarShapeRenderer.rect(camera.position.x + ((float) viewport.getScreenWidth() / 2) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)) * (camera.zoom / 2)), playerShip.getHp() * 5 * camera.zoom / 2, 50 * camera.zoom / 2);
+            healthBarShapeRenderer.end();
 
-        healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        healthBarShapeRenderer.setColor(Color.WHITE);
-        healthBarShapeRenderer.rect(camera.position.x+((float) viewport.getScreenWidth() /2)*(camera.zoom / 2), camera.position.y+((viewport.getScreenHeight()-((float) viewport.getScreenHeight() /20))*(camera.zoom / 2)), 500*camera.zoom/2 ,50*camera.zoom/2);
-        healthBarShapeRenderer.end();
+            healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            healthBarShapeRenderer.setColor(Color.WHITE);
+            healthBarShapeRenderer.rect(camera.position.x + ((float) viewport.getScreenWidth() / 2) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)) * (camera.zoom / 2)), 500 * camera.zoom / 2, 50 * camera.zoom / 2);
+            healthBarShapeRenderer.end();
+        }
+
     }
 
-}
     TextButton createQuitButton2(TextButton.TextButtonStyle buttonStyle) {
 
         quitButton2 = new TextButton("QUIT TO MENU", buttonStyle);
@@ -334,7 +336,7 @@ void handlePlayerHealthBar() {
                 // Signals beginning, execution and the end of this frame's batch being drawn.
                 // This batch is just the font for the opening screen.
                 batch.begin();
-                font.draw(batch, "         VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f)+512);
+                font.draw(batch, "         VSSG", (Gdx.graphics.getWidth() * 0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f) + 512);
                 batch.end();
 
             }
@@ -345,12 +347,11 @@ void handlePlayerHealthBar() {
 
     void setButtonPositions() {
 
-        Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y );
-        Vector2 quitButton2Position = new Vector2(camera.position.x, camera.position.y );
+        Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y);
+        Vector2 quitButton2Position = new Vector2(camera.position.x, camera.position.y);
         if (cursorMode == CursorMode.MENU_MODE && button != null) {
             populateMenu(buttonPosition, quitButton2Position);
-        }
-        else {
+        } else {
             if (button != null) {
                 button.setPosition(-524288, -524288);
                 button.setVisible(false);
@@ -360,14 +361,16 @@ void handlePlayerHealthBar() {
             }
         }
     }
+
     void populateMenu(Vector2 buttonPosition, Vector2 quitButton2Position) {
-        button.setPosition(buttonPosition.x - button.getWidth()/2, buttonPosition.y);
-        quitButton2.setPosition(quitButton2Position.x - quitButton2.getWidth()/2, quitButton2Position.y + 300);
+        button.setPosition(buttonPosition.x - button.getWidth() / 2, buttonPosition.y);
+        quitButton2.setPosition(quitButton2Position.x - quitButton2.getWidth() / 2, quitButton2Position.y + 300);
         button.setVisible(true);
         quitButton2.setVisible(true);
 
 
     }
+
     void clearScreenForMainGame() {
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
@@ -375,41 +378,43 @@ void handlePlayerHealthBar() {
         button3.setVisible(false);
         quitButton.setVisible(false);
 
-        if(gameMode == GameMode.ARCADE){
-            if(cpuShips.isEmpty()){
+        if (gameMode == GameMode.ARCADE) {
+            if (cpuShips.isEmpty()) {
                 arcadeModeRefill();
             }
         }
     }
-void placeTitleScreenButtons(float deltaTime) {
 
-    Gdx.gl.glClearColor(0, 0, 0, 1);
-    Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+    void placeTitleScreenButtons(float deltaTime) {
 
-    button.setPosition(-524288, -524288);
-    quitButton2.setPosition(-524288, -524288);
-    button2.setVisible(true);
-    button3.setVisible(true);
-    quitButton.setVisible(true);
-    stage.act(deltaTime);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
 
-    batch.begin();
+        button.setPosition(-524288, -524288);
+        quitButton2.setPosition(-524288, -524288);
+        button2.setVisible(true);
+        button3.setVisible(true);
+        quitButton.setVisible(true);
+        stage.act(deltaTime);
 
-    font.draw(batch, "          VSSG", (Gdx.graphics.getWidth()*0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f)+512);
-    stage.draw();
+        batch.begin();
 
-    Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 200 );
-    button2.setPosition(button2Position.x - button2.getWidth()/2, button2Position.y);
+        font.draw(batch, "          VSSG", (Gdx.graphics.getWidth() * 0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f) + 512);
+        stage.draw();
 
-    Vector2 button3Position = new Vector2(camera.position.x, camera.position.y - 400 );
-    button3.setPosition(button3Position.x - button3.getWidth()/2, button3Position.y);
+        Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 200);
+        button2.setPosition(button2Position.x - button2.getWidth() / 2, button2Position.y);
 
-    Vector2 quitbuttonPosition = new Vector2(camera.position.x, camera.position.y - 600 );
-    quitButton.setPosition(quitbuttonPosition.x - quitButton.getWidth()/2, quitbuttonPosition.y);
-    batch.end();
-}
+        Vector2 button3Position = new Vector2(camera.position.x, camera.position.y - 400);
+        button3.setPosition(button3Position.x - button3.getWidth() / 2, button3Position.y);
+
+        Vector2 quitbuttonPosition = new Vector2(camera.position.x, camera.position.y - 600);
+        quitButton.setPosition(quitbuttonPosition.x - quitButton.getWidth() / 2, quitbuttonPosition.y);
+        batch.end();
+    }
+
     PlayerShip makePlayerShip(CpuShip cpuShip) {
-        if(playerShips.isEmpty()){
+        if (playerShips.isEmpty()) {
             System.out.println("makePlayerShip");
             cpuShip.setInactive(cpuShip);
             copiedSet.remove(cpuShip);
@@ -417,9 +422,10 @@ void placeTitleScreenButtons(float deltaTime) {
             return new PlayerShip(cpuShip.getTexture(), cpuShip.getExhaustTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
                     cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
                     cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
+        } else {
+            System.out.println("PlayerShip couldn't be created. line 365 @ VSSG.java");
+            return null;
         }
-        else    { System.out.println("PlayerShip couldn't be created. line 365 @ VSSG.java");
-            return null;}
     }
 
     public void resize(int width, int height) {
@@ -431,6 +437,7 @@ void placeTitleScreenButtons(float deltaTime) {
 
     public void resume() {
     }
+
     void loadResources() {
 
         purpleShipTexture = new Texture("purple_ship.png");
@@ -463,7 +470,7 @@ void placeTitleScreenButtons(float deltaTime) {
 
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
-         exhaust = new Sprite(exhaustTexture);
+        exhaust = new Sprite(exhaustTexture);
         PlayerShip playerShip = new PlayerShip(purpleShipTexture, exhaust, vector2, 40, Ship.ActionState.PLAYER_CONTROL,
                 Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.FIGHTER, 90);
 
@@ -524,8 +531,8 @@ void placeTitleScreenButtons(float deltaTime) {
     }
 
     // Take control of a ship!
-   void takeControlOfShip(){
-        if(gameMode!=GameMode.ARCADE){
+    void takeControlOfShip() {
+        if (gameMode != GameMode.ARCADE) {
             float mouseX = Gdx.input.getX();
             float mouseY = Gdx.input.getY();
             Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
@@ -538,16 +545,18 @@ void placeTitleScreenButtons(float deltaTime) {
                     playerShip.setActionState(Ship.ActionState.PLAYER_CONTROL, Ship.ActionState.PLAYER_CONTROL);
                     playerShip.setRotation(cpuShip.getRotation());
                     playerShips.add(playerShip);
-                }}
+                }
+            }
         }
 
     }
+
     /////////////   C O N T R O L S   /////////////
     private void handleInput() {
 
         float cameraSpeed = camera.zoom * 2048;
 
-        if (InputManager.isMiddlePressed()){
+        if (InputManager.isMiddlePressed()) {
             takeControlOfShip();
         }
 
@@ -565,12 +574,12 @@ void placeTitleScreenButtons(float deltaTime) {
 
 // Space bar behavior
         if (InputManager.isSpacePressed()) {
-          playerFireLaser();
+            playerFireLaser();
         }
 
         // RIGHT MOUSE BUTTON
         if (InputManager.isRightMousePressed()) {
-           playerSpawnPurpleShip();
+            playerSpawnPurpleShip();
         }
         if (shipSpawnTimeout) {
             if (shipSpawnCounter >= 20) {
@@ -582,24 +591,24 @@ void placeTitleScreenButtons(float deltaTime) {
 
         // LASER TIMING & DE-SPAWNING.
 // For player ship only during runtime. CpuShip laser timing is handled differently.
-      handlePlayerLaserSpawn();
+        handlePlayerLaserSpawn();
 
 // LEFT MOUSE BUTTON BEHAVIOR
         if (InputManager.isLeftMousePressed()) {
-          playerSpawnTealShip();
+            playerSpawnTealShip();
         }
 // W KEY CONTROLS
         float speedLimit = 600f;
         if (InputManager.isWPressed()) {
-           handleSpeedUp(speedLimit);
+            handleSpeedUp(speedLimit);
         }
 
         if (InputManager.isSPressed()) {
-          handleSlowDown(speedLimit);
+            handleSlowDown(speedLimit);
         }
 
         if (InputManager.isEscPressed()) {
-         pauseNow();
+            pauseNow();
         }
 
         if (InputManager.isLeftPressed()) {
@@ -616,27 +625,28 @@ void placeTitleScreenButtons(float deltaTime) {
         }
 
         if (InputManager.isQPressed()) {
-           handleZoomIn();
+            handleZoomIn();
         }
 
         if (InputManager.isEPressed()) {
-          handleZoomOut();
+            handleZoomOut();
         }
 
 
         if (InputManager.isCPressed()) {
-            if (!isPaused){
-            if (!playerShips.isEmpty()) {
-                relinquishControl(playerShips.first());
-            }}
+            if (!isPaused) {
+                if (!playerShips.isEmpty()) {
+                    relinquishControl(playerShips.first());
+                }
+            }
 
         }
     }
 
     void playerSpawnTealShip() {
 
-        if (gameMode == GameMode.SANDBOX){
-            if(!isPaused) {
+        if (gameMode == GameMode.SANDBOX) {
+            if (!isPaused) {
                 float mouseX = Gdx.input.getX();
                 float mouseY = Gdx.input.getY();
                 Vector2 position = new Vector2(mouseX, mouseY);
@@ -644,6 +654,7 @@ void placeTitleScreenButtons(float deltaTime) {
             }
         }
     }
+
     void playerSpawnPurpleShip() {
 
         if (gameMode == GameMode.SANDBOX) {
@@ -654,17 +665,20 @@ void placeTitleScreenButtons(float deltaTime) {
         }
 
     }
+
     void handlePlayerLaserSpawn() {
         if (!playerShips.isEmpty()) {
-        if (playerShips.first().getLaserSpawnTimeout()) {
-            if (playerShips.first().getLaserSpawnCounter() >= 20) {
+            if (playerShips.first().getLaserSpawnTimeout()) {
+                if (playerShips.first().getLaserSpawnCounter() >= 20) {
 
-                playerShips.first().setLaserSpawnTimeout(false);
-            } else {
-                playerShips.first().setLaserSpawnCounter(playerShips.first().getLaserSpawnCounter() + 1);
+                    playerShips.first().setLaserSpawnTimeout(false);
+                } else {
+                    playerShips.first().setLaserSpawnCounter(playerShips.first().getLaserSpawnCounter() + 1);
+                }
             }
         }
-    }}
+    }
+
     void handleSpeedUp(float speedLimit) {
 
         if (!isPaused) {
@@ -676,6 +690,7 @@ void placeTitleScreenButtons(float deltaTime) {
             }
         }
     }
+
     void handleSlowDown(float speedLimit) {
         if (!isPaused) {
             for (PlayerShip playerShip : playerShips) {
@@ -685,19 +700,22 @@ void placeTitleScreenButtons(float deltaTime) {
             }
         }
     }
-    void handleZoomOut(){
 
-        if(!isPaused){
+    void handleZoomOut() {
+
+        if (!isPaused) {
             if (camera.zoom < 23) {
                 zoomOut();
-            }}
+            }
+        }
     }
 
-    void handleZoomIn(){
-        if(!isPaused){
+    void handleZoomIn() {
+        if (!isPaused) {
             if (camera.zoom > 0.2f) {
                 zoomIn();
-            }}
+            }
+        }
     }
 
     void playerFireLaser() {
@@ -705,14 +723,12 @@ void placeTitleScreenButtons(float deltaTime) {
         Texture laserTexture = null;
         for (Ship ship : playerShips) {
             if (!ship.getLaserSpawnTimeout()) {
-                if(ship.getType() == Ship.Type.CORVETTE){
+                if (ship.getType() == Ship.Type.CORVETTE) {
                     laserTexture = laser2Texture;
-                }
-                else if(ship.getType() == Ship.Type.FIGHTER){
-                    if(ship.getFaction() == Ship.Faction.TEAL){
+                } else if (ship.getType() == Ship.Type.FIGHTER) {
+                    if (ship.getFaction() == Ship.Faction.TEAL) {
                         laserTexture = redLaserTexture;
-                    }
-                    else if(ship.getFaction() == Ship.Faction.PURPLE) {
+                    } else if (ship.getFaction() == Ship.Faction.PURPLE) {
                         laserTexture = greenLaserTexture;
                     }
                 }
@@ -727,13 +743,11 @@ void placeTitleScreenButtons(float deltaTime) {
         }
     }
 
-void pauseNow() {
+    void pauseNow() {
         if (clickTimeout > 100) {
-    pauseGame();
-    clickTimeout = 0;
-}
-
-else clickTimeout++;
+            pauseGame();
+            clickTimeout = 0;
+        } else clickTimeout++;
 
     }
 
@@ -809,15 +823,15 @@ else clickTimeout++;
 
     void checkLaserCollision(Rectangle laserHitBox, Rectangle shipHitBox, Laser laser, Ship ship) {
         if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
-            Vector2 position = new Vector2(ship.getX()+ship.getWidth()/2, laser.getY() - ship.getHeight()/2);
+            Vector2 position = new Vector2(ship.getX() + ship.getWidth() / 2, laser.getY() - ship.getHeight() / 2);
             Explosion.explode(explosionTexture1, position, 512, explosions, explosionSound1, 16, 0.33f);
 
-            if(ship.getActionState() == Ship.ActionState.PLAYER_CONTROL){
-            ship.decreaseHp(5);
+            if (ship.getActionState() == Ship.ActionState.PLAYER_CONTROL) {
+                ship.decreaseHp(5);
 
+            } else {
+                ship.decreaseHp(50);
             }
-
-            else { ship.decreaseHp(50); }
 
 
             laser.setInactive(laser);
@@ -833,10 +847,11 @@ else clickTimeout++;
         for (Laser laser : lasers) {
 
             // Determine laser's scale based on its texture.
-            if(laser.getTexture() == laser2Texture) {
+            if (laser.getTexture() == laser2Texture) {
                 laser.setScale(0.8f);
+            } else {
+                laser.setScale(3);
             }
-            else {laser.setScale(3);}
             //
 
             laser.draw(batch);
@@ -888,9 +903,10 @@ else clickTimeout++;
             }
 
             for (CpuShip cpuShip2 : copiedSet) {
-                if(cpuShip2!=null){
-                cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
-            }}
+                if (cpuShip2 != null) {
+                    cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
+                }
+            }
         }
 
         for (Explosion explosion : explosions) {
@@ -981,8 +997,8 @@ else clickTimeout++;
             int i = 1;
             while (i < waveNumber) {
                 Vector2 position = new Vector2();
-                position.x = worldWidthCentre+(i*1000);
-                position.y = worldHeightCentre+(2000);
+                position.x = worldWidthCentre + (i * 1000);
+                position.y = worldHeightCentre + (2000);
                 Rectangle hitbox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
 
