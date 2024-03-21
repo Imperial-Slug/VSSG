@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -101,6 +103,7 @@ public class VSSG implements ApplicationListener {
         SELECTION_MODE,
         PLAYER_MODE
     }
+
 // Enumeration determining which gamemode the game is in.
 private enum GameMode {
         ARCADE,
@@ -112,6 +115,7 @@ private enum GameMode {
         TITLE, MAIN_GAME, GAME_OVER;
     }
 
+    // Make sure all the ships are de-spawned
     void flushShips() {
 
         for (PlayerShip playerShip : playerShips) {
@@ -166,7 +170,7 @@ private enum GameMode {
         button2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-            System.out.println("Arcade");
+            System.out.println("Arcade mode initiated.");
                 button.setPosition(-524288, -524288);
                 quitButton2.setPosition(-524288, -524288);
                 button2.setStyle(buttonStyle2);
@@ -175,8 +179,7 @@ private enum GameMode {
                 button3.setPosition(-524288, -524288);
                 button2.setPosition(-524288, -524288);
                 quitButton.setPosition(-524288, -524288);
-                Gdx.gl.glClearColor(0, 0, 0, 1);
-                Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+
                 gameMode = GameMode.ARCADE;
 
                 if (playerShips.isEmpty()){
@@ -221,6 +224,8 @@ private enum GameMode {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 quitButton.setStyle(buttonStyle2);
+
+                // Exit the game.
                 Gdx.app.exit();            }
         });
 
@@ -285,7 +290,10 @@ private enum GameMode {
             batch.end();
             handlePlayerHealthBar();
 
-        }}
+        }
+
+    }
+
 
 void handlePlayerHealthBar() {
 
