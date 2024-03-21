@@ -164,7 +164,7 @@ public class Ship extends Sprite {
         return laser;
     }
 
-
+// Makes the Ship's hitbox follow it.
     private void updateHitBox(Ship ship) {
 
         if (!isPaused) {

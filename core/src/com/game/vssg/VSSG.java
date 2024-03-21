@@ -206,6 +206,7 @@ private enum GameMode {
                 quitButton.setPosition(-524288, -524288);
                 gameMode = GameMode.SANDBOX;
 
+                // Starts the game by calling libGDX's overridden create() method.
                  create();
 
                 if(isPaused){
@@ -225,7 +226,7 @@ private enum GameMode {
             public void clicked(InputEvent event, float x, float y) {
                 quitButton.setStyle(buttonStyle2);
 
-                // Exit the game.
+                // Exit the game when this button is pressed.
                 Gdx.app.exit();            }
         });
 
@@ -237,7 +238,7 @@ private enum GameMode {
 
 
     }
-
+// Create the TextButtonStyle objects to be used with the TextButtons.
     TextButton.TextButtonStyle createRedButtonStyle(Skin skin) {
 
         TextButton.TextButtonStyle buttonStyle2 = new TextButton.TextButtonStyle();
@@ -261,6 +262,7 @@ private enum GameMode {
     public void render() {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
+        // Measure change in time from last frame / render loop execution.
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         if(currentScreen == VSSG.Screen.TITLE && button != null && button2 != null){
@@ -289,7 +291,6 @@ private enum GameMode {
             stage.draw();
             batch.end();
             handlePlayerHealthBar();
-
         }
 
     }
