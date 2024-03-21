@@ -241,6 +241,7 @@ private enum GameMode {
 // Create the TextButtonStyle objects to be used with the TextButtons.
     TextButton.TextButtonStyle createRedButtonStyle(Skin skin) {
 
+        // TODO: Get a custom font in here instead of default-font.
         TextButton.TextButtonStyle buttonStyle2 = new TextButton.TextButtonStyle();
         buttonStyle2.font = skin.getFont("default-font");
         buttonStyle2.fontColor = Color.RED;
