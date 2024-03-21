@@ -82,7 +82,7 @@ public class Explosion extends Sprite {
 
     // This function is for creating a random speed for the computer-controlled ships to simulate choice of speed.
     // Useful for other contexts as well.
-    // It ust generates a random number between 1 and 10 to choose an associated speed.
+    // It just generates a random number between 1 and 10 to choose an associated speed.
     public float getRandomSpeed() {
         Random rand = new Random();
         int randInt = rand.nextInt(10);
