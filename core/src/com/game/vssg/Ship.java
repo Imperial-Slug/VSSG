@@ -51,7 +51,8 @@ public class Ship extends Sprite {
         TEAL
     }
 
-// Controls behavior of the
+// Controls behavior of the ships. Short and precise actions like the quarter turns will have a
+// counter to ensure the current amount of degrees have been rotated.
      enum ActionState {
         PLAYER_CONTROL,
         CRUISE,
@@ -90,6 +91,8 @@ public class Ship extends Sprite {
 
     }
 
+    // TODO: Make it so we have realistic movement that conserves momentum in any x or y direction,
+    //  and not direction based movement as it is now.  Maybe by implementing speedX and speedY attributes???
     // Determining the next position of the ship every frame.
     public void update(float delta, Ship ship, long WORLD_WIDTH, long WORLD_HEIGHT) {
 
@@ -99,6 +102,7 @@ public class Ship extends Sprite {
 
         Vector2 velocity = new Vector2(speed, 0).setAngleDeg(getRotation());
         position.add(velocity.x * delta, velocity.y * delta);
+
 
         // Ship warps to other side of map.
         if (position.x > WORLD_WIDTH) {
@@ -132,11 +136,11 @@ public class Ship extends Sprite {
 }
 
     void decreaseHp(int amount){
-        this.hp = this.hp-amount;
+        this.hp = this.hp - amount;
     }
 
     void increaseHp(int amount) {
-        this.hp = this.hp+amount;
+        this.hp = this.hp + amount;
     }
 
 
@@ -186,6 +190,8 @@ public class Ship extends Sprite {
 
     }}
 
+
+    // Handles the FIRE Ship state.  Makes the Ship fire.
     public void handleFire(Ship ship, Texture laser2Texture,Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
         // Laser texture used is dependent on ship faction.
         if (!isPaused) {
