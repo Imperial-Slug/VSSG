@@ -93,6 +93,7 @@ public class VSSG implements ApplicationListener {
     private Iterator<Explosion> explosionIter;
     private Iterator<Laser> laserIter;
 
+
     // This copyIter is for the copy of the CpuShip ObjectSet list so it can be iterated through recursively.
     // If there was only one copy, some of the nested for loops in functions in this program would not be possible.
     private Iterator<CpuShip> copyIter;
@@ -251,6 +252,79 @@ public class VSSG implements ApplicationListener {
 
     }
 
+    private float incrementAlpha = 300;
+    private float incrementBeta = 600;
+
+    void cursorPushCamera(OrthographicCamera camera) {
+
+        float mouseX = Gdx.input.getX();
+        float mouseY = Gdx.input.getY();
+        Vector3 unprojected = camera.unproject(new Vector3(mouseX, mouseY, 0));
+        Vector2 position = new Vector2(unprojected.x, unprojected.y);
+        float x = position.x;
+        float y = position.y;
+        float cameraX = camera.position.x;
+        float cameraY = camera.position.y;
+
+
+
+         float upperBoundary = cameraY + (float) viewport.getScreenHeight()/2;
+        float lowerBoundary = cameraY - (float) viewport.getScreenHeight()/2;
+        float rightBoundary = cameraX + (float) viewport.getScreenWidth()/2;
+        float leftBoundary = cameraX - (float) viewport.getScreenWidth()/2;
+
+
+        if (x >= rightBoundary) {
+            camera.position.x += 6;
+            if (x >= rightBoundary+incrementAlpha){
+                camera.position.x += 6;
+                if (x >= rightBoundary+incrementBeta){
+                    camera.position.x += 6;
+
+                }
+            }
+        }
+
+        if (x <= leftBoundary) {
+            camera.position.x -= 6;
+            if (x <= leftBoundary - incrementAlpha){
+                camera.position.x -= 6;
+                if (x <=leftBoundary - incrementBeta){
+                    camera.position.x -= 6;
+
+                }
+            }
+        }
+
+        if (y >= upperBoundary) {
+            camera.position.y += 6;
+            if (y >= upperBoundary + incrementAlpha){
+                camera.position.y += 6;
+               if(y >= upperBoundary + incrementBeta) {
+                   camera.position.y += 6;
+
+               }
+            }
+        }
+
+        if (y <= lowerBoundary) {
+            camera.position.y -= 6;
+            if (y <= upperBoundary - incrementAlpha){
+                camera.position.y -= 6;
+                if(y <= upperBoundary - incrementBeta) {
+                    camera.position.y -= 6;
+
+                    
+                }
+            }
+
+        }
+
+
+
+
+    }
+
     TextButton.TextButtonStyle createGreenTextButton(Skin skin) {
 
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
@@ -263,6 +337,9 @@ public class VSSG implements ApplicationListener {
 
     @Override
     public void render() {
+
+
+
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         // Measure change in time from last frame / render loop execution.
@@ -272,6 +349,10 @@ public class VSSG implements ApplicationListener {
             placeTitleScreenButtons(deltaTime);
         } else if (currentScreen == VSSG.Screen.MAIN_GAME) {
             clearScreenForMainGame();
+            // Check if the cursor is far enough away from center to move the screen if the game is in selection mode.
+            if (cursorMode==CursorMode.SELECTION_MODE){
+                cursorPushCamera(camera);
+            }
             handleClickTimeout();
             handleInput();
             chooseMode();

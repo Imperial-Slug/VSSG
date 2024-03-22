@@ -35,6 +35,7 @@ public class Explosion extends Sprite {
         if (!isPaused) {
             if (active) {
 
+                // Change in x and y is calculated based on the speed of the Ship.
                 Vector2 velocity = new Vector2(this.speed, 0).setAngleDeg(getRotation());
                 position.add(velocity.x * delta, velocity.y * delta);
 
@@ -51,6 +52,7 @@ public class Explosion extends Sprite {
 
                 // Causes the explosion sprite to speed up and slow down until it stops.
                 if (speedCounter <= 150) {
+                    // Using the speedCounter, we continuously change the speed in small increments, adding to the chaos of the animation.
                     this.setSpeed(this.getSpeed() + speedCounter);
                     // FYI Negative values make it go backwards. *taps head*
                     speedCounter += 1f;
