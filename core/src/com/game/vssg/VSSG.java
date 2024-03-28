@@ -267,7 +267,7 @@ public class VSSG implements ApplicationListener {
         float cameraX = camera.position.x;
         float cameraY = camera.position.y;
 
-         float upperBoundary = cameraY + (float) viewport.getScreenHeight()/2;
+        float upperBoundary = cameraY + (float) viewport.getScreenHeight()/2;
         float lowerBoundary = cameraY - (float) viewport.getScreenHeight()/2;
         float rightBoundary = cameraX + (float) viewport.getScreenWidth()/2;
         float leftBoundary = cameraX - (float) viewport.getScreenWidth()/2;
@@ -298,10 +298,10 @@ public class VSSG implements ApplicationListener {
             camera.position.y += 6;
             if (y >= upperBoundary + incrementAlpha){
                 camera.position.y += 6;
-               if(y >= upperBoundary + incrementBeta) {
-                   camera.position.y += 6;
+                if(y >= upperBoundary + incrementBeta) {
+                    camera.position.y += 6;
 
-               }
+                }
             }
         }
 
@@ -925,8 +925,8 @@ public class VSSG implements ApplicationListener {
                 ship.setInactive(ship);
 
                 if (ship.getActionState() != Ship.ActionState.PLAYER_CONTROL && gameMode == GameMode.ARCADE) {
-                   score = score+1;
-                   System.out.println("Point acquired! Score = "+score);
+                    score = score+1;
+                    System.out.println("Point acquired! Score = "+score);
                 }
 
                 Explosion.explode(explosionTexture1, position, 400, explosions, explosionSound1, 128, 0.7f);
