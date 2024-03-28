@@ -918,6 +918,11 @@ public class VSSG implements ApplicationListener {
             laser.setInactive(laser);
             if (ship.getHp() <= 0) {
                 ship.setInactive(ship);
+
+                if (ship.getActionState() != Ship.ActionState.PLAYER_CONTROL && gameMode == GameMode.ARCADE) {
+                    score = score+1;
+                    System.out.println("Point acquired! Score = "+score);
+                }
                 Explosion.explode(explosionTexture1, position, 400, explosions, explosionSound1, 128, 0.7f);
             }
         }
@@ -963,6 +968,8 @@ public class VSSG implements ApplicationListener {
             camera.position.y = playerShip.getY() + playerShip.getHeight() / 2;
         }
 
+
+        // COMPUTER SHIPS BEHAVIOR /////////////////////////////////////////////
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.draw(batch);
@@ -983,12 +990,17 @@ public class VSSG implements ApplicationListener {
                 cpuShip.detectTargets(playerShip, cpuShip.getTargets());
             }
 
+            //  To iterate through the CpuShips list while already iterating
+            //  through it in the main for loop, we need a copy of that list
+            //  to iterate through.  This is why we have the "copiedSet" ObjectSet<CpuShip>.
             for (CpuShip cpuShip2 : copiedSet) {
                 if (cpuShip2 != null) {
                     cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
                 }
             }
         }
+///////////////////////////////////////////////////////
+
 
         for (Explosion explosion : explosions) {
             explosion.update(deltaTime);
