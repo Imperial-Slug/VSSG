@@ -1083,7 +1083,6 @@ public class VSSG implements ApplicationListener {
         }
     }
 
-
     void arcadeModeRefill() {
 
         if (cpuShips.isEmpty()) {
