@@ -252,6 +252,7 @@ public class VSSG implements ApplicationListener {
 
     }
 
+    // Defined here for easy changing.
     private float incrementAlpha = 300;
     private float incrementBeta = 600;
 
@@ -266,13 +267,10 @@ public class VSSG implements ApplicationListener {
         float cameraX = camera.position.x;
         float cameraY = camera.position.y;
 
-
-
          float upperBoundary = cameraY + (float) viewport.getScreenHeight()/2;
         float lowerBoundary = cameraY - (float) viewport.getScreenHeight()/2;
         float rightBoundary = cameraX + (float) viewport.getScreenWidth()/2;
         float leftBoundary = cameraX - (float) viewport.getScreenWidth()/2;
-
 
         if (x >= rightBoundary) {
             camera.position.x += 6;
@@ -314,14 +312,9 @@ public class VSSG implements ApplicationListener {
                 if(y <= upperBoundary - incrementBeta) {
                     camera.position.y -= 6;
 
-                    
                 }
             }
-
         }
-
-
-
 
     }
 
@@ -338,21 +331,25 @@ public class VSSG implements ApplicationListener {
     @Override
     public void render() {
 
-
-
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         // Measure change in time from last frame / render loop execution.
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         if (currentScreen == VSSG.Screen.TITLE && button != null && button2 != null) {
+
             placeTitleScreenButtons(deltaTime);
+
         } else if (currentScreen == VSSG.Screen.MAIN_GAME) {
+
             clearScreenForMainGame();
+            handleArcadeMode();
+
             // Check if the cursor is far enough away from center to move the screen if the game is in selection mode.
             if (cursorMode==CursorMode.SELECTION_MODE){
                 cursorPushCamera(camera);
             }
+
             handleClickTimeout();
             handleInput();
             chooseMode();
@@ -452,6 +449,19 @@ public class VSSG implements ApplicationListener {
 
     }
 
+    void handleArcadeMode(){
+
+        if (gameMode == GameMode.ARCADE) {
+            // If all the enemies in Arcade mode have been defeated, spawn more than last time.
+            if (cpuShips.isEmpty()) {
+                arcadeModeRefill();
+            }
+
+        }
+
+    }
+
+
     void clearScreenForMainGame() {
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
@@ -459,11 +469,7 @@ public class VSSG implements ApplicationListener {
         button3.setVisible(false);
         quitButton.setVisible(false);
 
-        if (gameMode == GameMode.ARCADE) {
-            if (cpuShips.isEmpty()) {
-                arcadeModeRefill();
-            }
-        }
+
     }
 
     void placeTitleScreenButtons(float deltaTime) {
@@ -504,7 +510,7 @@ public class VSSG implements ApplicationListener {
                     cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
                     cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
         } else {
-            System.out.println("PlayerShip couldn't be created. line 365 @ VSSG.java");
+            System.out.println("PlayerShip couldn't be created. Line 365 @ VSSG.java");
             return null;
         }
     }
@@ -855,7 +861,7 @@ public class VSSG implements ApplicationListener {
             PlayerShip playerShip = playerIter.next();
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
 
-            if (playerShip.isActive()) {
+            if (!playerShip.isActive()) {
                 playerIter.remove();
             }
         }
@@ -865,7 +871,7 @@ public class VSSG implements ApplicationListener {
             CpuShip cpuShip = cpuIter.next();
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
 
-            if (cpuShip.isActive()) {
+            if (!cpuShip.isActive()) {
                 cpuIter.remove();
             }
         }
@@ -875,7 +881,7 @@ public class VSSG implements ApplicationListener {
             CpuShip cpuShip = copyIter.next();
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
 
-            if (cpuShip.isActive()) {
+            if (!cpuShip.isActive()) {
                 copyIter.remove();
             }
         }
@@ -899,7 +905,6 @@ public class VSSG implements ApplicationListener {
                 laserIter.remove();
             }
         }
-
     }
 
     void checkLaserCollision(Rectangle laserHitBox, Rectangle shipHitBox, Laser laser, Ship ship) {
@@ -918,6 +923,12 @@ public class VSSG implements ApplicationListener {
             laser.setInactive(laser);
             if (ship.getHp() <= 0) {
                 ship.setInactive(ship);
+
+                if (ship.getActionState() != Ship.ActionState.PLAYER_CONTROL && gameMode == GameMode.ARCADE) {
+                   score = score+1;
+                   System.out.println("Point acquired! Score = "+score);
+                }
+
                 Explosion.explode(explosionTexture1, position, 400, explosions, explosionSound1, 128, 0.7f);
             }
         }
@@ -963,6 +974,7 @@ public class VSSG implements ApplicationListener {
             camera.position.y = playerShip.getY() + playerShip.getHeight() / 2;
         }
 
+        // COMPUTER SHIPS BEHAVIOR /////////////////////////////////////////////
         for (CpuShip cpuShip : cpuShips) {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.draw(batch);
@@ -972,10 +984,9 @@ public class VSSG implements ApplicationListener {
             for (Ship target : cpuShip.getTargets()) {
 
                 if (target != null) {
-                    if (target.isActive()) {
+                    if (!target.isActive()) {
                         cpuShip.getTargets().remove(target);
                     }
-
                 }
             }
 
@@ -983,19 +994,22 @@ public class VSSG implements ApplicationListener {
                 cpuShip.detectTargets(playerShip, cpuShip.getTargets());
             }
 
+            //  To iterate through the CpuShips list while already iterating
+            //  through it in the main for loop, we need a copy of that list
+            //  to iterate through.  This is why we have the "copiedSet" ObjectSet<CpuShip>.
             for (CpuShip cpuShip2 : copiedSet) {
                 if (cpuShip2 != null) {
                     cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
                 }
             }
         }
+////////////////////////////////////////////////////////////////////////////////////
+
 
         for (Explosion explosion : explosions) {
             explosion.update(deltaTime);
-
             explosion.draw(batch);
         }
-
     }
 
     CpuShip.Faction assignFactionByTexture(Texture shipTexture) {
