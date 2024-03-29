@@ -79,11 +79,13 @@ public class VSSG implements ApplicationListener {
     private Viewport viewport;
     private boolean shipSpawnTimeout = false;
     private int shipSpawnCounter = 0;
-    private TextButton button;
+    private TextButton buttonQuitToDesktop;
     private TextButton button2;
     private TextButton button3;
     private TextButton quitButton;
     private TextButton quitButton2;
+    private TextButton scoreDisplay;
+
     private int clickTimeout = 0;
     private GameMode gameMode;
     private int score = 0;
@@ -92,6 +94,7 @@ public class VSSG implements ApplicationListener {
     private Iterator<CpuShip> cpuIter;
     private Iterator<Explosion> explosionIter;
     private Iterator<Laser> laserIter;
+    private BitmapFont scoreFont;
 
 
     // This copyIter is for the copy of the CpuShip ObjectSet list so it can be iterated through recursively.
@@ -140,12 +143,13 @@ public class VSSG implements ApplicationListener {
         initPlayerShip();
         purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y + viewportHeight);
         purpleShipButton.setPosition((float) viewport.getScreenX() / 2, (float) viewport.getScreenY() / 2);
-
         camera.zoom = DEFAULT_ZOOM;
-        camera.update();
+        camera.position.x += viewport.getScreenWidth()*2;
+        camera.position.y += viewport.getScreenHeight()*2;
 
+        camera.update();
         font = new BitmapFont(); // Instantiate the BitmapFont
-        font.getData().setScale((viewportHeight / 111) * camera.zoom / 2);
+        font.getData().setScale((viewportHeight / 150) * camera.zoom / 2);
 
         Skin skin = new Skin();
         skin.add("default-font", font);
@@ -155,32 +159,35 @@ public class VSSG implements ApplicationListener {
 
         // Create red button style.
         TextButton.TextButtonStyle buttonStyle2 = createRedButtonStyle(skin);
+        scoreDisplay = new TextButton("SCORE: "+score, buttonStyle);
+        scoreDisplay.setVisible(false);
 
-        button = new TextButton("QUIT TO DESKTOP", buttonStyle);
-        button.addListener(new ClickListener() {
+        buttonQuitToDesktop = new TextButton("QUIT TO DESKTOP", buttonStyle);
+        buttonQuitToDesktop.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                button.setStyle(buttonStyle2);
+                buttonQuitToDesktop.setStyle(buttonStyle2);
                 Gdx.app.exit();
             }
         });
 
-        quitButton2 = createQuitButton2(buttonStyle);
+        quitButton2 = createQuitButton2(buttonStyle, buttonStyle2);
 
-        button2 = new TextButton("Arcade (currently unimplemented)", buttonStyle);
+
+        button2 = new TextButton("Arcade Mode", buttonStyle);
+
+        // When ARCADE_MODE is chosen from the main screen.
         button2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Arcade mode initiated.");
-                button.setPosition(-524288, -524288);
-                quitButton2.setPosition(-524288, -524288);
-                button2.setStyle(buttonStyle2);
+                buttonQuitToDesktop.setVisible(false);
+                quitButton2.setVisible(false);
                 currentScreen = VSSG.Screen.MAIN_GAME;
-                button2.setStyle(buttonStyle);
-                button3.setPosition(-524288, -524288);
-                button2.setPosition(-524288, -524288);
-                quitButton.setPosition(-524288, -524288);
-
+                button3.setVisible(false);
+                button2.setVisible(false);
+                quitButton.setVisible(false);
+                scoreDisplay.setPosition(camera.position.x + ((float) viewport.getScreenWidth() / 2) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)) * (camera.zoom / 2)));
                 gameMode = GameMode.ARCADE;
 
                 if (playerShips.isEmpty()) {
@@ -199,12 +206,11 @@ public class VSSG implements ApplicationListener {
         button3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                button3.setStyle(buttonStyle2);
                 currentScreen = VSSG.Screen.MAIN_GAME;
-                button3.setStyle(buttonStyle);
-                button3.setPosition(-524288, -524288);
-                button2.setPosition(-524288, -524288);
-                quitButton.setPosition(-524288, -524288);
+                button2 = new TextButton("Arcade Mode", buttonStyle);
+                button3.setVisible(false);
+                button2.setVisible(false);
+                quitButton.setVisible(false);
                 gameMode = GameMode.SANDBOX;
 
                 // Starts the game by calling libGDX's overridden create() method.
@@ -214,7 +220,7 @@ public class VSSG implements ApplicationListener {
                     isPaused = false;
                 }
 
-                Vector2 mousePosition = new Vector2(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+                Vector2 mousePosition = new Vector2((float) WORLD_WIDTH / 2, (float) WORLD_HEIGHT / 2);
                 spawnShip(purpleShipTexture, mousePosition);
                 makePlayerShip(cpuShips.first());
 
@@ -232,11 +238,12 @@ public class VSSG implements ApplicationListener {
             }
         });
 
-        stage.addActor(button);
+        stage.addActor(buttonQuitToDesktop);
         stage.addActor(button2);
         stage.addActor(button3);
         stage.addActor(quitButton);
         stage.addActor(quitButton2);
+        stage.addActor(scoreDisplay);
 
 
     }
@@ -249,12 +256,12 @@ public class VSSG implements ApplicationListener {
         buttonStyle2.font = skin.getFont("default-font");
         buttonStyle2.fontColor = Color.RED;
         return buttonStyle2;
-
     }
 
     private float incrementAlpha = 300;
     private float incrementBeta = 600;
 
+    // For making the camera move with the cursor when in SELECT_MODE.
     void cursorPushCamera(OrthographicCamera camera) {
 
         float mouseX = Gdx.input.getX();
@@ -266,13 +273,10 @@ public class VSSG implements ApplicationListener {
         float cameraX = camera.position.x;
         float cameraY = camera.position.y;
 
-
-
          float upperBoundary = cameraY + (float) viewport.getScreenHeight()/2;
         float lowerBoundary = cameraY - (float) viewport.getScreenHeight()/2;
         float rightBoundary = cameraX + (float) viewport.getScreenWidth()/2;
         float leftBoundary = cameraX - (float) viewport.getScreenWidth()/2;
-
 
         if (x >= rightBoundary) {
             camera.position.x += 6;
@@ -320,9 +324,6 @@ public class VSSG implements ApplicationListener {
 
         }
 
-
-
-
     }
 
     TextButton.TextButtonStyle createGreenTextButton(Skin skin) {
@@ -338,14 +339,12 @@ public class VSSG implements ApplicationListener {
     @Override
     public void render() {
 
-
-
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         // Measure change in time from last frame / render loop execution.
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        if (currentScreen == VSSG.Screen.TITLE && button != null && button2 != null) {
+        if (currentScreen == VSSG.Screen.TITLE && buttonQuitToDesktop != null && button2 != null) {
             placeTitleScreenButtons(deltaTime);
         } else if (currentScreen == VSSG.Screen.MAIN_GAME) {
             clearScreenForMainGame();
@@ -353,6 +352,7 @@ public class VSSG implements ApplicationListener {
             if (cursorMode==CursorMode.SELECTION_MODE){
                 cursorPushCamera(camera);
             }
+
             handleClickTimeout();
             handleInput();
             chooseMode();
@@ -374,10 +374,12 @@ public class VSSG implements ApplicationListener {
             stage.draw();
             batch.end();
             handlePlayerHealthBar();
+            scoreDisplay.setPosition(camera.position.x - ((float) viewport.getScreenWidth() / 2) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)-150 ) * (camera.zoom / 2)));
+            scoreDisplay.setText("SCORE: "+score);
+
         }
 
     }
-
 
     void handlePlayerHealthBar() {
 
@@ -398,28 +400,21 @@ public class VSSG implements ApplicationListener {
 
     }
 
-    TextButton createQuitButton2(TextButton.TextButtonStyle buttonStyle) {
+    TextButton createQuitButton2(TextButton.TextButtonStyle buttonStyle, TextButton.TextButtonStyle buttonStyle2) {
 
         quitButton2 = new TextButton("QUIT TO MENU", buttonStyle);
         quitButton2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
                 // When the quit button is clicked, set the screen to the TITLE screen.
                 // Move the other buttons out of view.
+                quitButton2.setStyle(buttonStyle2);
                 currentScreen = VSSG.Screen.TITLE;
-                button.setPosition(-524288, -524288);
-                quitButton2.setPosition(-524288, -524288);
-
+                buttonQuitToDesktop.setVisible(false);
+                quitButton2.setVisible(false);
+                scoreDisplay.setVisible(false);
                 // Eliminate any residual ships that might not  have been removed when the game was exited to the pause screen.
                 flushShips();
-
-                // Signals beginning, execution and the end of this frame's batch being drawn.
-                // This batch is just the font for the opening screen.
-                batch.begin();
-                font.draw(batch, "         VSSG", (Gdx.graphics.getWidth() * 0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f) + 512);
-                batch.end();
-
             }
         });
 
@@ -430,13 +425,11 @@ public class VSSG implements ApplicationListener {
 
         Vector2 buttonPosition = new Vector2(camera.position.x, camera.position.y);
         Vector2 quitButton2Position = new Vector2(camera.position.x, camera.position.y);
-        if (cursorMode == CursorMode.MENU_MODE && button != null) {
+        if (cursorMode == CursorMode.MENU_MODE && buttonQuitToDesktop != null) {
             populateMenu(buttonPosition, quitButton2Position);
         } else {
-            if (button != null) {
-                button.setPosition(-524288, -524288);
-                button.setVisible(false);
-                quitButton2.setPosition(-524288, -524288);
+            if (buttonQuitToDesktop != null && quitButton2 != null) {
+                buttonQuitToDesktop.setVisible(false);
                 quitButton2.setVisible(false);
 
             }
@@ -444,11 +437,10 @@ public class VSSG implements ApplicationListener {
     }
 
     void populateMenu(Vector2 buttonPosition, Vector2 quitButton2Position) {
-        button.setPosition(buttonPosition.x - button.getWidth() / 2, buttonPosition.y);
+        buttonQuitToDesktop.setPosition(buttonPosition.x - buttonQuitToDesktop.getWidth() / 2, buttonPosition.y);
         quitButton2.setPosition(quitButton2Position.x - quitButton2.getWidth() / 2, quitButton2Position.y + 300);
-        button.setVisible(true);
+        buttonQuitToDesktop.setVisible(true);
         quitButton2.setVisible(true);
-
 
     }
 
@@ -471,16 +463,15 @@ public class VSSG implements ApplicationListener {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
 
-        button.setPosition(-524288, -524288);
-        quitButton2.setPosition(-524288, -524288);
+        buttonQuitToDesktop.setVisible(false);
+        quitButton2.setVisible(false);
         button2.setVisible(true);
         button3.setVisible(true);
         quitButton.setVisible(true);
         stage.act(deltaTime);
 
         batch.begin();
-
-        font.draw(batch, "          VSSG", (Gdx.graphics.getWidth() * 0.25f) - 100, (Gdx.graphics.getHeight() * 0.75f) + 512);
+        font.draw(batch, "          VSSG", (Gdx.graphics.getWidth() * 0.25f) , (Gdx.graphics.getHeight() * 0.75f) + 512);
         stage.draw();
 
         Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 200);
@@ -530,7 +521,7 @@ public class VSSG implements ApplicationListener {
         laser2Texture = new Texture("laser2.png");
         backgroundTexture = new Texture("background.png");
         explosionTexture1 = new Texture("explosion_orange.png");
-        explosionTexture2 = new Texture("explosion2.png");
+       // explosionTexture2 = new Texture("explosion2.png");
         exhaustTexture = new Texture("ship_exhaust.png");
         purpleShipButtonTexture = new Texture("purple_ship_button.png");
         tealShipButtonTexture = new Texture("teal_ship_button.png");
@@ -539,7 +530,7 @@ public class VSSG implements ApplicationListener {
         purpleShipButton = new Sprite(purpleShipButtonTexture);
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
         laserBlast1 = Gdx.audio.newSound(Gdx.files.internal("laserblast1.wav"));
-        laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
+      laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
         healthBarShapeRenderer = new ShapeRenderer();
 
     }
@@ -577,7 +568,6 @@ public class VSSG implements ApplicationListener {
         tealShipButton = new Sprite(tealShipButtonTexture);
         batch = new SpriteBatch();
 
-
     }
 
     // Release control of the currently controlled ship.
@@ -595,6 +585,8 @@ public class VSSG implements ApplicationListener {
         cpuShips.add(cpuShip);
         copiedSet.add(cpuShip);
     }
+
+
 
     // Determines which state th game should be in, depending on whether a PlayerShip is active and whether the game is paused.
     // When the game is paused, just go to MENU_MODE (put the pause screen up);
@@ -715,12 +707,15 @@ public class VSSG implements ApplicationListener {
 
 
         if (InputManager.isCPressed()) {
-            if (!isPaused) {
-                if (!playerShips.isEmpty()) {
-                    relinquishControl(playerShips.first());
+
+            if(gameMode != GameMode.ARCADE) {
+
+                if (!isPaused) {
+                    if (!playerShips.isEmpty()) {
+                        relinquishControl(playerShips.first());
+                    }
                 }
             }
-
         }
     }
 
