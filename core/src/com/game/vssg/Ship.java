@@ -91,8 +91,6 @@ public class Ship extends Sprite {
 
     }
 
-    // TODO: Make it so we have realistic movement that conserves momentum in any x or y direction,
-    //  and not direction based movement as it is now.  Maybe by implementing speedX and speedY attributes???
     // Determining the next position of the ship every frame.
     public void update(float delta, Ship ship, long WORLD_WIDTH, long WORLD_HEIGHT) {
 
@@ -459,7 +457,7 @@ public class Ship extends Sprite {
                     sourceShip.rotate(rotateAmount);
                 }
             } else {
-                // TODO: If an unexpected value comes through, just snap it to face the ship.  I will fix this later. O_o
+                // TODO: If an unexpected value comes through, it just snaps to face the ship.  I will fix this later. O_o
                 sourceShip.setRotation(targetAngle);
             }
         }

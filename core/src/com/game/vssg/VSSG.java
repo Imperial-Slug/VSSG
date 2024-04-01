@@ -149,7 +149,7 @@ public class VSSG implements ApplicationListener {
 
         camera.update();
         font = new BitmapFont(); // Instantiate the BitmapFont
-        font.getData().setScale((viewportHeight / 150) * camera.zoom / 2);
+        font.getData().setScale((viewportHeight / 111) * camera.zoom / 2);
 
         Skin skin = new Skin();
         skin.add("default-font", font);
@@ -160,7 +160,7 @@ public class VSSG implements ApplicationListener {
         // Create red button style.
         TextButton.TextButtonStyle buttonStyle2 = createRedButtonStyle(skin);
         scoreDisplay = new TextButton("SCORE: "+score, buttonStyle);
-        scoreDisplay.setVisible(false);
+       // scoreDisplay.setVisible(false);
 
         buttonQuitToDesktop = new TextButton("QUIT TO DESKTOP", buttonStyle);
         buttonQuitToDesktop.addListener(new ClickListener() {
@@ -173,7 +173,6 @@ public class VSSG implements ApplicationListener {
 
         quitButton2 = createQuitButton2(buttonStyle, buttonStyle2);
 
-
         button2 = new TextButton("Arcade Mode", buttonStyle);
 
         // When ARCADE_MODE is chosen from the main screen.
@@ -181,13 +180,17 @@ public class VSSG implements ApplicationListener {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Arcade mode initiated.");
+
                 buttonQuitToDesktop.setVisible(false);
                 quitButton2.setVisible(false);
-                currentScreen = VSSG.Screen.MAIN_GAME;
                 button3.setVisible(false);
                 button2.setVisible(false);
                 quitButton.setVisible(false);
+                scoreDisplay.setVisible(true);
                 scoreDisplay.setPosition(camera.position.x + ((float) viewport.getScreenWidth() / 2) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)) * (camera.zoom / 2)));
+
+                currentScreen = VSSG.Screen.MAIN_GAME;
+
                 gameMode = GameMode.ARCADE;
 
                 if (playerShips.isEmpty()) {
@@ -211,6 +214,8 @@ public class VSSG implements ApplicationListener {
                 button3.setVisible(false);
                 button2.setVisible(false);
                 quitButton.setVisible(false);
+                scoreDisplay.setVisible(false);
+
                 gameMode = GameMode.SANDBOX;
 
                 // Starts the game by calling libGDX's overridden create() method.
@@ -258,9 +263,6 @@ public class VSSG implements ApplicationListener {
         return buttonStyle2;
     }
 
-    private float incrementAlpha = 300;
-    private float incrementBeta = 600;
-
     // For making the camera move with the cursor when in SELECT_MODE.
     void cursorPushCamera(OrthographicCamera camera) {
 
@@ -278,11 +280,13 @@ public class VSSG implements ApplicationListener {
         float rightBoundary = cameraX + (float) viewport.getScreenWidth()/2;
         float leftBoundary = cameraX - (float) viewport.getScreenWidth()/2;
 
+        float incrementAlpha = 300;
+        float incrementBeta = 600;
         if (x >= rightBoundary) {
             camera.position.x += 6;
-            if (x >= rightBoundary+incrementAlpha){
+            if (x >= rightBoundary+ incrementAlpha){
                 camera.position.x += 6;
-                if (x >= rightBoundary+incrementBeta){
+                if (x >= rightBoundary+ incrementBeta){
                     camera.position.x += 6;
 
                 }
