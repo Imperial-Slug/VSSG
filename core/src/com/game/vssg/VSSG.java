@@ -51,6 +51,7 @@ public class VSSG implements ApplicationListener {
     private Sound laserBlast2;
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
+    // Determines how the
     private final int wrapDivisor = (WORLD_WIDTH / 4096);
     private float zoomSpeed = 0.005f;
     public static boolean isPaused = false;
@@ -211,16 +212,12 @@ public class VSSG implements ApplicationListener {
             public void clicked(InputEvent event, float x, float y) {
                 currentScreen = VSSG.Screen.MAIN_GAME;
                 button2 = new TextButton("Arcade Mode", buttonStyle);
-                button3.setVisible(false);
-                button2.setVisible(false);
-                quitButton.setVisible(false);
-                scoreDisplay.setVisible(false);
-
                 gameMode = GameMode.SANDBOX;
 
                 // Starts the game by calling libGDX's overridden create() method.
                 create();
 
+                // Avoid getting stuck on pause for any reason at the beginning.
                 if (isPaused) {
                     isPaused = false;
                 }
@@ -357,6 +354,14 @@ public class VSSG implements ApplicationListener {
                 cursorPushCamera(camera);
             }
 
+            if (gameMode == GameMode.ARCADE) {
+                if (cpuShips.isEmpty()) {
+                    arcadeModeRefill();
+                    scoreDisplay.setVisible(true);
+
+                }
+            } else scoreDisplay.setVisible(false);
+
             handleClickTimeout();
             handleInput();
             chooseMode();
@@ -378,8 +383,7 @@ public class VSSG implements ApplicationListener {
             stage.draw();
             batch.end();
             handlePlayerHealthBar();
-            scoreDisplay.setPosition(camera.position.x - ((float) viewport.getScreenWidth() / 2) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)-150 ) * (camera.zoom / 2)));
-            scoreDisplay.setText("SCORE: "+score);
+            scoreDisplay.setPosition(camera.position.x - ((float) viewport.getScreenWidth() / 4) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)-150 ) * (camera.zoom / 2)));
 
         }
 
@@ -416,7 +420,6 @@ public class VSSG implements ApplicationListener {
                 currentScreen = VSSG.Screen.TITLE;
                 buttonQuitToDesktop.setVisible(false);
                 quitButton2.setVisible(false);
-                scoreDisplay.setVisible(false);
                 // Eliminate any residual ships that might not  have been removed when the game was exited to the pause screen.
                 flushShips();
             }
@@ -436,6 +439,7 @@ public class VSSG implements ApplicationListener {
                 buttonQuitToDesktop.setVisible(false);
                 quitButton2.setVisible(false);
 
+
             }
         }
     }
@@ -445,21 +449,16 @@ public class VSSG implements ApplicationListener {
         quitButton2.setPosition(quitButton2Position.x - quitButton2.getWidth() / 2, quitButton2Position.y + 300);
         buttonQuitToDesktop.setVisible(true);
         quitButton2.setVisible(true);
+        scoreDisplay.setVisible(false);
+
 
     }
 
     void clearScreenForMainGame() {
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
-        button2.setVisible(false);
-        button3.setVisible(false);
-        quitButton.setVisible(false);
 
-        if (gameMode == GameMode.ARCADE) {
-            if (cpuShips.isEmpty()) {
-                arcadeModeRefill();
-            }
-        }
+
     }
 
     void placeTitleScreenButtons(float deltaTime) {
@@ -472,6 +471,7 @@ public class VSSG implements ApplicationListener {
         button2.setVisible(true);
         button3.setVisible(true);
         quitButton.setVisible(true);
+        scoreDisplay.setVisible(false);
         stage.act(deltaTime);
 
         batch.begin();
