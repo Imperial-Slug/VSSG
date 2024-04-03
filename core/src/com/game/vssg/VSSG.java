@@ -439,7 +439,6 @@ public class VSSG implements ApplicationListener {
                 buttonQuitToDesktop.setVisible(false);
                 quitButton2.setVisible(false);
 
-
             }
         }
     }
@@ -451,13 +450,11 @@ public class VSSG implements ApplicationListener {
         quitButton2.setVisible(true);
         scoreDisplay.setVisible(false);
 
-
     }
 
     void clearScreenForMainGame() {
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
-
 
     }
 
@@ -475,7 +472,7 @@ public class VSSG implements ApplicationListener {
         stage.act(deltaTime);
 
         batch.begin();
-        font.draw(batch, "          VSSG", (Gdx.graphics.getWidth() * 0.25f) , (Gdx.graphics.getHeight() * 0.75f) + 512);
+        font.draw(batch, "          VSSG", ((Gdx.graphics.getWidth() * 0.21f )) , (Gdx.graphics.getHeight() * 0.75f) + 512);
         stage.draw();
 
         Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 200);
@@ -589,8 +586,6 @@ public class VSSG implements ApplicationListener {
         cpuShips.add(cpuShip);
         copiedSet.add(cpuShip);
     }
-
-
 
     // Determines which state th game should be in, depending on whether a PlayerShip is active and whether the game is paused.
     // When the game is paused, just go to MENU_MODE (put the pause screen up);
@@ -913,13 +908,13 @@ public class VSSG implements ApplicationListener {
                 ship.decreaseHp(50);
             }
 
-
             laser.setInactive(laser);
             if (ship.getHp() <= 0) {
                 ship.setInactive(ship);
 
                 if (ship.getActionState() != Ship.ActionState.PLAYER_CONTROL && gameMode == GameMode.ARCADE) {
                     score = score+1;
+                    scoreDisplay.setText("SCORE: "+score);
                     System.out.println("Point acquired! Score = "+score);
                 }
                 Explosion.explode(explosionTexture1, position, 400, explosions, explosionSound1, 128, 0.7f);
