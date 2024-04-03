@@ -472,7 +472,7 @@ public class VSSG implements ApplicationListener {
         stage.act(deltaTime);
 
         batch.begin();
-        font.draw(batch, "          VSSG", ((Gdx.graphics.getWidth() * 0.21f )) , (Gdx.graphics.getHeight() * 0.75f) + 512);
+        font.draw(batch, "          VSSG", ((Gdx.graphics.getWidth() * 0.20f )) , (Gdx.graphics.getHeight() * 0.9f));
         stage.draw();
 
         Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 200);
