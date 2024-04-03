@@ -45,7 +45,6 @@ public class VSSG implements ApplicationListener {
     private ObjectSet<Laser> lasers;
     private SpriteBatch batch;
     VSSG.Screen currentScreen = VSSG.Screen.TITLE;
-
     private Sound explosionSound1;
     private Sound laserBlast1;
     private Sound laserBlast2;
@@ -95,8 +94,6 @@ public class VSSG implements ApplicationListener {
     private Iterator<CpuShip> cpuIter;
     private Iterator<Explosion> explosionIter;
     private Iterator<Laser> laserIter;
-    private BitmapFont scoreFont;
-
 
     // This copyIter is for the copy of the CpuShip ObjectSet list so it can be iterated through recursively.
     // If there was only one copy, some of the nested for loops in functions in this program would not be possible.
@@ -161,7 +158,6 @@ public class VSSG implements ApplicationListener {
         // Create red button style.
         TextButton.TextButtonStyle buttonStyle2 = createRedButtonStyle(skin);
         scoreDisplay = new TextButton("SCORE: "+score, buttonStyle);
-       // scoreDisplay.setVisible(false);
 
         buttonQuitToDesktop = new TextButton("QUIT TO DESKTOP", buttonStyle);
         buttonQuitToDesktop.addListener(new ClickListener() {
@@ -338,22 +334,14 @@ public class VSSG implements ApplicationListener {
         return buttonStyle;
     }
 
-    // MAIN GAME LOOP: "RENDER LOOP" //////////////////////////////
-
-    @Override
-    public void render() {
-
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
-        // Measure change in time from last frame / render loop execution.
-        float deltaTime = Gdx.graphics.getDeltaTime();
+    void handleScreenMode(float deltaTime) {
 
         if (currentScreen == VSSG.Screen.TITLE && buttonQuitToDesktop != null && button2 != null) {
             placeTitleScreenButtons(deltaTime);
         } else if (currentScreen == VSSG.Screen.MAIN_GAME) {
             clearScreenForMainGame();
             // Check if the cursor is far enough away from center to move the screen if the game is in selection mode.
-            if (cursorMode==CursorMode.SELECTION_MODE){
+            if (cursorMode == CursorMode.SELECTION_MODE){
                 cursorPushCamera(camera);
             }
 
@@ -397,12 +385,12 @@ public class VSSG implements ApplicationListener {
         for (PlayerShip playerShip : playerShips) {
 
             healthBarShapeRenderer.setProjectionMatrix(camera.combined);
-
+// Define the inside of the rectangle for the healthbar.
             healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             healthBarShapeRenderer.setColor(Color.RED);
             healthBarShapeRenderer.rect(camera.position.x + ((float) viewport.getScreenWidth() / 2) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)) * (camera.zoom / 2)), playerShip.getHp() * 5 * camera.zoom / 2, 50 * camera.zoom / 2);
             healthBarShapeRenderer.end();
-
+// Define the border of the rectangle for the healthbar.
             healthBarShapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             healthBarShapeRenderer.setColor(Color.WHITE);
             healthBarShapeRenderer.rect(camera.position.x + ((float) viewport.getScreenWidth() / 2) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)) * (camera.zoom / 2)), 500 * camera.zoom / 2, 50 * camera.zoom / 2);
@@ -424,11 +412,15 @@ public class VSSG implements ApplicationListener {
                 quitButton2.setVisible(false);
                 // Eliminate any residual ships that might not have been removed when the game was exited to the pause screen.
                 flushShips();
+                // Draw the title again.
+                batch.begin();
+                font.draw(batch, "VSSG", ((Gdx.graphics.getWidth() * 0.4f )) , (Gdx.graphics.getHeight() * 0.9f));
+                batch.end();
             }
         });
-
         return quitButton2;
     }
+
 
     void setButtonPositions() {
 
@@ -474,7 +466,7 @@ public class VSSG implements ApplicationListener {
         stage.act(deltaTime);
 
         batch.begin();
-        font.draw(batch, "          VSSG", ((Gdx.graphics.getWidth() * 0.20f )) , (Gdx.graphics.getHeight() * 0.9f));
+        font.draw(batch, "VSSG", ((Gdx.graphics.getWidth() * 0.4f )) , (Gdx.graphics.getHeight() * 0.9f));
         stage.draw();
 
         Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 200);
@@ -498,7 +490,7 @@ public class VSSG implements ApplicationListener {
                     cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
                     cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
         } else {
-            System.out.println("PlayerShip couldn't be created. line 365 @ VSSG.java");
+            System.out.println("PlayerShip couldn't be created. Line 365 @ VSSG.java");
             return null;
         }
     }
@@ -1042,6 +1034,7 @@ public class VSSG implements ApplicationListener {
         }
     }
 
+
     @Override
     public void dispose() {
         batch.dispose();
@@ -1106,5 +1099,17 @@ public class VSSG implements ApplicationListener {
 
     }
 
+    // MAIN GAME LOOP: "RENDER LOOP" //////////////////////////////
 
+    @Override
+    public void render() {
+
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+        // Measure change in time from last frame / render loop execution.
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        // Tell the game what to do based on what screen/activity it is supposed ot be running.
+        handleScreenMode(deltaTime);
+
+    }
 }
