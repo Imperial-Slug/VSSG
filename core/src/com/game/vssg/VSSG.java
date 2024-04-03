@@ -129,6 +129,7 @@ public class VSSG implements ApplicationListener {
 
     }
 
+    // This is a built-in and overridden method of LibGDX that runs at the beginning of the game by default to initialize key variables.
     @Override
     public void create() {
 
@@ -139,8 +140,7 @@ public class VSSG implements ApplicationListener {
         backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         initObjects(viewportWidth, viewportHeight);
         initPlayerShip();
-        purpleShipButton.setOrigin(camera.position.x + viewportWidth, camera.position.y + viewportHeight);
-        purpleShipButton.setPosition((float) viewport.getScreenX() / 2, (float) viewport.getScreenY() / 2);
+
         camera.zoom = DEFAULT_ZOOM;
         camera.position.x += viewport.getScreenWidth()*2;
         camera.position.y += viewport.getScreenHeight()*2;
@@ -412,9 +412,14 @@ public class VSSG implements ApplicationListener {
                 quitButton2.setVisible(false);
                 // Eliminate any residual ships that might not have been removed when the game was exited to the pause screen.
                 flushShips();
-                // Draw the title again.
+
+                // Start over by calling the create() method.
+               create();
+                camera.position.x += (float) viewport.getScreenWidth() /2;
+                camera.position.y += (float) viewport.getScreenHeight() /2;
                 batch.begin();
-                font.draw(batch, "VSSG", ((Gdx.graphics.getWidth() * 0.4f )) , (Gdx.graphics.getHeight() * 0.9f));
+               // TODO: Replace this with a more logo-like sprite.
+                font.draw(batch, "VSSG", ((float) viewport.getScreenWidth() /5) , (float) viewport.getScreenHeight() /5);
                 batch.end();
             }
         });
@@ -454,8 +459,7 @@ public class VSSG implements ApplicationListener {
 
     void placeTitleScreenButtons(float deltaTime) {
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT);
+       clearScreenForMainGame();
 
         buttonQuitToDesktop.setVisible(false);
         quitButton2.setVisible(false);
@@ -466,6 +470,10 @@ public class VSSG implements ApplicationListener {
         stage.act(deltaTime);
 
         batch.begin();
+      //  backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+        batch.draw(backgroundTexture, -5000f,  -1000f, (float) WORLD_WIDTH /2, (float) WORLD_HEIGHT /2, 0, 0, wrapDivisor, wrapDivisor);
+
         font.draw(batch, "VSSG", ((Gdx.graphics.getWidth() * 0.4f )) , (Gdx.graphics.getHeight() * 0.9f));
         stage.draw();
 
@@ -477,6 +485,7 @@ public class VSSG implements ApplicationListener {
 
         Vector2 quitbuttonPosition = new Vector2(camera.position.x, camera.position.y - 600);
         quitButton.setPosition(quitbuttonPosition.x - quitButton.getWidth() / 2, quitbuttonPosition.y);
+
         batch.end();
     }
 
