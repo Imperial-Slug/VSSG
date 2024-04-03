@@ -277,47 +277,50 @@ public class VSSG implements ApplicationListener {
         float rightBoundary = cameraX + (float) viewport.getScreenWidth()/2;
         float leftBoundary = cameraX - (float) viewport.getScreenWidth()/2;
 
-        float incrementAlpha = 300;
-        float incrementBeta = 600;
+        // The increment variables are just for easy swapping in and out.
+        float incrementBoundaryAlpha = 300;
+        float incrementBoundaryBeta = 600;
+        float incrementCameraPosition = 6;
+
         if (x >= rightBoundary) {
-            camera.position.x += 6;
-            if (x >= rightBoundary+ incrementAlpha){
-                camera.position.x += 6;
-                if (x >= rightBoundary+ incrementBeta){
-                    camera.position.x += 6;
+            camera.position.x += incrementCameraPosition;
+            if (x >= rightBoundary+ incrementBoundaryAlpha){
+                camera.position.x += incrementCameraPosition;
+                if (x >= rightBoundary+ incrementBoundaryBeta){
+                    camera.position.x += incrementCameraPosition;
 
                 }
             }
         }
 
         if (x <= leftBoundary) {
-            camera.position.x -= 6;
-            if (x <= leftBoundary - incrementAlpha){
-                camera.position.x -= 6;
-                if (x <=leftBoundary - incrementBeta){
-                    camera.position.x -= 6;
+            camera.position.x -= incrementCameraPosition;
+            if (x <= leftBoundary - incrementBoundaryAlpha){
+                camera.position.x -= incrementCameraPosition;
+                if (x <=leftBoundary - incrementBoundaryBeta){
+                    camera.position.x -= incrementCameraPosition;
 
                 }
             }
         }
 
         if (y >= upperBoundary) {
-            camera.position.y += 6;
-            if (y >= upperBoundary + incrementAlpha){
-                camera.position.y += 6;
-               if(y >= upperBoundary + incrementBeta) {
-                   camera.position.y += 6;
+            camera.position.y += incrementCameraPosition;
+            if (y >= upperBoundary + incrementBoundaryAlpha){
+                camera.position.y += incrementCameraPosition;
+               if(y >= upperBoundary + incrementBoundaryBeta) {
+                   camera.position.y += incrementCameraPosition;
 
                }
             }
         }
 
         if (y <= lowerBoundary) {
-            camera.position.y -= 6;
-            if (y <= upperBoundary - incrementAlpha){
-                camera.position.y -= 6;
-                if(y <= upperBoundary - incrementBeta) {
-                    camera.position.y -= 6;
+            camera.position.y -= incrementCameraPosition;
+            if (y <= upperBoundary - incrementBoundaryAlpha){
+                camera.position.y -= incrementCameraPosition;
+                if(y <= upperBoundary - incrementBoundaryBeta) {
+                    camera.position.y -= incrementCameraPosition;
 
                     
                 }
@@ -415,12 +418,11 @@ public class VSSG implements ApplicationListener {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // When the quit button is clicked, set the screen to the TITLE screen.
-                // Move the other buttons out of view.
                 quitButton2.setStyle(buttonStyle2);
                 currentScreen = VSSG.Screen.TITLE;
                 buttonQuitToDesktop.setVisible(false);
                 quitButton2.setVisible(false);
-                // Eliminate any residual ships that might not  have been removed when the game was exited to the pause screen.
+                // Eliminate any residual ships that might not have been removed when the game was exited to the pause screen.
                 flushShips();
             }
         });
@@ -661,7 +663,6 @@ public class VSSG implements ApplicationListener {
             }
         }
 
-        // LASER TIMING & DE-SPAWNING.
 // For player ship only during runtime. CpuShip laser timing is handled differently.
         handlePlayerLaserSpawn();
 
@@ -669,7 +670,6 @@ public class VSSG implements ApplicationListener {
         if (InputManager.isLeftMousePressed()) {
             playerSpawnTealShip();
         }
-// W KEY CONTROLS
         float speedLimit = 600f;
         if (InputManager.isWPressed()) {
             handleSpeedUp(speedLimit);
