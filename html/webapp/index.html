@@ -27,5 +27,22 @@
               document.addEventListener('contextmenu', event => event.preventDefault());
               document.getElementById('embed-html').addEventListener('mousedown', handleMouseDown, false);
               document.getElementById('embed-html').addEventListener('mouseup', handleMouseUp, false);
+              document.getElementById('embed-html').addEventListener('contextmenu', handleMouseDown, false);
+              
+              document.addEventListener('keydown', function(event) {
+    if(event.keyCode == 65) {
+        // Move ('left');
+    }
+    else if(event.keyCode == 68) {
+        // Move ('right');
+    }
+    else if(event.keyCode == 87) {
+        // Move ('up');
+    }
+    else if(event.keyCode == 83) {
+        // Move ('down');
+    }
+}
+              
        </script>
 </html>

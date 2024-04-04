@@ -11,8 +11,8 @@ public class DesktopLauncher {
         config.setTitle("VSSG");
         config.setWindowedMode(1280, 720);
         config.useVsync(false);
-
         config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
+
         new Lwjgl3Application(new VSSG(), config);
     }
 }
