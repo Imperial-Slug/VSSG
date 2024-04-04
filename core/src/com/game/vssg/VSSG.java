@@ -40,7 +40,7 @@ public class VSSG implements ApplicationListener {
 
     private ObjectSet<PlayerShip> playerShips;
     private ObjectSet<CpuShip> cpuShips;
-    private ObjectSet<CpuShip> copiedSet;
+    private ObjectSet<CpuShip> cpuShipsCopy;
     private ObjectSet<Explosion> explosions;
     private ObjectSet<Laser> lasers;
     private SpriteBatch batch;
@@ -95,6 +95,7 @@ public class VSSG implements ApplicationListener {
     private Iterator<Explosion> explosionIter;
     private Iterator<Laser> laserIter;
 
+
     // This copyIter is for the copy of the CpuShip ObjectSet list so it can be iterated through recursively.
     // If there was only one copy, some of the nested for loops in functions in this program would not be possible.
     private Iterator<CpuShip> copyIter;
@@ -132,6 +133,7 @@ public class VSSG implements ApplicationListener {
     // This is a built-in and overridden method of LibGDX that runs at the beginning of the game by default to initialize key variables.
     @Override
     public void create() {
+        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
         cursorMode = CursorMode.MENU_MODE;
         float viewportWidth = Gdx.graphics.getWidth();
@@ -362,7 +364,7 @@ public class VSSG implements ApplicationListener {
             cpuIter = cpuShips.iterator();
             explosionIter = explosions.iterator();
             laserIter = lasers.iterator();
-            copyIter = copiedSet.iterator();
+            copyIter = cpuShipsCopy.iterator();
 
             stage.act(deltaTime);
             checkIterators(playerIter, explosionIter, cpuIter, copyIter, laserIter, deltaTime);
@@ -493,7 +495,7 @@ public class VSSG implements ApplicationListener {
         if (playerShips.isEmpty()) {
             System.out.println("makePlayerShip");
             cpuShip.setInactive(cpuShip);
-            copiedSet.remove(cpuShip);
+            cpuShipsCopy.remove(cpuShip);
             cpuShip.getTargets().clear();
             return new PlayerShip(cpuShip.getTexture(), cpuShip.getExhaustTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
                     cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
@@ -564,7 +566,7 @@ public class VSSG implements ApplicationListener {
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
         cpuShips = new ObjectSet<>();
-        copiedSet = new ObjectSet<>(cpuShips);
+        cpuShipsCopy = new ObjectSet<>(cpuShips);
         playerShips = new ObjectSet<>();
         explosions = new ObjectSet<>();
         lasers = new ObjectSet<>();
@@ -587,7 +589,7 @@ public class VSSG implements ApplicationListener {
         playerShips.remove(playerShip);
         playerShip.increaseHp(100 - playerShip.getHp());
         cpuShips.add(cpuShip);
-        copiedSet.add(cpuShip);
+        cpuShipsCopy.add(cpuShip);
     }
 
     // Determines which state th game should be in, depending on whether a PlayerShip is active and whether the game is paused.
@@ -719,6 +721,7 @@ public class VSSG implements ApplicationListener {
         }
     }
 
+    // Creates a ship from the player's input.
     void playerSpawnTealShip() {
 
         if (gameMode == GameMode.SANDBOX) {
@@ -987,8 +990,8 @@ public class VSSG implements ApplicationListener {
 
             //  To iterate through the CpuShips list while already iterating
             //  through it in the main for loop, we need a copy of that list
-            //  to iterate through.  This is why we have the "copiedSet" ObjectSet<CpuShip>.
-            for (CpuShip cpuShip2 : copiedSet) {
+            //  to iterate through.  This is why we have the "cpuShipsCopy" ObjectSet<CpuShip>.
+            for (CpuShip cpuShip2 : cpuShipsCopy) {
                 if (cpuShip2 != null) {
                     cpuShip.detectTargets(cpuShip2, cpuShip.getTargets());
                 }
@@ -1036,7 +1039,7 @@ public class VSSG implements ApplicationListener {
             cpuShip.setOrigin(cpuShip.getOriginX(), cpuShip.getOriginY());
 
             cpuShips.add(cpuShip);
-            copiedSet.add(cpuShip);
+            cpuShipsCopy.add(cpuShip);
 
             shipSpawnCounter = 0;
             shipSpawnTimeout = true;
@@ -1100,7 +1103,7 @@ public class VSSG implements ApplicationListener {
                 enemy.setOrigin(enemy.getOriginX(), enemy.getOriginY());
 
                 cpuShips.add(enemy);
-                copiedSet.add(enemy);
+                cpuShipsCopy.add(enemy);
                 i++;
             }
 
