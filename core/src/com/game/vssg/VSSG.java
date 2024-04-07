@@ -146,6 +146,8 @@ public class VSSG implements ApplicationListener {
         Gdx.input.setCatchKey(Input.Keys.F, true);
         Gdx.input.setCatchKey(Input.Keys.T, true);
         Gdx.input.setCatchKey(Input.Keys.Z, true);
+        Gdx.input.setCatchKey(Input.Keys.ESCAPE, true);
+
 
     }
 
