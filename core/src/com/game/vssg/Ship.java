@@ -173,6 +173,10 @@ public class Ship extends Sprite {
         }
     }
 
+    // Each ship's action counter keeps track of how long they have been doing
+// each action so there is enough time to execute it before switching behaviors.
+    // Things like turns are handled via a counter incrementing as the
+    // object moves a degree or so at a time, thus acheiving things like quarter turns in either direction.
     void handleActionState(Ship ship, Texture laser2Texture, Texture greenLaserTexture, Texture redLaserTexture, Texture blueLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
         if (!isPaused) {
             ship.handleIdle(ship);
@@ -358,7 +362,7 @@ public class Ship extends Sprite {
         return this.speed;
     }
 
-// Each ship's action counter keeps track of how long they have been doing each action so there is enough time to execute it before switching behaviors.
+
 
     public void handleIdle(Ship ship) {
         if (!isPaused) {

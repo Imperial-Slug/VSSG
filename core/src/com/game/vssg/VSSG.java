@@ -2,6 +2,7 @@ package com.game.vssg;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL32;
@@ -130,10 +131,30 @@ public class VSSG implements ApplicationListener {
 
     }
 
+
+
+    void prepareHTML5Controls() {
+
+        Gdx.input.setCatchKey(Input.Keys.SPACE, true);
+        Gdx.input.setCatchKey(Input.Keys.A, true);
+        Gdx.input.setCatchKey(Input.Keys.S, true);
+        Gdx.input.setCatchKey(Input.Keys.W, true);
+        Gdx.input.setCatchKey(Input.Keys.D, true);
+        Gdx.input.setCatchKey(Input.Keys.C, true);
+        Gdx.input.setCatchKey(Input.Keys.Q, true);
+        Gdx.input.setCatchKey(Input.Keys.E, true);
+        Gdx.input.setCatchKey(Input.Keys.F, true);
+        Gdx.input.setCatchKey(Input.Keys.T, true);
+        Gdx.input.setCatchKey(Input.Keys.Z, true);
+
+    }
+
+
     // This is a built-in and overridden method of LibGDX that runs at the beginning of the game by default to initialize key variables.
     @Override
     public void create() {
         Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        prepareHTML5Controls();
 
         cursorMode = CursorMode.MENU_MODE;
         float viewportWidth = Gdx.graphics.getWidth();
