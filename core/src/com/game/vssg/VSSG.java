@@ -131,8 +131,6 @@ public class VSSG implements ApplicationListener {
 
     }
 
-
-
     void prepareHTML5Controls() {
 
         Gdx.input.setCatchKey(Input.Keys.SPACE, true);
