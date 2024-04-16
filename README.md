@@ -27,6 +27,6 @@ python -m http.server 8000
  
  https://libgdx.com/wiki/deployment/deploying-your-application
  
- If you are trying to run a jar of it, you need to add the -XstartOnFirstThread option, giving java -jar --XstartOnFirstThread desktop-1.0.jar
+ If you are trying to run a jar of it on Macintosh computers, you need to add the -XstartOnFirstThread option, giving java -jar --XstartOnFirstThread desktop-1.0.jar
  
  
