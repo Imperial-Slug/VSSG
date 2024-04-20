@@ -5,16 +5,24 @@ the Java libGDX framework.  The sprites are all homemade in GIMP on Gentoo Linux
 The laser sounds are homemade using Audacity to alter recordings of my electric 
 guitar hitting a note.
 
-The project has Desktop, Android, HTML and iOS modules that are automatically managed while only the class files in the "core" directory are usually edited and added to.
+-------------------
+GENERAL NOTES:
+-------------------
+
+The project has Desktop, Android, HTML and iOS modules that are automatically managed while only the class files in the "core" directory are usually edited and added to.  Still working on iOS and Android implementations.
 
 It's currently setup with Gradle.  Download the latest version of Android Studio IDE and import the project if you want to work with the code.  
 
+If you just want to run it on your desktop without opening a coding environment, you can simply run " ./gradlew desktop:run  ".
 
-If you just want to run it on your desktop without opening a coding environment, you can simply run ./gradlew 
+You can build a jar to run on Linux, MacOS or Windows with ./gradlew desktop:dist.  The jar will appear in /ProjectRoot/desktop/build/libs as " desktop-1.0.jar ".
 
+To build an executable for your OS, run the corresponding " pack-${OS}.sh " bash script.  If you are on Windows, you can access bash through git-bash, available here: https://git-scm.com/downloads
 
- HTML controls are currently broken.
- 
+-------------------
+ HTML VERSION:
+-------------------
+
 To test the html version, you can spin up an http server.  Running this from your IDE terminal will do fine on a Linux system:
 
 python -m http.server 8000
