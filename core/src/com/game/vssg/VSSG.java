@@ -1,5 +1,6 @@
 package com.game.vssg;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -108,6 +109,7 @@ public class VSSG implements ApplicationListener {
         PLAYER_MODE
     }
 
+
     // Enumeration determining which gamemode the game is in.
     private enum GameMode {
         ARCADE,
@@ -153,6 +155,7 @@ public class VSSG implements ApplicationListener {
     // This is a built-in and overridden method of LibGDX that runs at the beginning of the game by default to initialize key variables.
     @Override
     public void create() {
+        Gdx.app.setLogLevel(Application.LOG_INFO);
         Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         prepareHTML5Controls();
 
@@ -357,6 +360,7 @@ public class VSSG implements ApplicationListener {
         return buttonStyle;
     }
 
+    // Called every frame in render() to implement rules based on whether we are in ARCADE_MODE or SANDBOX_MODE
     void handleScreenMode(float deltaTime) {
 
         if (currentScreen == VSSG.Screen.TITLE && buttonQuitToDesktop != null && button2 != null) {
@@ -368,12 +372,16 @@ public class VSSG implements ApplicationListener {
                 cursorPushCamera(camera);
             }
 
+           // // // // // // ARCADE MODE RULES // // // // // // // //
+
             if (gameMode == GameMode.ARCADE) {
+
                 if (cpuShips.isEmpty()) {
                     arcadeModeRefill();
                     scoreDisplay.setVisible(true);
-
                 }
+
+
             } else scoreDisplay.setVisible(false);
 
             handleClickTimeout();
@@ -398,9 +406,7 @@ public class VSSG implements ApplicationListener {
             batch.end();
             handlePlayerHealthBar();
             scoreDisplay.setPosition(camera.position.x - ((float) viewport.getScreenWidth() / 4) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)-150 ) * (camera.zoom / 2)));
-
         }
-
     }
 
     void handlePlayerHealthBar() {
@@ -740,6 +746,7 @@ public class VSSG implements ApplicationListener {
                 }
             }
         }
+
     }
 
     // Creates a ship from the player's input.
@@ -1127,16 +1134,13 @@ public class VSSG implements ApplicationListener {
                 cpuShipsCopy.add(enemy);
                 i++;
             }
-
         }
-
     }
 
     // MAIN GAME LOOP: "RENDER LOOP" //////////////////////////////
 
     @Override
     public void render() {
-
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         // Measure change in time from last frame / render loop execution.

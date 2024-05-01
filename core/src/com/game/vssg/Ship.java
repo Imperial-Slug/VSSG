@@ -467,7 +467,6 @@ public class Ship extends Sprite {
         }
     }
 
-
     // Check to see if there are any enemy ships nearby not in the subject Ship's list of targets.
     public void detectTargets(Ship targetShip, ObjectSet<Ship> targets) {
 
