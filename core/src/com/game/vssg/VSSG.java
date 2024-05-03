@@ -931,13 +931,30 @@ public class VSSG implements ApplicationListener {
 
     }
 
+
+    int calculateDamage(Laser laser) {
+        int damage = 0;
+        Texture laserTexture = laser.getTexture();
+        if (laserTexture == blueLaserTexture) {
+            damage = 1;
+        } else if (laserTexture == redLaserTexture){
+            damage = 9;
+        } else if (laserTexture == greenLaserTexture) {
+            damage = 9;
+        } else if (laserTexture == laser2Texture) {
+            damage = 31;
+        } else {System.out.println("Line 946: This texture can't be read???!! Damage is: "+damage);}
+        return damage;
+    }
+
+
     void checkLaserCollision(Rectangle laserHitBox, Rectangle shipHitBox, Laser laser, Ship ship) {
         if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
             Vector2 position = new Vector2(ship.getX() + ship.getWidth() / 2, laser.getY() - ship.getHeight() / 2);
             Explosion.explode(explosionTexture1, position, 512, explosions, explosionSound1, 16, 0.33f);
 
             if (ship.getActionState() == Ship.ActionState.PLAYER_CONTROL) {
-                ship.decreaseHp(5);
+                ship.decreaseHp(calculateDamage(laser));
 
             } else {
                 ship.decreaseHp(50);
@@ -964,8 +981,11 @@ public class VSSG implements ApplicationListener {
             // Determine laser's scale based on its texture.
             if (laser.getTexture() == laser2Texture) {
                 laser.setScale(0.8f);
-            } else {
+            } else if (laser.getTexture() == redLaserTexture || laser.getTexture() == greenLaserTexture) {
                 laser.setScale(3);
+            } else if (laser.getTexture() == blueLaserTexture) {
+                laser.setScale(2);
+
             }
 
 
@@ -1127,7 +1147,6 @@ public class VSSG implements ApplicationListener {
 
                 enemy.setPosition(position.x, position.y);
                 enemy.setScale(shipScale);
-                enemy.setType(Ship.Type.FIGHTER);
                 enemy.setOrigin(enemy.getOriginX(), enemy.getOriginY());
 
                 cpuShips.add(enemy);
@@ -1164,16 +1183,10 @@ public class VSSG implements ApplicationListener {
         if (waveNumber < 4) {
             shipTexture = tealShipTexture;
         }
-
         // If the wavenumber is greater than 4, spawn a whole bunch of automatons.
         if (waveNumber >=4){
-
             shipTexture = automatonTexture;
-
-
-
         }
-
         return shipTexture;
     }
 

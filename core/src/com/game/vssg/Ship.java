@@ -130,7 +130,7 @@ public class Ship extends Sprite {
         this.hp = this.hp + amount;
     }
 
-
+// Method describing how a CpuShip fires its lasers.
     public Laser fireLaser(Texture laserTexture, Ship ship) {
         float offsetX = 0;
         float offsetY = 0;
@@ -140,6 +140,9 @@ public class Ship extends Sprite {
             offsetY = -2.25f;
         } else if (ship.type == Type.CORVETTE) {
             offsetY = -35f;
+        } else if (ship.type == Type.AUTOMATON) {
+
+            System.out.println("AUTOMATON type ship firing");
         }
 
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());
@@ -181,23 +184,37 @@ public class Ship extends Sprite {
         }
     }
 
+float determineFireRate(Ship ship){
+        float fireRate = 0;
+        if (ship.getType() == Type.AUTOMATON){
+            fireRate = 11;
+        } else { fireRate = 100; }
+        return fireRate;
+}
 
-    // Handles the FIRE Ship state.  Makes the Ship fire.
+    // Handles the FIRE Ship state.  Makes the Ship fire & determines which laser type to use.
     public void handleFire(Ship ship, Texture laser2Texture, Texture greenLaserTexture, Texture blueLaserTexture, Texture redLaserTexture, ObjectSet<Laser> lasers, Sound laserBlast) {
         // Laser texture used is dependent on ship faction.
+      float fireRate = determineFireRate(ship);
         if (!isPaused) {
             if (ship.actionState == ActionState.FIRE) {
                 Texture texture2 = laser2Texture;
 
-                if (ship.fireCounter <= 100) {
+                if (ship.fireCounter <= fireRate) {
                     ship.fireCounter++;
                 } else {
 
-                    if (ship.faction == Ship.Faction.TEAL) {
+                    if (ship.faction == Ship.Faction.TEAL && ship.getType() == Type.AUTOMATON) {
+                    texture2 = blueLaserTexture;
 
+                    } else if  (ship.faction == Ship.Faction.TEAL && ship.getType() == Type.FIGHTER) {
                         texture2 = redLaserTexture;
 
-                    } else if (ship.faction == Ship.Faction.PURPLE) {
+
+                    }
+
+
+                    else if (ship.faction == Ship.Faction.PURPLE) {
                         if (ship.type == Type.CORVETTE) {
                             texture2 = laser2Texture;
                         } else if (ship.type == Type.FIGHTER) {
