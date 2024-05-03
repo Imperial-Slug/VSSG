@@ -1162,7 +1162,7 @@ public class VSSG implements ApplicationListener {
         Texture shipTexture = null;
 
         if (waveNumber < 4) {
-            shipTexture = automatonTexture;
+            shipTexture = tealShipTexture;
         }
 
         // If the wavenumber is greater than 4, spawn a whole bunch of automatons.
