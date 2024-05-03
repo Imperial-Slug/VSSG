@@ -28,8 +28,6 @@ public class Ship extends Sprite {
     private int laserSpawnCounter;
     private int hp;
     private Type type;
-    private Sprite exhaustTexture;
-    private int exhaustTimer;
 
     private Vector2 position;
     private Rectangle hitbox;
@@ -39,6 +37,7 @@ public class Ship extends Sprite {
     // Determines which type of ship a ship is.
 
     enum Type {
+        AUTOMATON,
         FIGHTER,
         CORVETTE,
         CAPITAL
@@ -68,7 +67,7 @@ public class Ship extends Sprite {
     }
 
     // Ship constructor.
-    public Ship(Texture texture, Sprite exhaustTexture, Vector2 position, float speed,
+    public Ship(Texture texture, Vector2 position, float speed,
                 ActionState actionState, ActionState previousActionState,
                 Faction faction, ObjectSet<Ship> targets, int hp, Type type) {
 
@@ -86,8 +85,6 @@ public class Ship extends Sprite {
         this.laserSpawnCounter = 0;
         this.hp = hp;
         this.type = type;
-        this.exhaustTexture = exhaustTexture;
-        this.exhaustTimer = 0;
 
     }
 
@@ -119,18 +116,9 @@ public class Ship extends Sprite {
                 setPosition(position.x, position.y);
                 updateHitBox(ship);
 
-                float exhaustX = ship.getX() + ship.getOriginX();
-                float exhaustY = ship.getY() - ship.getOriginY() + 64;
-                ship.exhaustTexture.setOrigin(333, ship.getHeight() / 2f);
-                ship.exhaustTexture.setPosition(exhaustX - 333, exhaustY);
-                ship.exhaustTexture.setScale((0.3f));
-                ship.exhaustTexture.setRotation(ship.getRotation());
+
             }
-            if (this.exhaustTimer < 11) {
-                this.exhaustTimer++;
-            } else {
-                this.exhaustTimer = 0;
-            }
+
         }
     }
 
@@ -606,10 +594,6 @@ public class Ship extends Sprite {
 
     }
 
-    Sprite getExhaustTexture() {
-
-        return this.exhaustTexture;
-    }
 
     int getHp() {
         return this.hp;

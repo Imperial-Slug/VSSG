@@ -46,7 +46,7 @@ public class VSSG implements ApplicationListener {
     private ObjectSet<Explosion> explosions;
     private ObjectSet<Laser> lasers;
     private SpriteBatch batch;
-    VSSG.Screen currentScreen = VSSG.Screen.TITLE;
+    Screen currentScreen = Screen.TITLE;
     private Sound explosionSound1;
     private Sound laserBlast1;
     private Sound laserBlast2;
@@ -59,6 +59,8 @@ public class VSSG implements ApplicationListener {
     private int waveNumber = 1;
 
     private Texture purpleShipTexture;
+    private Texture automatonTexture;
+
     private Texture greenLaserTexture;
     private Texture explosionTexture1;
     private Texture otherShipTexture;
@@ -69,10 +71,10 @@ public class VSSG implements ApplicationListener {
     private Texture laser2Texture;
     private Texture explosionTexture2;
     private Sprite tealShipButton;
-    private Sprite exhaust;
+
     private Sprite purpleShipButton;
+    private Sprite automaton;
     private Texture purpleShipButtonTexture;
-    private Texture exhaustTexture;
     private Texture tealShipButtonTexture;
     private Texture purpleCorvetteTexture;
     private BitmapFont font;
@@ -212,7 +214,7 @@ public class VSSG implements ApplicationListener {
                 scoreDisplay.setVisible(true);
                 scoreDisplay.setPosition(camera.position.x + ((float) viewport.getScreenWidth() / 2) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)) * (camera.zoom / 2)));
 
-                currentScreen = VSSG.Screen.MAIN_GAME;
+                currentScreen = Screen.MAIN_GAME;
 
                 gameMode = GameMode.ARCADE;
 
@@ -232,7 +234,7 @@ public class VSSG implements ApplicationListener {
         button3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentScreen = VSSG.Screen.MAIN_GAME;
+                currentScreen = Screen.MAIN_GAME;
                 button2 = new TextButton("Arcade Mode", buttonStyle);
                 gameMode = GameMode.SANDBOX;
 
@@ -363,9 +365,9 @@ public class VSSG implements ApplicationListener {
     // Called every frame in render() to implement rules based on whether we are in ARCADE_MODE or SANDBOX_MODE
     void handleScreenMode(float deltaTime) {
 
-        if (currentScreen == VSSG.Screen.TITLE && buttonQuitToDesktop != null && button2 != null) {
+        if (currentScreen == Screen.TITLE && buttonQuitToDesktop != null && button2 != null) {
             placeTitleScreenButtons(deltaTime);
-        } else if (currentScreen == VSSG.Screen.MAIN_GAME) {
+        } else if (currentScreen == Screen.MAIN_GAME) {
             clearScreenForMainGame();
             // Check if the cursor is far enough away from center to move the screen if the game is in selection mode.
             if (cursorMode == CursorMode.SELECTION_MODE){
@@ -375,12 +377,11 @@ public class VSSG implements ApplicationListener {
            // // // // // // ARCADE MODE RULES // // // // // // // //
 
             if (gameMode == GameMode.ARCADE) {
+                scoreDisplay.setVisible(true);
 
                 if (cpuShips.isEmpty()) {
                     arcadeModeRefill();
-                    scoreDisplay.setVisible(true);
                 }
-
 
             } else scoreDisplay.setVisible(false);
 
@@ -436,7 +437,7 @@ public class VSSG implements ApplicationListener {
             public void clicked(InputEvent event, float x, float y) {
                 // When the quit button is clicked, set the screen to the TITLE screen.
                 quitButton2.setStyle(buttonStyle2);
-                currentScreen = VSSG.Screen.TITLE;
+                currentScreen = Screen.TITLE;
                 buttonQuitToDesktop.setVisible(false);
                 quitButton2.setVisible(false);
                 // Eliminate any residual ships that might not have been removed when the game was exited to the pause screen.
@@ -524,7 +525,7 @@ public class VSSG implements ApplicationListener {
             cpuShip.setInactive(cpuShip);
             cpuShipsCopy.remove(cpuShip);
             cpuShip.getTargets().clear();
-            return new PlayerShip(cpuShip.getTexture(), cpuShip.getExhaustTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
+            return new PlayerShip(cpuShip.getTexture(), cpuShip.getPosition(), cpuShip.getSpeed(), Ship.ActionState.PLAYER_CONTROL,
                     cpuShip.getActionState(), cpuShip.getHitbox(), cpuShip.getActionCounter(), cpuShip.getFaction(), cpuShip.getTargets(),
                     cpuShip.getHp(), cpuShip.getType(), cpuShip.getRotation());
         } else {
@@ -544,6 +545,7 @@ public class VSSG implements ApplicationListener {
     }
 
     void loadResources() {
+        automatonTexture = new Texture("automaton.png");
 
         purpleShipTexture = new Texture("purple_ship.png");
         otherShipTexture = new Texture("N1.png");
@@ -555,13 +557,14 @@ public class VSSG implements ApplicationListener {
         backgroundTexture = new Texture("background.png");
         explosionTexture1 = new Texture("explosion_orange.png");
        // explosionTexture2 = new Texture("explosion2.png");
-        exhaustTexture = new Texture("ship_exhaust.png");
         purpleShipButtonTexture = new Texture("purple_ship_button.png");
         tealShipButtonTexture = new Texture("teal_ship_button.png");
         purpleCorvetteTexture = new Texture("bigship.png");
         tealShipButton = new Sprite(tealShipButtonTexture);
         purpleShipButton = new Sprite(purpleShipButtonTexture);
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
+        automaton = new Sprite(automatonTexture);
+
         laserBlast1 = Gdx.audio.newSound(Gdx.files.internal("laserblast1.wav"));
       laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
         healthBarShapeRenderer = new ShapeRenderer();
@@ -575,8 +578,7 @@ public class VSSG implements ApplicationListener {
 
         ObjectSet<Ship> targets = new ObjectSet<>();
         int playerActionCounter = 0;
-        exhaust = new Sprite(exhaustTexture);
-        PlayerShip playerShip = new PlayerShip(purpleShipTexture, exhaust, vector2, 40, Ship.ActionState.PLAYER_CONTROL,
+        PlayerShip playerShip = new PlayerShip(purpleShipTexture, vector2, 40, Ship.ActionState.PLAYER_CONTROL,
                 Ship.ActionState.PLAYER_CONTROL, hitBox, playerActionCounter, Ship.Faction.PURPLE, targets, 100, Ship.Type.FIGHTER, 90);
 
         playerShip.setScale(shipScale);
@@ -606,7 +608,7 @@ public class VSSG implements ApplicationListener {
     // Release control of the currently controlled ship.
     void relinquishControl(PlayerShip playerShip) {
 
-        CpuShip cpuShip = new CpuShip(playerShip.getTexture(), playerShip.getExhaustTexture(), playerShip.getPosition(), playerShip.getSpeed(),
+        CpuShip cpuShip = new CpuShip(playerShip.getTexture(), playerShip.getPosition(), playerShip.getSpeed(),
                 Ship.ActionState.IDLE, Ship.ActionState.IDLE, playerShip.getHitbox(), playerShip.getActionCounter(), playerShip.getFaction(),
                 playerShip.getTargets(), playerShip.getHp(), playerShip.getType(), playerShip.getRotation());
 
@@ -825,6 +827,7 @@ public class VSSG implements ApplicationListener {
         }
     }
 
+    // Choose which laser type to fire based on the type and faction of the ship.
     void playerFireLaser() {
 
         Texture laserTexture = null;
@@ -964,7 +967,7 @@ public class VSSG implements ApplicationListener {
             } else {
                 laser.setScale(3);
             }
-            //
+
 
             laser.draw(batch);
             Rectangle laserHitBox = laser.getHitbox();
@@ -988,7 +991,6 @@ public class VSSG implements ApplicationListener {
         for (PlayerShip playerShip : playerShips) {
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.draw(batch);
-            playerShip.getExhaustTexture().draw(batch);
             playerShip.handleActionState(playerShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             camera.position.x = playerShip.getX() + playerShip.getWidth() / 2;
             camera.position.y = playerShip.getY() + playerShip.getHeight() / 2;
@@ -1000,7 +1002,6 @@ public class VSSG implements ApplicationListener {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.draw(batch);
 
-            cpuShip.getExhaustTexture().draw(batch);
             cpuShip.handleActionState(cpuShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
             for (Ship target : cpuShip.getTargets()) {
 
@@ -1059,8 +1060,7 @@ public class VSSG implements ApplicationListener {
             int actionCounter = 0;
             ObjectSet<Ship> targets = new ObjectSet<>();
             CpuShip.Faction faction = assignFactionByTexture(shipTexture);
-            Sprite exhaust = new Sprite(exhaustTexture);
-            CpuShip cpuShip = new CpuShip(shipTexture, exhaust, position, 200f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100, Ship.Type.FIGHTER, 90);
+            CpuShip cpuShip = new CpuShip(shipTexture, position, 200f, actionState, Ship.ActionState.IDLE, hitBox, actionCounter, faction, targets, 100, Ship.Type.FIGHTER, 90);
             cpuShip.setPosition(position.x, position.y);
             cpuShip.setScale(shipScale);
             cpuShip.setType(Ship.Type.FIGHTER);
@@ -1092,7 +1092,7 @@ public class VSSG implements ApplicationListener {
         laserBlast1.dispose();
         explosionTexture1.dispose();
         otherShipTexture.dispose();
-        exhaustTexture.dispose();
+        automatonTexture.dispose();
         purpleCorvetteTexture.dispose();
         explosionTexture2.dispose();
         healthBarShapeRenderer.dispose();
@@ -1122,8 +1122,8 @@ public class VSSG implements ApplicationListener {
                 Rectangle hitbox = new Rectangle();
                 ObjectSet<Ship> targets = new ObjectSet<>();
 
-                CpuShip enemy = new CpuShip(tealShipTexture, exhaust, position, 100, Ship.ActionState.IDLE, Ship.ActionState.IDLE, hitbox,
-                        0, Ship.Faction.TEAL, targets, 100, Ship.Type.FIGHTER, 0);
+                CpuShip enemy = new CpuShip(calculateArcadeShipTexture(waveNumber, i), position, 100, Ship.ActionState.IDLE, Ship.ActionState.IDLE, hitbox,
+                        0, Ship.Faction.TEAL, targets, 100, calculateArcadeShipType(waveNumber, i), 0);
 
                 enemy.setPosition(position.x, position.y);
                 enemy.setScale(shipScale);
@@ -1136,6 +1136,50 @@ public class VSSG implements ApplicationListener {
             }
         }
     }
+
+
+    Ship.Type calculateArcadeShipType(int waveNumber, int shipNumber) {
+        Ship.Type shipType = null;
+
+        if (waveNumber < 4) {
+            shipType = Ship.Type.FIGHTER;
+        }
+
+        // If the wavenumber is greater than 4, spawn a whole bunch of automatons.
+        if (waveNumber >=4){
+
+        shipType = Ship.Type.AUTOMATON;
+
+
+
+        }
+
+    return shipType;
+    }
+
+
+    Texture calculateArcadeShipTexture(int waveNumber, int shipNumber) {
+        Texture shipTexture = null;
+
+        if (waveNumber < 4) {
+            shipTexture = automatonTexture;
+        }
+
+        // If the wavenumber is greater than 4, spawn a whole bunch of automatons.
+        if (waveNumber >=4){
+
+            shipTexture = automatonTexture;
+
+
+
+        }
+
+        return shipTexture;
+    }
+
+
+
+
 
     // MAIN GAME LOOP: "RENDER LOOP" //////////////////////////////
 

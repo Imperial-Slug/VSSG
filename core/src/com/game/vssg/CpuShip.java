@@ -10,10 +10,10 @@ import com.badlogic.gdx.utils.ObjectSet;
 public class CpuShip extends Ship {
 
     // CpuShip constructor.
-    public CpuShip(Texture texture, Sprite exhaustTexture, Vector2 position, float speed, ActionState actionState,
+    public CpuShip(Texture texture, Vector2 position, float speed, ActionState actionState,
                    ActionState previousActionState, Rectangle hitbox, int actionCounter, Faction faction,
                    ObjectSet<Ship> targets, int hp, Type type, float rotation) {
-        super(texture, exhaustTexture, position, speed, actionState, previousActionState, faction, targets, hp, type);
+        super(texture, position, speed, actionState, previousActionState, faction, targets, hp, type);
         this.setActionState(actionState, previousActionState);
 
     }
