@@ -16,11 +16,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -48,8 +45,8 @@ public class VSSG implements ApplicationListener {
     private SpriteBatch batch;
     Screen currentScreen = Screen.TITLE;
     private Sound explosionSound1;
-    private Sound laserBlast1;
-    private Sound laserBlast2;
+    private Sound laserBlastSound1;
+    private Sound laserBlastSound2;
     private final float worldWidthCentre = (float) WORLD_WIDTH / 2;
     private final float worldHeightCentre = (float) WORLD_HEIGHT / 2;
     // Determines how the
@@ -63,16 +60,14 @@ public class VSSG implements ApplicationListener {
 
     private Texture greenLaserTexture;
     private Texture explosionTexture1;
-    private Texture otherShipTexture;
+    private Texture tealCorvetteTexture;
     private Texture blueLaserTexture;
     private Texture redLaserTexture;
     private Texture tealShipTexture;
     private Texture backgroundTexture;
-    private Texture laser2Texture;
-    private Texture explosionTexture2;
-    private Sprite tealShipButton;
+    private Texture pinkBlastTexture;
+    private Texture orangeBlastTexture;
 
-    private Sprite purpleShipButton;
     private Sprite automaton;
     private Texture purpleShipButtonTexture;
     private Texture tealShipButtonTexture;
@@ -548,25 +543,21 @@ public class VSSG implements ApplicationListener {
         automatonTexture = new Texture("automaton.png");
 
         purpleShipTexture = new Texture("purple_ship.png");
-        otherShipTexture = new Texture("N1.png");
         tealShipTexture = new Texture("teal_ship.png");
         greenLaserTexture = new Texture("laser_green.png");
         redLaserTexture = new Texture("laser_red.png");
         blueLaserTexture = new Texture("laser_blue.png");
-        laser2Texture = new Texture("laser2.png");
+        pinkBlastTexture = new Texture("laser2.png");
         backgroundTexture = new Texture("background.png");
         explosionTexture1 = new Texture("explosion_orange.png");
-        // explosionTexture2 = new Texture("explosion2.png");
-        purpleShipButtonTexture = new Texture("purple_ship_button.png");
-        tealShipButtonTexture = new Texture("teal_ship_button.png");
-        purpleCorvetteTexture = new Texture("bigship.png");
-        tealShipButton = new Sprite(tealShipButtonTexture);
-        purpleShipButton = new Sprite(purpleShipButtonTexture);
+        orangeBlastTexture = new Texture("orangeBlast.png");
+        tealCorvetteTexture = new Texture("bigShipTeal.png");
+
+        //purpleCorvetteTexture = new Texture("bigShipPurple.png");
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
         automaton = new Sprite(automatonTexture);
-
-        laserBlast1 = Gdx.audio.newSound(Gdx.files.internal("laserblast1.wav"));
-        laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
+        laserBlastSound1 = Gdx.audio.newSound(Gdx.files.internal("laserBlast1.wav"));
+        laserBlastSound2 = Gdx.audio.newSound(Gdx.files.internal("laserBlast2.wav"));
         healthBarShapeRenderer = new ShapeRenderer();
 
     }
@@ -599,8 +590,6 @@ public class VSSG implements ApplicationListener {
         playerShips = new ObjectSet<>();
         explosions = new ObjectSet<>();
         lasers = new ObjectSet<>();
-        purpleShipButton = new Sprite(purpleShipButtonTexture);
-        tealShipButton = new Sprite(tealShipButtonTexture);
         batch = new SpriteBatch();
 
     }
@@ -834,7 +823,7 @@ public class VSSG implements ApplicationListener {
         for (Ship ship : playerShips) {
             if (!ship.getLaserSpawnTimeout()) {
                 if (ship.getType() == Ship.Type.CORVETTE) {
-                    laserTexture = laser2Texture;
+                    laserTexture = pinkBlastTexture;
                 } else if (ship.getType() == Ship.Type.FIGHTER) {
                     if (ship.getFaction() == Ship.Faction.TEAL) {
                         laserTexture = redLaserTexture;
@@ -846,7 +835,7 @@ public class VSSG implements ApplicationListener {
                 Laser laser = ship.fireLaser(laserTexture, ship);
                 laser.setShip(ship);
                 lasers.add(laser);
-                laserBlast2.play(1f);
+                laserBlastSound2.play(1f);
                 ship.setLaserSpawnTimeout(true);
                 ship.setLaserSpawnCounter(0);
             }
@@ -939,7 +928,7 @@ public class VSSG implements ApplicationListener {
             damage = 9;
         } else if (laserTexture == greenLaserTexture) {
             damage = 9;
-        } else if (laserTexture == laser2Texture) {
+        } else if (laserTexture == pinkBlastTexture) {
             damage = 31;
         } else {
             System.out.println("Line 946: This texture can't be read???!! Damage is: " + damage);
@@ -978,7 +967,7 @@ public class VSSG implements ApplicationListener {
         for (Laser laser : lasers) {
 
             // Determine laser's scale based on its texture.
-            if (laser.getTexture() == laser2Texture) {
+            if (laser.getTexture() == pinkBlastTexture) {
                 laser.setScale(0.8f);
             } else if (laser.getTexture() == redLaserTexture || laser.getTexture() == greenLaserTexture) {
                 laser.setScale(3);
@@ -1010,7 +999,7 @@ public class VSSG implements ApplicationListener {
         for (PlayerShip playerShip : playerShips) {
             playerShip.update(deltaTime, playerShip, WORLD_WIDTH, WORLD_HEIGHT);
             playerShip.draw(batch);
-            playerShip.handleActionState(playerShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
+            playerShip.handleActionState(playerShip, pinkBlastTexture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlastSound2);
             camera.position.x = playerShip.getX() + playerShip.getWidth() / 2;
             camera.position.y = playerShip.getY() + playerShip.getHeight() / 2;
         }
@@ -1021,7 +1010,7 @@ public class VSSG implements ApplicationListener {
             cpuShip.update(deltaTime, cpuShip, WORLD_WIDTH, WORLD_HEIGHT);
             cpuShip.draw(batch);
 
-            cpuShip.handleActionState(cpuShip, laser2Texture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlast2);
+            cpuShip.handleActionState(cpuShip, pinkBlastTexture, greenLaserTexture, blueLaserTexture, redLaserTexture, lasers, laserBlastSound2);
             for (Ship target : cpuShip.getTargets()) {
 
                 if (target != null) {
@@ -1062,8 +1051,6 @@ public class VSSG implements ApplicationListener {
             faction = CpuShip.Faction.TEAL;
         } else if (shipTexture == purpleShipTexture) {
             faction = CpuShip.Faction.PURPLE;
-        } else if (shipTexture == otherShipTexture) {
-            faction = CpuShip.Faction.PURPLE;
         }
         return faction;
     }
@@ -1103,17 +1090,16 @@ public class VSSG implements ApplicationListener {
         greenLaserTexture.dispose();
         blueLaserTexture.dispose();
         redLaserTexture.dispose();
-        laser2Texture.dispose();
+        pinkBlastTexture.dispose();
         purpleShipTexture.dispose();
         tealShipTexture.dispose();
         explosionSound1.dispose();
-        laserBlast2.dispose();
-        laserBlast1.dispose();
+        laserBlastSound2.dispose();
+        laserBlastSound1.dispose();
         explosionTexture1.dispose();
-        otherShipTexture.dispose();
         automatonTexture.dispose();
         purpleCorvetteTexture.dispose();
-        explosionTexture2.dispose();
+        pinkBlastTexture.dispose();
         healthBarShapeRenderer.dispose();
         stage.dispose();
         font.dispose();
@@ -1165,8 +1151,10 @@ public class VSSG implements ApplicationListener {
 
         // If the wavenumber is greater than 4, spawn a whole bunch of automatons.
         if (waveNumber >= 4) {
+            if (shipNumber % 3 == 0) {
+                shipType = Ship.Type.AUTOMATON;
 
-            shipType = Ship.Type.AUTOMATON;
+            } else { shipType = Ship.Type.FIGHTER; }
 
 
         }
@@ -1183,7 +1171,10 @@ public class VSSG implements ApplicationListener {
         }
         // If the wavenumber is greater than 4, spawn a whole bunch of automatons.
         if (waveNumber >= 4) {
-            shipTexture = automatonTexture;
+            if (shipNumber % 3 == 0) {
+                shipTexture = automatonTexture;
+            } else { shipTexture = tealShipTexture; }
+
         }
         return shipTexture;
     }
