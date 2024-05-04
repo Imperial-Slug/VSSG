@@ -170,8 +170,8 @@ public class VSSG implements ApplicationListener {
         initPlayerShip();
 
         camera.zoom = DEFAULT_ZOOM;
-        camera.position.x += viewport.getScreenWidth()*2;
-        camera.position.y += viewport.getScreenHeight()*2;
+        camera.position.x += viewport.getScreenWidth() * 2;
+        camera.position.y += viewport.getScreenHeight() * 2;
 
         camera.update();
         font = new BitmapFont(); // Instantiate the BitmapFont
@@ -185,7 +185,7 @@ public class VSSG implements ApplicationListener {
 
         // Create red button style.
         TextButton.TextButtonStyle buttonStyle2 = createRedButtonStyle(skin);
-        scoreDisplay = new TextButton("SCORE: "+score, buttonStyle);
+        scoreDisplay = new TextButton("SCORE: " + score, buttonStyle);
 
         buttonQuitToDesktop = new TextButton("QUIT TO DESKTOP", buttonStyle);
         buttonQuitToDesktop.addListener(new ClickListener() {
@@ -296,10 +296,10 @@ public class VSSG implements ApplicationListener {
         float cameraX = camera.position.x;
         float cameraY = camera.position.y;
 
-         float upperBoundary = cameraY + (float) viewport.getScreenHeight()/2;
-        float lowerBoundary = cameraY - (float) viewport.getScreenHeight()/2;
-        float rightBoundary = cameraX + (float) viewport.getScreenWidth()/2;
-        float leftBoundary = cameraX - (float) viewport.getScreenWidth()/2;
+        float upperBoundary = cameraY + (float) viewport.getScreenHeight() / 2;
+        float lowerBoundary = cameraY - (float) viewport.getScreenHeight() / 2;
+        float rightBoundary = cameraX + (float) viewport.getScreenWidth() / 2;
+        float leftBoundary = cameraX - (float) viewport.getScreenWidth() / 2;
 
         // The increment variables are just for easy swapping in and out.
         float incrementBoundaryAlpha = 300;
@@ -308,9 +308,9 @@ public class VSSG implements ApplicationListener {
 
         if (x >= rightBoundary) {
             camera.position.x += incrementCameraPosition;
-            if (x >= rightBoundary+ incrementBoundaryAlpha){
+            if (x >= rightBoundary + incrementBoundaryAlpha) {
                 camera.position.x += incrementCameraPosition;
-                if (x >= rightBoundary+ incrementBoundaryBeta){
+                if (x >= rightBoundary + incrementBoundaryBeta) {
                     camera.position.x += incrementCameraPosition;
 
                 }
@@ -319,9 +319,9 @@ public class VSSG implements ApplicationListener {
 
         if (x <= leftBoundary) {
             camera.position.x -= incrementCameraPosition;
-            if (x <= leftBoundary - incrementBoundaryAlpha){
+            if (x <= leftBoundary - incrementBoundaryAlpha) {
                 camera.position.x -= incrementCameraPosition;
-                if (x <=leftBoundary - incrementBoundaryBeta){
+                if (x <= leftBoundary - incrementBoundaryBeta) {
                     camera.position.x -= incrementCameraPosition;
 
                 }
@@ -330,23 +330,23 @@ public class VSSG implements ApplicationListener {
 
         if (y >= upperBoundary) {
             camera.position.y += incrementCameraPosition;
-            if (y >= upperBoundary + incrementBoundaryAlpha){
+            if (y >= upperBoundary + incrementBoundaryAlpha) {
                 camera.position.y += incrementCameraPosition;
-               if(y >= upperBoundary + incrementBoundaryBeta) {
-                   camera.position.y += incrementCameraPosition;
+                if (y >= upperBoundary + incrementBoundaryBeta) {
+                    camera.position.y += incrementCameraPosition;
 
-               }
+                }
             }
         }
 
         if (y <= lowerBoundary) {
             camera.position.y -= incrementCameraPosition;
-            if (y <= upperBoundary - incrementBoundaryAlpha){
+            if (y <= upperBoundary - incrementBoundaryAlpha) {
                 camera.position.y -= incrementCameraPosition;
-                if(y <= upperBoundary - incrementBoundaryBeta) {
+                if (y <= upperBoundary - incrementBoundaryBeta) {
                     camera.position.y -= incrementCameraPosition;
 
-                    
+
                 }
             }
 
@@ -370,11 +370,11 @@ public class VSSG implements ApplicationListener {
         } else if (currentScreen == Screen.MAIN_GAME) {
             clearScreenForMainGame();
             // Check if the cursor is far enough away from center to move the screen if the game is in selection mode.
-            if (cursorMode == CursorMode.SELECTION_MODE){
+            if (cursorMode == CursorMode.SELECTION_MODE) {
                 cursorPushCamera(camera);
             }
 
-           // // // // // // ARCADE MODE RULES // // // // // // // //
+            // // // // // // ARCADE MODE RULES // // // // // // // //
 
             if (gameMode == GameMode.ARCADE) {
                 scoreDisplay.setVisible(true);
@@ -406,7 +406,7 @@ public class VSSG implements ApplicationListener {
             stage.draw();
             batch.end();
             handlePlayerHealthBar();
-            scoreDisplay.setPosition(camera.position.x - ((float) viewport.getScreenWidth() / 4) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20)-150 ) * (camera.zoom / 2)));
+            scoreDisplay.setPosition(camera.position.x - ((float) viewport.getScreenWidth() / 4) * (camera.zoom / 2), camera.position.y + ((viewport.getScreenHeight() - ((float) viewport.getScreenHeight() / 20) - 150) * (camera.zoom / 2)));
         }
     }
 
@@ -444,12 +444,12 @@ public class VSSG implements ApplicationListener {
                 flushShips();
 
                 // Start over by calling the create() method.
-               create();
-                camera.position.x += (float) viewport.getScreenWidth() /2;
-                camera.position.y += (float) viewport.getScreenHeight() /2;
+                create();
+                camera.position.x += (float) viewport.getScreenWidth() / 2;
+                camera.position.y += (float) viewport.getScreenHeight() / 2;
                 batch.begin();
-               // TODO: Replace this with a more logo-like sprite.
-                font.draw(batch, "VSSG", ((float) viewport.getScreenWidth() /5) , (float) viewport.getScreenHeight() /5);
+                // TODO: Replace this with a more logo-like sprite.
+                font.draw(batch, "VSSG", ((float) viewport.getScreenWidth() / 5), (float) viewport.getScreenHeight() / 5);
                 batch.end();
             }
         });
@@ -489,7 +489,7 @@ public class VSSG implements ApplicationListener {
 
     void placeTitleScreenButtons(float deltaTime) {
 
-       clearScreenForMainGame();
+        clearScreenForMainGame();
 
         buttonQuitToDesktop.setVisible(false);
         quitButton2.setVisible(false);
@@ -500,11 +500,11 @@ public class VSSG implements ApplicationListener {
         stage.act(deltaTime);
 
         batch.begin();
-      //  backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        //  backgroundTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-        batch.draw(backgroundTexture, -5000f,  -1000f, (float) WORLD_WIDTH /2, (float) WORLD_HEIGHT /2, 0, 0, wrapDivisor, wrapDivisor);
+        batch.draw(backgroundTexture, -5000f, -1000f, (float) WORLD_WIDTH / 2, (float) WORLD_HEIGHT / 2, 0, 0, wrapDivisor, wrapDivisor);
 
-        font.draw(batch, "VSSG", ((Gdx.graphics.getWidth() * 0.4f )) , (Gdx.graphics.getHeight() * 0.9f));
+        font.draw(batch, "VSSG", ((Gdx.graphics.getWidth() * 0.4f)), (Gdx.graphics.getHeight() * 0.9f));
         stage.draw();
 
         Vector2 button2Position = new Vector2(camera.position.x, camera.position.y - 200);
@@ -556,7 +556,7 @@ public class VSSG implements ApplicationListener {
         laser2Texture = new Texture("laser2.png");
         backgroundTexture = new Texture("background.png");
         explosionTexture1 = new Texture("explosion_orange.png");
-       // explosionTexture2 = new Texture("explosion2.png");
+        // explosionTexture2 = new Texture("explosion2.png");
         purpleShipButtonTexture = new Texture("purple_ship_button.png");
         tealShipButtonTexture = new Texture("teal_ship_button.png");
         purpleCorvetteTexture = new Texture("bigship.png");
@@ -566,7 +566,7 @@ public class VSSG implements ApplicationListener {
         automaton = new Sprite(automatonTexture);
 
         laserBlast1 = Gdx.audio.newSound(Gdx.files.internal("laserblast1.wav"));
-      laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
+        laserBlast2 = Gdx.audio.newSound(Gdx.files.internal("laser_blast2.wav"));
         healthBarShapeRenderer = new ShapeRenderer();
 
     }
@@ -659,7 +659,7 @@ public class VSSG implements ApplicationListener {
 
     /////////////   C O N T R O L S   /////////////
     private void handleInput() {
-
+        float deltaTime = Gdx.graphics.getDeltaTime();
         float cameraSpeed = camera.zoom * 2048;
 
         if (InputManager.isMiddlePressed()) {
@@ -716,16 +716,16 @@ public class VSSG implements ApplicationListener {
         }
 
         if (InputManager.isLeftPressed()) {
-            camera.translate(-cameraSpeed * Gdx.graphics.getDeltaTime(), 0);
+            camera.translate(-cameraSpeed * deltaTime, 0);
         }
         if (InputManager.isRightPressed()) {
-            camera.translate(cameraSpeed * Gdx.graphics.getDeltaTime(), 0);
+            camera.translate(cameraSpeed * deltaTime, 0);
         }
         if (InputManager.isUpPressed()) {
-            camera.translate(0, cameraSpeed * Gdx.graphics.getDeltaTime());
+            camera.translate(0, cameraSpeed * deltaTime);
         }
         if (InputManager.isDownPressed()) {
-            camera.translate(0, -cameraSpeed * Gdx.graphics.getDeltaTime());
+            camera.translate(0, -cameraSpeed * deltaTime);
         }
 
         if (InputManager.isQPressed()) {
@@ -739,7 +739,7 @@ public class VSSG implements ApplicationListener {
 
         if (InputManager.isCPressed()) {
 
-            if(gameMode != GameMode.ARCADE) {
+            if (gameMode != GameMode.ARCADE) {
 
                 if (!isPaused) {
                     if (!playerShips.isEmpty()) {
@@ -928,25 +928,24 @@ public class VSSG implements ApplicationListener {
                 laserIter.remove();
             }
         }
-
     }
-
 
     int calculateDamage(Laser laser) {
         int damage = 0;
         Texture laserTexture = laser.getTexture();
         if (laserTexture == blueLaserTexture) {
             damage = 1;
-        } else if (laserTexture == redLaserTexture){
+        } else if (laserTexture == redLaserTexture) {
             damage = 9;
         } else if (laserTexture == greenLaserTexture) {
             damage = 9;
         } else if (laserTexture == laser2Texture) {
             damage = 31;
-        } else {System.out.println("Line 946: This texture can't be read???!! Damage is: "+damage);}
+        } else {
+            System.out.println("Line 946: This texture can't be read???!! Damage is: " + damage);
+        }
         return damage;
     }
-
 
     void checkLaserCollision(Rectangle laserHitBox, Rectangle shipHitBox, Laser laser, Ship ship) {
         if (laserHitBox.overlaps(shipHitBox) && laser.getShip().getFaction() != ship.getFaction()) {
@@ -965,9 +964,9 @@ public class VSSG implements ApplicationListener {
                 ship.setInactive(ship);
 
                 if (ship.getActionState() != Ship.ActionState.PLAYER_CONTROL && gameMode == GameMode.ARCADE) {
-                    score = score+1;
-                    scoreDisplay.setText("SCORE: "+score);
-                    System.out.println("Point acquired! Score = "+score);
+                    score = score + 1;
+                    scoreDisplay.setText("SCORE: " + score);
+                    System.out.println("Point acquired! Score = " + score);
                 }
                 Explosion.explode(explosionTexture1, position, 400, explosions, explosionSound1, 128, 0.7f);
             }
@@ -1165,15 +1164,14 @@ public class VSSG implements ApplicationListener {
         }
 
         // If the wavenumber is greater than 4, spawn a whole bunch of automatons.
-        if (waveNumber >=4){
+        if (waveNumber >= 4) {
 
-        shipType = Ship.Type.AUTOMATON;
-
+            shipType = Ship.Type.AUTOMATON;
 
 
         }
 
-    return shipType;
+        return shipType;
     }
 
 
@@ -1184,14 +1182,11 @@ public class VSSG implements ApplicationListener {
             shipTexture = tealShipTexture;
         }
         // If the wavenumber is greater than 4, spawn a whole bunch of automatons.
-        if (waveNumber >=4){
+        if (waveNumber >= 4) {
             shipTexture = automatonTexture;
         }
         return shipTexture;
     }
-
-
-
 
 
     // MAIN GAME LOOP: "RENDER LOOP" //////////////////////////////

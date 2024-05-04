@@ -81,6 +81,4 @@ public final class InputManager extends InputAdapter {
     }
 
 
-
-
 }
