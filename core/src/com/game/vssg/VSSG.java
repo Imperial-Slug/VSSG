@@ -967,7 +967,7 @@ public class VSSG implements ApplicationListener {
             } else if (laser.getTexture() == redLaserTexture || laser.getTexture() == greenLaserTexture) {
                 laser.setScale(3);
             } else if (laser.getTexture() == blueLaserTexture) {
-                laser.setScale(2);
+                laser.setScale(1.5f);
 
             }
 

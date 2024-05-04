@@ -200,7 +200,7 @@ public class Ship extends Sprite {
         float fireRate = determineFireRate(ship);
         if (!isPaused) {
             if (ship.actionState == ActionState.FIRE) {
-                Texture texture2 = laser2Texture;
+                Texture texture2 = null;
 
                 if (ship.fireCounter <= fireRate) {
                     ship.fireCounter++;
