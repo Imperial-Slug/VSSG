@@ -36,7 +36,6 @@ public class VSSG implements ApplicationListener {
     public static float shipScale = 1f;
     public static float DEFAULT_ZOOM = 2;
     Stage stage;
-
     private ObjectSet<PlayerShip> playerShips;
     private ObjectSet<CpuShip> cpuShips;
     private ObjectSet<CpuShip> cpuShipsCopy;
@@ -66,12 +65,8 @@ public class VSSG implements ApplicationListener {
     private Texture tealShipTexture;
     private Texture backgroundTexture;
     private Texture pinkBlastTexture;
-    private Texture orangeBlastTexture;
 
-    private Sprite automaton;
-    private Texture purpleShipButtonTexture;
-    private Texture tealShipButtonTexture;
-    private Texture purpleCorvetteTexture;
+
     private BitmapFont font;
     private CursorMode cursorMode;
     private OrthographicCamera camera;
@@ -433,6 +428,7 @@ public class VSSG implements ApplicationListener {
                 // When the quit button is clicked, set the screen to the TITLE screen.
                 quitButton2.setStyle(buttonStyle2);
                 currentScreen = Screen.TITLE;
+                score = 0;
                 buttonQuitToDesktop.setVisible(false);
                 quitButton2.setVisible(false);
                 // Eliminate any residual ships that might not have been removed when the game was exited to the pause screen.
@@ -550,12 +546,11 @@ public class VSSG implements ApplicationListener {
         pinkBlastTexture = new Texture("laser2.png");
         backgroundTexture = new Texture("background.png");
         explosionTexture1 = new Texture("explosion_orange.png");
-        orangeBlastTexture = new Texture("orangeBlast.png");
+        Texture orangeBlastTexture = new Texture("orangeBlast.png");
         tealCorvetteTexture = new Texture("bigShipTeal.png");
 
         //purpleCorvetteTexture = new Texture("bigShipPurple.png");
         explosionSound1 = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
-        automaton = new Sprite(automatonTexture);
         laserBlastSound1 = Gdx.audio.newSound(Gdx.files.internal("laserBlast1.wav"));
         laserBlastSound2 = Gdx.audio.newSound(Gdx.files.internal("laserBlast2.wav"));
         healthBarShapeRenderer = new ShapeRenderer();
@@ -1085,8 +1080,6 @@ public class VSSG implements ApplicationListener {
     public void dispose() {
         batch.dispose();
         backgroundTexture.dispose();
-        tealShipButtonTexture.dispose();
-        purpleShipButtonTexture.dispose();
         greenLaserTexture.dispose();
         blueLaserTexture.dispose();
         redLaserTexture.dispose();
@@ -1098,7 +1091,6 @@ public class VSSG implements ApplicationListener {
         laserBlastSound1.dispose();
         explosionTexture1.dispose();
         automatonTexture.dispose();
-        purpleCorvetteTexture.dispose();
         pinkBlastTexture.dispose();
         healthBarShapeRenderer.dispose();
         stage.dispose();
