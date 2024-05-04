@@ -21,7 +21,6 @@ import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
 import org.wisepersist.gradle.plugins.gwt.Style
 
 gretty.httpPort = 8080
-gretty.resourceBase = project.buildDir.path + "/gwt/out"
 gretty.contextPath = "/"
 gretty.portPropertiesFileName = "TEMP_PORTS.properties"
 
