@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.GL32;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -79,7 +78,6 @@ public class VSSG implements ApplicationListener {
     private TextButton quitButton;
     private TextButton quitButton2;
     private TextButton scoreDisplay;
-
     private int clickTimeout = 0;
     private GameMode gameMode;
     private int score = 0;
