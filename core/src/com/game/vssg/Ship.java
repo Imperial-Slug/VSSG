@@ -140,10 +140,10 @@ public class Ship extends Sprite {
             offsetY = -2.25f;
         } else if (ship.type == Type.CORVETTE) {
             offsetY = -35f;
-        } else if (ship.type == Type.AUTOMATON) {
+        } //else if (ship.type == Type.AUTOMATON) {
 
-            System.out.println("AUTOMATON type ship firing");
-        }
+            //System.out.println("AUTOMATON type ship firing");
+       // }
 
         ship.setOrigin(ship.getOriginX(), ship.getOriginY());
         Vector2 laserPosition = new Vector2(ship.getX() + ship.getOriginX() + offsetX, ship.getY() + ship.getOriginY() + offsetY);
